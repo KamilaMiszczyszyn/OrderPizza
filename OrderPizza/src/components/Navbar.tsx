@@ -1,8 +1,11 @@
 import { NavLink } from "react-router-dom"
-import { useState } from "react"
+import { useState, useEffect, useContext } from "react"
 import {auth} from "./../firebase/firebase"
 import { signOut } from "firebase/auth"
+import {doc, getDoc} from 'firebase/firestore'
 import styled from 'styled-components'
+import { AuthContext } from "../context/AuthContext"
+import { db } from "./../firebase/firebase"
 
 const Nav = styled.nav`
   height: 100%;
@@ -46,7 +49,9 @@ const DropdownMenu = styled.div`
 
 
 const Navbar = () => {
+  const currentUser = useContext(AuthContext)
   const [dropdownMenu, setDropdownMenu]=useState<boolean>(false)
+  const[name, setName] = useState<string | null>(null)
 
   const logout = async () => {
     try{
@@ -56,25 +61,54 @@ const Navbar = () => {
     }
   }
 
+  useEffect(() =>{
+
+    const getData = async(user: string | null)=> {
+      if(user){
+        try{
+          const docRef = doc(db, "users", user);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const userPersonalData = docSnap.data();
+            setName(userPersonalData.firstName)
+             } else {
+                 console.log("No such document!");
+            } 
+        }catch (error) {
+            console.log(error)
+            }}
+
+    }
+
+    getData(currentUser)
+    
+
+
+
+  }, [currentUser])
+
+
+
+
   return (
     <>
     <Nav>
       <div >
         <BrandName>OrderPizza</BrandName>
           <NavList>
-            <li><StyledNavLink to='/'>Menu</StyledNavLink></li>
+            <li><StyledNavLink to='/menu'>Menu</StyledNavLink></li>
             <li><StyledNavLink to='/'>Promotions</StyledNavLink></li>
             <li><StyledNavLink to='/'>Contact</StyledNavLink></li>
           </NavList>
       </div>
 
       <div>
-        <p> Hello, name!</p>
+        <p>Hello, {name}!</p>
         <button onClick={()=> dropdownMenu ? setDropdownMenu(false) : setDropdownMenu(true)}>MORE</button>
       </div>   
     </Nav>
     {dropdownMenu && 
-      <DropdownMenu>
+      <DropdownMenu> 
         <ul>
           
         </ul>

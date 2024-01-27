@@ -34,12 +34,16 @@ const Register = () => {
     onSubmit: async (values) => {
         const email = values.email
         const password = values.password
+        const firstName = values.firstName
+        const lastName = values.lastName
         
             try{
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
             const user={
-                email,          
+              firstName,
+              lastName,
+              email,          
             }
 
             await setDoc(doc(db,'users', userCredential.user?.uid), user);

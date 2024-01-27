@@ -19,6 +19,9 @@ const NavContainer=styled.div`
 
 const Main=styled.div`
   grid-area: main;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 const FooterContainer=styled.div`
