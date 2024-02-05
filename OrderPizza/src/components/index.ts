@@ -7,5 +7,6 @@ import Footer from "./Footer"
 import Home from "./Home"
 import Menu from "./Menu"
 import PersonalData from "./PersonalData"
+import ShoppingCart from "./ShoppingCart"
 
-export {Login, Register, ForgotPassword, Layout, Navbar, Footer, Home, Menu, PersonalData}
+export {Login, Register, ForgotPassword, Layout, Navbar, Footer, Home, Menu, PersonalData, ShoppingCart}

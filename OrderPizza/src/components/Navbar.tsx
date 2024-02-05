@@ -6,10 +6,15 @@ import {doc, getDoc} from 'firebase/firestore'
 import styled from 'styled-components'
 import { AuthContext } from "../context/AuthContext"
 import { db } from "./../firebase/firebase"
+import cart from "./../assets/cart-white.png"
+import { ShoppingCart } from "./index"
+import {ShoppingCartContext} from "./../context/ShoppingCartContext"
+
+
 
 const Nav = styled.nav`
   height: 100%;
-  background-color: ${props=> props.theme.colors.primary};
+  background-color: ${props=> props.theme.colors.black};
   color: ${props=> props.theme.colors.white};
   display: flex;
   justify-content: space-between;
@@ -48,18 +53,42 @@ const DropdownMenu = styled.div`
 `
 
 
+const CartButton=styled.div`
+  position: relative;
+
+  div{
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    background-color: ${props=> props.theme.colors.primary};
+    position: absolute;
+    top: -10px;
+    right: -10px;
+  }
+  
+  button{
+    background-image: url(${cart});
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: contain;
+    border: none;
+    width: 20px;
+    height: 20px;
+    padding: 0px;
+  }
+ 
+`
+
+
 const Navbar = () => {
   const currentUser = useContext(AuthContext)
-  const [dropdownMenu, setDropdownMenu]=useState<boolean>(false)
-  const[name, setName] = useState<string | null>(null)
+  const {shoppingCartItems} = useContext(ShoppingCartContext)
 
-  const logout = async () => {
-    try{
-      await signOut(auth);
-    }catch(error){
-      console.log(error)
-    }
-  }
+  const [dropdownMenu, setDropdownMenu]=useState<boolean>(false)
+  const [name, setName] = useState<string | null>(null)
+  const [shoppingCart, setShoppingCart] = useState<boolean>(false);
+
+
 
   useEffect(() =>{
 
@@ -79,15 +108,25 @@ const Navbar = () => {
             }}
 
     }
-
     getData(currentUser)
-    
-
-
-
   }, [currentUser])
 
+    const logout = async () => {
+    try{
+      await signOut(auth);
+    }catch(error){
+      console.log(error)
+    }
+  }
 
+  const countTotalQuantity = () =>{
+      const totalQuantity = shoppingCartItems.reduce((accumulator, currentValue) => {
+      const quantity = currentValue.quantity;
+      return accumulator + quantity
+    },
+    0)
+    return totalQuantity
+  }
 
 
   return (
@@ -104,6 +143,14 @@ const Navbar = () => {
 
       <div>
         <p>Hello, {name}!</p>
+        
+        <CartButton>
+          <div>{countTotalQuantity()}</div>
+
+          <button onClick={() => shoppingCart ? setShoppingCart(false) : setShoppingCart(true)} />
+
+        </CartButton>
+        
         <button onClick={()=> dropdownMenu ? setDropdownMenu(false) : setDropdownMenu(true)}>MORE</button>
       </div>   
     </Nav>
@@ -114,6 +161,7 @@ const Navbar = () => {
         </ul>
         <button onClick={logout}>Log out</button>
       </DropdownMenu>}
+      {shoppingCart && <ShoppingCart setShoppingCart={setShoppingCart} />}
     </>
   
   )

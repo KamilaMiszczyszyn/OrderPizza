@@ -5,14 +5,17 @@ import { BrowserRouter} from "react-router-dom";
 import { AuthProvider } from './context/AuthContext.tsx';
 import { ThemeProvider } from 'styled-components';
 import theme from './styles/Theme.ts';
+import {ShoppingCartProvider} from "./context/ShoppingCartContext.tsx"
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <AuthProvider>
       <ThemeProvider theme={theme}>
-        <BrowserRouter>
-        <App />
-      </BrowserRouter> 
+        <ShoppingCartProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </ShoppingCartProvider>         
       </ThemeProvider>  
     </AuthProvider>  
   </React.StrictMode>,

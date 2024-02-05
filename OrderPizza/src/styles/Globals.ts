@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import close from "./../assets/close.png"
 
 const GlobalStyle = createGlobalStyle`
 *,
@@ -50,6 +51,18 @@ button{
 
 button:hover{
     opacity: 0.8;
+}
+
+button.close{
+    background-image: url(${close});
+    background-size: cover;
+    background-color: transparent;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 `
 

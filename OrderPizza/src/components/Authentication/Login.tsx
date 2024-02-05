@@ -4,7 +4,11 @@ import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import { signInWithEmailAndPassword } from '@firebase/auth'
 import {auth} from "./../../firebase/firebase"
+import styled from 'styled-components';
 
+const Container = styled.div`
+    width: 400px;
+`
 
 const Login = () => {
   const navigate=useNavigate();
@@ -37,8 +41,8 @@ const Login = () => {
   )
 
   return (
-    <>
-    <form onSubmit={formik.handleSubmit}>
+    <Container>
+      <form onSubmit={formik.handleSubmit}>
 
       <label htmlFor="email">Email</label>
       <input id="email" type="text" name="email" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.email}/>
@@ -51,7 +55,9 @@ const Login = () => {
       <button type="submit">Log in</button>        
     </form>
     <p>You do not have an account yet?<Link to="/register"> Register now!</Link></p>
-    </>
+
+    </Container>
+    
   )
 }
 

@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import leafImg from "./../assets/leaf.png";
 import cart from "./../assets/cart.png"
-
+import { useContext } from "react";
+import {ShoppingCartContext} from "./../context/ShoppingCartContext"
 
 type Pizza = {
     title: string;
@@ -16,6 +17,12 @@ type Drink = {
     title: string;
     price: number;
     productID: number;
+}
+
+type ShoppingCartItem = {
+    productID: number, 
+    quantity: number,
+
 }
 
 
@@ -74,8 +81,6 @@ const menuDrinks: Array<Drink> = [
      productID: 204 },
 ]
 
-
-
 const Container = styled.div`
     max-width: 700px;
     margin-bottom: 100px;
@@ -111,6 +116,7 @@ const PizzaContainer = styled.div`
         column-gap: 10px;
         justify-content: flex-end;
         align-items: center;
+        margin-right: 20px;
     };
 
     >img{
@@ -147,11 +153,47 @@ const CartButton=styled.button`
     width: 20px;
     height: 20px;
     cursor: pointer;
+    padding: 0px;
 `
 
 
 const Menu = () => {
+    const {shoppingCartItems, setShoppingCartItems} = useContext(ShoppingCartContext)
+  
+    const addToCart = (id: number) =>{
 
+    let editedShoppingCart =[]
+
+    if(shoppingCartItems.length !== 0){
+        editedShoppingCart = shoppingCartItems.map((elem: ShoppingCartItem ) => {
+            if(elem.productID == id){
+                return {
+                    productID: id,
+                    quantity: elem.quantity + 1,
+                }
+            }else{return elem}
+            
+        })
+
+        if(!editedShoppingCart.some((elem: ShoppingCartItem) => elem.productID === id)){
+            editedShoppingCart.push({
+                    productID: id, 
+                    quantity: 1
+                })
+        }
+
+    }else{
+        const cartItem =
+                {productID: id,
+                quantity: 1,
+            }
+
+        editedShoppingCart.push(cartItem)    
+    }
+
+    setShoppingCartItems(editedShoppingCart);
+
+}
 
   return (
     <Container>
@@ -163,7 +205,7 @@ const Menu = () => {
             <h3>{pizza.title}</h3>
             <div className="cart">
                 <p>{pizza.price}{'\u20AC'}</p>
-                <CartButton/>
+                <CartButton onClick={() => addToCart(pizza.productID)}/>
             </div>
             <img src={pizza.img}/>
             <div className="ingredients">
@@ -179,7 +221,7 @@ const Menu = () => {
             <h3>{drink.title}</h3>
             <div className="cart">
                 <p>{drink.price}{'\u20AC'}</p>
-                <CartButton/>
+                <CartButton onClick={() => addToCart(drink.productID)}/>
             </div>
             
 

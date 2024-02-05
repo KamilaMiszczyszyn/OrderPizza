@@ -5,6 +5,11 @@ import {createUserWithEmailAndPassword, signOut} from 'firebase/auth'
 import {setDoc, doc} from 'firebase/firestore'
 import {auth, db} from "./../../firebase/firebase"
 import { toast } from 'react-toastify';
+import styled from 'styled-components';
+
+ const Container = styled.div`
+    width: 400px;
+`
 
 const Register = () => {
   const navigate = useNavigate();
@@ -59,32 +64,32 @@ const Register = () => {
   )
 
   return (
-    <>
-    <form onSubmit={formik.handleSubmit}>
-      <label htmlFor="firstName">Name</label>
-      <input id="firstName" type="text" name="firstName" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.firstName}/>
-      {formik.touched.firstName && formik.errors.firstName ? <p>{formik.errors.firstName}</p> : null}
+    <Container>
+      <form onSubmit={formik.handleSubmit}>
+        <label htmlFor="firstName">Name</label>
+        <input id="firstName" type="text" name="firstName" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.firstName}/>
+        {formik.touched.firstName && formik.errors.firstName ? <p>{formik.errors.firstName}</p> : null}
 
-      <label htmlFor="lastName">Lastname</label>
-      <input id="lastName" type="text" name="lastName" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.lastName}/>
-      {formik.touched.lastName && formik.errors.lastName ? <p>{formik.errors.lastName}</p> : null}
+        <label htmlFor="lastName">Lastname</label>
+        <input id="lastName" type="text" name="lastName" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.lastName}/>
+        {formik.touched.lastName && formik.errors.lastName ? <p>{formik.errors.lastName}</p> : null}
 
-      <label htmlFor="email">Email</label>
-      <input id="email" type="text" name="email" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.email}/>
-      {formik.touched.email && formik.errors.email ? <p>{formik.errors.email}</p> : null}
+        <label htmlFor="email">Email</label>
+        <input id="email" type="text" name="email" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.email}/>
+        {formik.touched.email && formik.errors.email ? <p>{formik.errors.email}</p> : null}
 
-      <label htmlFor="password">Password</label>
-      <input id="password" type="password" name="password" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.password}/>
-      {formik.touched.password && formik.errors.password ? <p>{formik.errors.password}</p> : null}
+        <label htmlFor="password">Password</label>
+        <input id="password" type="password" name="password" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.password}/>
+        {formik.touched.password && formik.errors.password ? <p>{formik.errors.password}</p> : null}
 
-      <label htmlFor="confirmPassword">Confirm Password</label>
-      <input id="confirmPassword" type="password" name="confirmPassword" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.confirmPassword}/>
-      {formik.touched.confirmPassword && formik.errors.confirmPassword ? <p>{formik.errors.confirmPassword}</p> : null}
+        <label htmlFor="confirmPassword">Confirm Password</label>
+        <input id="confirmPassword" type="password" name="confirmPassword" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.confirmPassword}/>
+        {formik.touched.confirmPassword && formik.errors.confirmPassword ? <p>{formik.errors.confirmPassword}</p> : null}
 
-      <button type="submit">Sign up</button>        
-    </form>
-    <Link to="/login">Cancel</Link>
-    </>
+        <button type="submit">Sign up</button>        
+      </form>
+      <Link to="/login">Cancel</Link>
+    </Container>
   )
 }
 
