@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom"
+import { NavLink, Link } from "react-router-dom"
 import { useState, useEffect, useContext } from "react"
 import {auth} from "./../firebase/firebase"
 import { signOut } from "firebase/auth"
@@ -19,6 +19,7 @@ const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
   padding: 0 20px;
+  position: relative;
   
 
   div {
@@ -47,9 +48,29 @@ const StyledNavLink = styled(NavLink)`
 `
 
 const DropdownMenu = styled.div`
-  position: relative;
-  top: 0;
-  left:0;
+  position: absolute;
+  top: 60px;
+  right:10px;
+  box-shadow: ${props=> props.theme.shadow};
+  width: 300px;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+
+  ul{
+    width: 100%;
+  }
+
+  li {
+    border-bottom: 1px solid ${props=> props.theme.colors.black};
+    padding: 10px 0;
+    
+  }
+
+  button {
+    width: 100%;
+  }
 `
 
 
@@ -153,14 +174,15 @@ const Navbar = () => {
         
         <button onClick={()=> dropdownMenu ? setDropdownMenu(false) : setDropdownMenu(true)}>MORE</button>
       </div>   
-    </Nav>
-    {dropdownMenu && 
+      {dropdownMenu && 
       <DropdownMenu> 
         <ul>
-          
+          <li><Link to="/personal-data">Personal data</Link></li>
         </ul>
         <button onClick={logout}>Log out</button>
       </DropdownMenu>}
+    </Nav>
+    
       {shoppingCart && <ShoppingCart setShoppingCart={setShoppingCart} />}
     </>
   

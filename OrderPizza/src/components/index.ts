@@ -8,5 +8,8 @@ import Home from "./Home"
 import Menu from "./Menu"
 import PersonalData from "./PersonalData"
 import ShoppingCart from "./ShoppingCart"
+import OrderSummary from "./OrderSummary"
+import Orders from "./Orders"
+import OrderManagement from"./OrderManagement"
 
-export {Login, Register, ForgotPassword, Layout, Navbar, Footer, Home, Menu, PersonalData, ShoppingCart}
+export {Login, Register, ForgotPassword, Layout, Navbar, Footer, Home, Menu, PersonalData, ShoppingCart, OrderSummary, Orders, OrderManagement}

@@ -3,6 +3,7 @@ import { useContext } from "react"
 import plus from "./../assets/plus.png"
 import minus from "./../assets/minus.png"
 import {ShoppingCartContext} from "./../context/ShoppingCartContext"
+import {useNavigate} from "react-router-dom"
 
 type ShoppingCartItem = {
     productID: number, 
@@ -118,6 +119,7 @@ const ButtonQuantity = styled.button<{$plus?: boolean}>`
 
 const ShoppingCart = ({setShoppingCart}) => {
   const {shoppingCartItems, setShoppingCartItems} = useContext(ShoppingCartContext)
+  const navigate = useNavigate()
   
 
 
@@ -188,6 +190,7 @@ const ShoppingCart = ({setShoppingCart}) => {
       <SummaryContainer>
         <p>Total price: <span>{countTotalPrice()}</span> {'\u20AC'}</p>
       </SummaryContainer>
+      {shoppingCartItems.length !== 0 && <button onClick={()=>{navigate("/order-summary"); setShoppingCart(false)}}>Order summary</button>}
       </Container>
 
     </DarkContainer>

@@ -1,8 +1,9 @@
 import { Routes, Route } from "react-router-dom";
-import { Layout, Login, Register, ForgotPassword, Home, Menu, PersonalData } from "./components";
+import { Layout, Login, Register, ForgotPassword, Home, Menu, PersonalData, OrderSummary, Orders, OrderManagement } from "./components";
 import {ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import GlobalStyle from './styles/Globals.ts';
+
 
 
 
@@ -23,6 +24,9 @@ function App() {
 
             {/* Private routes */}
             <Route path="/personal-data" element={<PersonalData/>} />
+            <Route path="/order-summary" element={<OrderSummary/>} />
+            <Route path="/orders" element={<Orders/>} />
+            <Route path="/OrderManagement" element={<OrderManagement/>}/>
 
 
           </Route>
