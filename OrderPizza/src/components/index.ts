@@ -10,6 +10,16 @@ import PersonalData from "./PersonalData"
 import ShoppingCart from "./ShoppingCart"
 import OrderSummary from "./OrderSummary"
 import Orders from "./Orders"
-import OrderManagement from"./OrderManagement"
+import OrdersManagement from"./OrdersManagement"
 
-export {Login, Register, ForgotPassword, Layout, Navbar, Footer, Home, Menu, PersonalData, ShoppingCart, OrderSummary, Orders, OrderManagement}
+import PageHeader from "./common/PageHeader"
+import SectionHeader from "./common/SectionHeader"
+import MenuItemPizza from "./common/MenuItemPizza"
+import Button from "./common/Button"
+import MenuItemDrink from "./common/MenuItemDrink"
+import SectionContainer from "./common/SectionContainer"
+import PageContainer from "./common/PageContainer"
+import ReviewMain from "./common/ReviewMain"
+import ReviewsSection from "./layout/ReviewsSection"
+
+export {Login, Register, ForgotPassword, Layout, Navbar, Footer, Home, Menu, PersonalData, ShoppingCart, OrderSummary, Orders, OrdersManagement, PageHeader, SectionHeader, MenuItemPizza, Button, MenuItemDrink, SectionContainer, PageContainer, ReviewMain, ReviewsSection}

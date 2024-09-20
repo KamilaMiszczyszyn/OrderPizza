@@ -30,7 +30,7 @@ const Nav = styled.nav`
   }
 `
 
-const BrandName = styled.h1`
+const Logo = styled.h1`
   color: ${props=> props.theme.colors.white};
 `
 
@@ -154,7 +154,7 @@ const Navbar = () => {
     <>
     <Nav>
       <div >
-        <BrandName>OrderPizza</BrandName>
+        <Logo>OrderPizza</Logo>
           <NavList>
             <li><StyledNavLink to='/menu'>Menu</StyledNavLink></li>
             <li><StyledNavLink to='/'>Promotions</StyledNavLink></li>

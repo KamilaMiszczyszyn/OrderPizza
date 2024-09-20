@@ -1,0 +1,63 @@
+{
+    "pizzas": [
+        {"name": "Margherita",
+        "ingredients": ["tomato sauce", "mozzarella cheese", "basil"],
+        "vegan": true,
+        "price": 10,
+        "productID": 101,
+        "img": "./assets/pizza/101.png"},
+        {"name": "Capricciosa",
+        "ingredients": ["tomato sauce", "mozzarella cheese", "mushrooms", "ham", "basil"],
+        "vegan": false,
+        "price": 12,
+        "productID": 102,
+        "img": "./assets/pizza/102.png"},
+        {"name": "Tomato",
+        "ingredients": ["cheese sauce", "mozzarella cheese", "cherry tomatoes"],
+        "vegan": true,
+        "price": 12,
+        "productID": 103,
+        "img": "./assets/pizza/103.png"},
+        {"name": "Mushroom",
+        "ingredients": ["tomato sauce", "mozzarella cheese", "mushrooms", "rocket" ],
+        "vegan": true,
+        "price": 12,
+        "productID": 104,
+        "img": "./assets/pizza/104.png"},
+        {"name": "Hawaiian",
+        "ingredients": ["tomato sauce", "mozzarella cheese", "cherry tomatoes", "mushrooms", "olives", "pineapple", "corn", "chorizo"],
+        "vegan": false,
+        "price": 15,
+        "productID": 105,
+        "img": "./assets/pizza/105.png"},
+        {"name": "Pepperoni",
+        "ingredients": ["tomato sauce", "mozzarella cheese", "pepperoni", "rocket"],
+        "vegan": false,
+        "price": 12,
+        "productID": 106,
+        "img": "./assets/pizza/106.png"}
+    ],
+    "drinks": [
+        {"name": "Water",
+        "price": 3,
+        "productID": 201,
+        "img": "./assets/drinks/water.png"
+     },
+        {"name": "Cola",
+        "price": 3,
+        "productID": 202,
+        "img": "./assets/drinks/cola.png"
+     },
+        {"name": "Orange juice",
+        "price": 3,
+        "productID": 203,
+        "img": "./assets/drinks/orange-juice.png"
+     },
+        {"name": "Apple juice",
+        "price": 3,
+        "productID": 204,
+        "img": "./assets/drinks/apple-juice.png"
+     }
+    ]
+}
+

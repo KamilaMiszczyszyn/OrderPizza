@@ -17,7 +17,7 @@ html{
 body{
     font-size: 1.6rem; 
     background-color: ${props=> props.theme.colors.white};
-
+    font-family: "Inter", sans-serif;
 }
 
 label{
