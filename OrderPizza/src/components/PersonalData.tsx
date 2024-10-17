@@ -5,6 +5,7 @@ import {db} from "./../firebase/firebase"
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
+import {Input, PageContainer, SectionContainer, Button} from "./index"
 
 type UserData = {
   firstName?: string,
@@ -14,29 +15,63 @@ type UserData = {
   address?: string,
 }
 
+const FormGeneral = styled.form`
+  width: 577px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 32px;
+  
+  div.inputs{
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap:24px;
+    row-gap: 24px;
+    
+  }
 
-const Container = styled.div`
-    width: 400px;
-    margin-bottom: 100px;
+  div.formFooter{
+    display: flex;
+    justify-content: flex-end;
+  }
+ 
 `
 
-const H1 = styled.h1`
-    margin: 100px 0 20px 0; 
-    color: ${props=> props.theme.colors.primary};
-    font-size: 3.2rem;
+const AddressContainer = styled.div`
+  display: flex;
+  column-gap: 16px;
+  padding: 16px;
+
+  div.number{
+    width: 24px;
+    height: 24px;
+    background-color: ${props=> props.theme.colors.primary[500]};
+    font-weight: bold;
+    color: ${props=> props.theme.colors.neutral[50]};
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`
+
+const FormAddress = styled.form`
+  display: flex;
+  column-gap: 16px;
+  justify-content: baseline;
+  padding: 16px;
+ 
 `
 
 const PersonalData = () => {
     const currentUser = useContext(AuthContext)
     const [userData, setUserData] = useState<UserData | null>(null)
 
-    const formik = useFormik({
+    const formikGeneral = useFormik({
     initialValues: {
       firstName: userData?.firstName || "",
       lastName:  userData?.lastName || "", 
       email:  userData?.email || "",
       phone: userData?.phone || "",
-      address: userData?.address || "",
     },
 
     enableReinitialize: true,
@@ -47,7 +82,6 @@ const PersonalData = () => {
         lastName: Yup.string().required("Required"),
         email: Yup.string().email("Invalid Email").required("Required"),
         phone: Yup.string().required("Required"),
-        address: Yup.string().required("Required"),
     }),
 
     onSubmit:  async (values) => {
@@ -55,21 +89,59 @@ const PersonalData = () => {
       const firstName = values.firstName;
       const lastName = values.lastName;
       const email = values.email;
-      const phone = values.email;
-      const address = values.address;
+      const phone = values.phone;
 
       const user={
               firstName,
               lastName,
               email, 
-              phone,
-              address,         
+              phone,        
       }
 
       if(currentUser){
         try{
           const docRef = doc(db, "users", currentUser);
-          await updateDoc(docRef, user)
+          await updateDoc(docRef, user);
+          setUserData(user);
+        }catch(error){
+          console.log(error)
+        }
+
+      }
+    } 
+    }
+  )
+
+  const formikAddress = useFormik({
+    initialValues: {
+      address:  "",
+    },
+
+    enableReinitialize: true,
+
+    validationSchema: Yup.object(
+      {
+        address: Yup.string().matches(/\d+/, 'Address must contain a house number'),
+    }),
+
+    onSubmit:  async (value) => {
+     
+      const address = value.address;
+
+      const addressID = (userData?.addressesList?.length || 0) + 1;
+      const newAddressesList = [...(userData?.addressesList || []), { addressID, address }];
+
+      const user={
+              ...userData,
+              addressesList: newAddressesList,
+      }
+
+      if(currentUser){
+        try{
+          const docRef = doc(db, "users", currentUser);
+          await updateDoc(docRef, user);
+          formikAddress.resetForm(); 
+          setUserData(user);
         }catch(error){
           console.log(error)
         }
@@ -100,39 +172,100 @@ const PersonalData = () => {
 
   }, [currentUser])
 
+
   return (
-    
-        
-        <Container>
-        <H1>Personal data</H1>
-        <form onSubmit={formik.handleSubmit}>
-            <label htmlFor="firstName">Name</label>
-            <input id="firstName" type="text" name="firstName" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.firstName}/>
-            {formik.touched.firstName && formik.errors.firstName ? <p>{formik.errors.firstName}</p> : null}
 
-            <label htmlFor="lastName">Lastname</label>
-            <input id="lastName" type="text" name="lastName" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.lastName}/>
-            {formik.touched.lastName && formik.errors.lastName ? <p>{formik.errors.lastName}</p> : null}
+    <PageContainer title="Personal data">
+      <SectionContainer title="General">
+        <FormGeneral onSubmit={formikGeneral.handleSubmit}>
+          <div className="inputs">
+          <Input
+            label="First name" 
+            id="firstName" 
+            type="text" 
+            name="firstName" 
+            onBlur={formikGeneral.handleBlur} 
+            onChange={formikGeneral.handleChange} 
+            value={formikGeneral.values.firstName}
+            touched={formikGeneral.touched.firstName}
+            error={formikGeneral.errors.firstName}
+          />
 
-            <label htmlFor="email">Email</label>
-            <input id="email" type="text" name="email" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.email}/>
-            {formik.touched.email && formik.errors.email ? <p>{formik.errors.email}</p> : null}
+          <Input 
+            label="Last name"
+            id="lastName" 
+            type="text" 
+            name="lastName" 
+            onBlur={formikGeneral.handleBlur} 
+            onChange={formikGeneral.handleChange} 
+            value={formikGeneral.values.lastName}
+            touched={formikGeneral.touched.lastName}
+            error={formikGeneral.errors.lastName}
+          />
 
-            <label htmlFor="phone">Phone number</label>
-            <input id="phone" type="string" name="phone" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.phone}/>
-            {formik.touched.phone && formik.errors.phone ? <p>{formik.errors.phone}</p> : null}
+          <Input 
+            label="Phone number" 
+            id="phone" 
+            type="string" 
+            name="phone" 
+            onBlur={formikGeneral.handleBlur} 
+            onChange={formikGeneral.handleChange} 
+            value={formikGeneral.values.phone}
+            touched={formikGeneral.touched.phone}
+            error={formikGeneral.errors.phone}
+            />
 
-            <label htmlFor="address">Address</label>
-            <input id="address" type="text" name="address" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.address}/>
-            {formik.touched.address && formik.errors.address ? <p>{formik.errors.address}</p> : null}
+          <Input 
+            label="E-mail"
+            id="email"
+            type="text"
+            name="email" 
+            onBlur={formikGeneral.handleBlur} 
+            onChange={formikGeneral.handleChange} 
+            value={formikGeneral.values.email}
+            touched={formikGeneral.touched.email}
+            error={formikGeneral.errors.email}
+            />
 
-            <button type="submit">Save</button>        
-        </form>
+            </div>
+            <div className="formFooter">
+              <Button type="submit">Save</Button> 
+            </div>
+
+                 
+        </FormGeneral>
+
+      </SectionContainer>
+
+      <SectionContainer title="Delivery address">
+        <></>
+
+        {userData?.addressesList?.map((address) => 
+          <AddressContainer key={address.addressID}>
+            <div className="number">{address.addressID}</div>
+            <p>{address.address}</p>
+          </AddressContainer>
+        )}
+
+        {userData?.addressesList?.length<3 && <FormAddress onSubmit={formikAddress.handleSubmit}>
+          <Input
+            type="text"
+            name="address" 
+            onBlur={formikAddress.handleBlur} 
+            onChange={formikAddress.handleChange} 
+            value={formikAddress.values.address}
+            touched={formikAddress.touched.address}
+            error={formikAddress.errors.address}
+          />
+          <Button type="submit">Add address</Button> 
+
+        </FormAddress>}
 
 
-        </Container>
-        
-  
+
+      </SectionContainer>
+
+    </PageContainer> 
   )
 }
 

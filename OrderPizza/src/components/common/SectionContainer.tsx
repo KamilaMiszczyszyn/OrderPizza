@@ -1,19 +1,24 @@
 import styled from "styled-components"
 import SectionHeader from "./SectionHeader"
 
+interface ComponentProps {
+  title?: string;
+  children?: React.ReactNode; 
+}
+
 const Container = styled.section`
     padding: 24px;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; 
     row-gap: 32px;
     
 `
 
-const SectionContainer = ({title, children}) => {
+const SectionContainer = ({title, children}: ComponentProps) => {
   return (
     <Container>
-        <SectionHeader>{title}</SectionHeader>
-        <div>{children}</div>
+        {title && <SectionHeader>{title}</SectionHeader>}
+        {children}
     </Container>
   )
 }

@@ -1,13 +1,25 @@
-import { useFormik } from 'formik'
-import * as Yup from 'yup';
 import {db} from "./../firebase/firebase"
-import { doc, getDoc, addDoc, updateDoc, collection, Timestamp } from "firebase/firestore";
-import { useContext, useEffect, useState } from "react";
+import { doc, getDoc, addDoc, collection, Timestamp } from "firebase/firestore";
+import { useContext, useEffect, useState, useReducer } from "react";
 import { AuthContext } from "../context/AuthContext";
 import styled from 'styled-components';
 import {ShoppingCartContext} from "./../context/ShoppingCartContext"
 import { toast } from 'react-toastify';
 import { useNavigate} from 'react-router-dom';
+import {PageContainer, SectionContainer, Button, Input, SectionHeader} from "./index"
+import useShoppingCartQuantity from '../hooks/useShoppingCartQuantity';
+import getMenuItem from '../utils/getMenuItem';
+import iconAdd from "./../assets/add-white.svg"
+import iconMinus from "./../assets/minus-white.svg"
+import iconPin from "./../assets/pin-red.svg"
+import iconEdit from "./../assets/edit-white.svg"
+import iconPayPal from "./../assets/PayPal.png"
+import iconMastercard from "./../assets/mastercard.png"
+import iconVisa from "./../assets/visa.png"
+import subtotalPrice from "../utils/subtotalPrice";
+
+import { useFormik } from 'formik'
+import * as Yup from 'yup';
 
 type UserData = {
   firstName?: string,
@@ -17,138 +29,244 @@ type UserData = {
   address?: string,
 }
 
-type MenuItems = {
-    title: string;
-    price: number;
-    productID: number;
+const StepContainer= styled.div<{ $active?: boolean; }>`
+  display: flex;
+  column-gap: 24px;
+  margin-bottom: 56px;
+
+  >div.step-details{
+    border-radius: 10px;
+    border: ${props => props.$active ? "none" : `1px solid ${props.theme.colors.neutral[200]}`};
+    flex: 1;
+  }
+`
+
+const StepNumber= styled.div<{ $active?: boolean; }>`
+    background-color: ${props=> props.$active ? props.theme.colors.primary[500] : props.theme.colors.neutral[100] };
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: ${props=> props.$active ? props.theme.colors.neutral[50] : props.theme.colors.neutral[700] };
+    font-size: 24px;
+    margin-top: 16px;
+`
+
+const ShoppingCartItemContainer = styled.div`
+display: flex;
+justify-content: space-between;
+padding: 16px 24px;
+
+
+div.name{
+  display: flex;
+  column-gap: 16px;
+  align-items: center;
+
+  div{
+    width: 80px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+  }
+  img {
+  height: 45px;
+  
 }
 
-const menuItems: Array<MenuItems> = [
-    {title: "Margherita",
-    price: 10,
-    productID: 101,},
-    {title: "Capricciosa",
-    price: 12,
-    productID: 102,},
-    {title: "Tomato",
-    price: 12,
-    productID: 103,},
-    {title: "Mushroom",
-    price: 12,
-    productID: 104,},
-    {title: "Hawaiian",  
-    price: 15,
-    productID: 105,},
-    {title: "Pepperoni",  
-    price: 12,
-    productID: 106,},
-    {title: "Water",
-     price: 3,
-     productID: 201},
-    {title: "Cola",
-     price: 3,
-     productID: 202},
-    {title: "Orange juice",
-     price: 3,
-     productID: 203 },
-    {title: "Apple juice",
-     price: 3,
-     productID: 204},
-]
+}
+div.price{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 140px;
+
+  & > p {
+  margin-left: auto; 
+}
+
+  
+}
+
+div.quantity{
+  display: flex;
+  align-items: center;
+  width: 80px;
+  justify-content: space-between;
+
+}
 
 
-
-const Container = styled.div`
-    width: 700px;
-    margin-bottom: 100px;
+  
+`
+const ShoppingCartItems=styled.div<{ $active?: boolean; }>`
+border-bottom: ${props => props.$active ? `1px solid ${props.theme.colors.neutral[200]}` : "none"};
 `
 
-const H1 = styled.h1`
-    margin: 100px 0 20px 0; 
-    color: ${props=> props.theme.colors.primary};
-    font-size: 3.2rem;
+const PriceSummary=styled.div`
+
+div.subtotal-price, div.delivery-price, div.total-price{
+  display: flex;
+  justify-content: flex-end;
+  column-gap: 16px;
+  padding: 0 24px;
+
+  p:nth-child(2){
+    width: 80px;
+    text-align: end;
+  }
+
+}
+
+div.total-price{
+
+}
 `
 
-const H2 = styled.h2`
-    color: ${props=> props.theme.colors.primary};
-    border-bottom: 1px solid ${props=> props.theme.colors.black}
-`
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  
 
-const Table = styled.table`
- width: 100%;
- margin: 20px 0;
+  input{
+    width: auto;
+  }
 
- tr{
-    text-align: center;
+  label{
+    margin:0;
     
- }
- th {
-    font-size: 1.8rem;
-    padding: 10px;
- }
+  }
+`
 
- td{
-    padding: 10px;
- }
+const InputRadio= styled.div`
+  display: flex;
+  column-gap: 16px;
+  padding: 16px;
+  align-items: center;
+  height: 75px;
 
- th:first-child{
-    text-align: left;
- }
+  input:checked InputRadio{
+    border: 1px solid ${props => props.theme.colors.neutral[200]};
 
- tr td:first-child{
-    text-align: left;
- }
+  }
+
+  div.cardLogo{
+    display: flex;
+    column-gap: 16px;
+
+  }
+`
+const SectionFooter=styled.div`
+  display: flex;
+  justify-content: flex-end;
+
+
+`
+  
+  
+
+
+
+const PageFooter = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  column-gap: 16px;
+
 
 `
 
-const TotalPrice = styled.p`
-    border-top: 1px solid ${props=> props.theme.colors.black};
-    text-align: right;
-
+const HeaderEdit=styled.div`
+  display: flex;
+  justify-content: space-between;
 `
+
+type ReducerState = {
+  step1: boolean;
+  step2: "true" | "false" | "disabled";
+  step3: "true" | "false" | "disabled";
+};
+
+type ActionReducer = {
+  type: string;
+  payload?: string;
+};
+
+const initialState = {
+  step1: "true",
+  step2: "disabled",
+  step3: "disabled",
+
+};
+
+const reducer = (state: ReducerState, action: ActionReducer) => {
+  switch (action.type) {
+    case "TOGGLE_STEP1":
+      return { ...state, step1: !state.step1 };
+
+    case "SET_STEP2":
+      return { ...state, step2: action.payload }; 
+
+    case "SET_STEP3":
+      return { ...state, step3: action.payload }; 
+
+    default:
+      return state;
+  }
+};
+
 
 const OrderSummary = () => {
     const currentUser = useContext(AuthContext)
     const [userData, setUserData] = useState<UserData | null>(null)
+    const [activeButtonPayment, setActiveButtonPayment] = useState<boolean>(false)
     const {shoppingCartItems, setShoppingCartItems} = useContext(ShoppingCartContext);
     const navigate = useNavigate();
 
-    const formik = useFormik({
+    const changeQuantity=useShoppingCartQuantity()
+
+    const [state, dispatch] = useReducer(reducer, initialState);
+
+    const [order, setOrder] = useState({})
+
+     const formik = useFormik({
     initialValues: {
-      phone: userData?.phone || "",
-      address: userData?.address || "",
+      option: '',  // wartość początkowa dla radio
+      customAddress: '',  // wartość początkowa dla input text
     },
-
-    enableReinitialize: true,
-
-    validationSchema: Yup.object(
-      {
-        phone: Yup.string().required("Required"),
-        address: Yup.string().required("Required"),
+    validationSchema: Yup.object({
+      option: Yup.string().required('Wybór opcji jest wymagany'),
+      customAddress: Yup.string().when('option', {
+        is: 'custom', // Używamy prostego warunku sprawdzającego, czy opcja to 'custom'
+        then: (schema) => schema
+          .required('Adres zamieszkania jest wymagany')  // Wymagane, jeśli wybrano 'custom'
+          .matches(/\d+/, 'Address must contain a house number'),  // Walidacja, że musi być liczba
+        otherwise: (schema) => schema.notRequired(),  // W innych przypadkach nie jest wymagane
+      }),
     }),
 
-    onSubmit:  async (values) => {
-    
-      const phone = values.phone;
-      const address = values.address;
+    onSubmit: (values) => {
 
-      const user={ 
-              phone,
-              address,         
+      const deliveryAddress= formik.values.option === "custom" ? formik.values.customAddress : formik.values.option
+
+      const updateOrder = {
+        ...order,
+        deliveryAddress: deliveryAddress,  
       }
 
-      if(currentUser){
-        try{
-          const docRef = doc(db, "users", currentUser);
-          await updateDoc(docRef, user)
-        }catch(error){
-          console.log(error)
-        }
+      console.log(updateOrder)
+      dispatch({ type: "SET_STEP2", payload: "false" });
 
-      }
-    } 
-    }
-  )
+       if(state.step3 === "disabled"){
+        dispatch({ type: "SET_STEP3", payload: "true" });
+      } 
+
+      setOrder(updateOrder)
+      },
+  });
 
   useEffect(() => {
     const getPersonalData= async(user: string | null)=>{
@@ -171,9 +289,7 @@ const OrderSummary = () => {
 
   }, [currentUser])
 
-    const getMenuItem = (id: number) => {
-    return menuItems.find((item) => item.productID === id)
-  }
+
 
   const countPrice = (price: number | undefined, quantity: number | undefined) => {
     if(price && quantity){
@@ -182,39 +298,22 @@ const OrderSummary = () => {
     
   }
 
-  const countTotalPrice = () =>{
-    let total = 0
-      total = shoppingCartItems.reduce((accumulator, currentValue) => {
-      const quantity = currentValue.quantity;
-      const filteredMenuItems = menuItems.find((elem) => elem.productID === currentValue.productID)
-      const price = filteredMenuItems?.price;
-      let value
-      if(price && quantity){
-         value = quantity * price
-       }else{value=0}  
-      return accumulator + value
-    },
-    0)
 
-    return total
+  const createOrder = async(order) =>{
 
-  }
-
-  const createOrder = async() =>{
-
-    const order = {
+    const orderData = {
         products: shoppingCartItems,
         customerID: currentUser,
-        deliveryAddress: formik.values.address,
-        phone: formik.values.phone,
+        deliveryAddress: order.deliveryAddress,
         date: Timestamp.fromDate(new Date()),
         status: "ordered", 
-        price: countTotalPrice(),
+        price: order.totalPrice,
+        paymentMethod: order.paymentMethod,
     }
 
 
      try{
-        await addDoc(collection(db, "orders"), order);
+        await addDoc(collection(db, "orders"), orderData);
         setShoppingCartItems([])
         navigate("/")
 
@@ -227,53 +326,334 @@ const OrderSummary = () => {
 
 
   return (
-    <Container>
-        <H1>Order summary</H1>
-        <H2>Personal information</H2>
-        <p>If you want to change personal infromation go to settings</p>
-        <p>First name</p>
-        <p>{userData?.firstName}</p>  
-        <p>Last name</p>
-        <p>{userData?.lastName}</p>     
-        <p>Email</p>
-        <p>{userData?.email}</p>    
 
-        <H2>Delivery information</H2>
+      <PageContainer title="Order summary">
 
-        <form onSubmit={formik.handleSubmit}>
-            <label htmlFor="phone">Phone number</label>
-            <input id="phone" type="string" name="phone" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.phone}/>
-            {formik.touched.phone && formik.errors.phone ? <p>{formik.errors.phone}</p> : null}
+{/* STEP 1 */}
+      {state.step1 &&
+      <StepContainer $active>
+        <StepNumber $active>1</StepNumber>
+        <div className="step-details">
+          <SectionContainer title="Shopping Cart">
+          <ShoppingCartItems $active>
+            {shoppingCartItems.map((item =>
+             <ShoppingCartItemContainer  key={item.productID}>
+              
+              <div className="name">
+                  <div>
+                    <img 
+                    src={getMenuItem(item.productID)?.img ? getMenuItem(item.productID)?.img : iconAdd} 
+                    alt={getMenuItem(item.productID)?.title} 
+                  />
+                </div>
+                <p>{getMenuItem(item.productID)?.name}</p>
+              </div>
+              <div className="price">
+                <div className="quantity">
+                <Button buttonType="icon" iconLeft={iconMinus} onClick={()=>changeQuantity(item, "decrement")}/>
+                <p>{item.quantity}</p>
+                <Button buttonType="icon" iconLeft={iconAdd} onClick={()=>changeQuantity(item, "increment")}/> 
+                </div>
+                <p>{countPrice(getMenuItem(item.productID)?.price, item.quantity)}{'\u20AC'}</p>
 
-            <label htmlFor="address">Address</label>
-            <input id="address" type="text" name="address" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.address}/>
-            {formik.touched.address && formik.errors.address ? <p>{formik.errors.address}</p> : null}
+              </div>
+              
+             </ShoppingCartItemContainer>
+            ))}
+          </ShoppingCartItems>
+          <PriceSummary>
+            <div className="subtotal-price">
+              <p>Subtotal price:</p>
+              <p>{subtotalPrice(shoppingCartItems)} {'\u20AC'}</p>
 
-            <button type="submit">Save delivery information in your profile </button>        
-        </form>
+            </div>
+            <div className="delivery-price">
+              <p>Delivery:</p>
+              <p>0 {'\u20AC'}</p>
+              
+            </div>
+            <div className="total-price">
+              <p>Total price:</p>
+              <p>{subtotalPrice(shoppingCartItems)} {'\u20AC'}</p>
+              
+            </div>
 
-        <H2>Shopping Cart</H2>
+          </PriceSummary>
+          <SectionFooter>
+            <Button buttonType="primary" onClick={() => {
+              dispatch({ type: "TOGGLE_STEP1" });
 
-        <Table>
-            <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
-            </tr>
-            {shoppingCartItems.map((item) =>
-                <tr key={item.productID}>
-                    <td>{getMenuItem(item.productID)?.title}</td>
-                    <td>{getMenuItem(item.productID)?.price}{'\u20AC'}</td>
-                    <td>{item.quantity}</td>
-                    <td>{countPrice(getMenuItem(item.productID)?.price, item.quantity)}{'\u20AC'}</td>
-                </tr>)}
-        </Table>
-        <TotalPrice>Total price: <span>{countTotalPrice()}</span> {'\u20AC'}</TotalPrice>
+              if(state.step2 === "disabled"){
+                dispatch({ type: "SET_STEP2", payload: "true" });
+              } 
+              setOrder({...order, products: shoppingCartItems, totalPrice: subtotalPrice(shoppingCartItems) })
+            }}>Next</Button>
 
-        <button onClick={() => createOrder()}>Order now</button>
+          </SectionFooter>
+          
+          
+        </SectionContainer>
+        </div>
+        
+      </StepContainer>
+      }
 
-        </Container>
+      {!state.step1 &&
+      <StepContainer>
+        <StepNumber>1</StepNumber>
+        <div className="step-details">
+          <SectionContainer>
+            <HeaderEdit>
+              <SectionHeader>Shopping Cart</SectionHeader> 
+              <Button buttonType="icon" iconLeft={iconEdit} onClick={()=> dispatch({ type: "TOGGLE_STEP1" })}/>
+            </HeaderEdit>
+          <ShoppingCartItems>
+            {shoppingCartItems.map((item =>
+             <ShoppingCartItemContainer key={item.productID}>
+              
+              <div className="name">
+                <img 
+                  src={getMenuItem(item.productID)?.img ? getMenuItem(item.productID)?.img : iconAdd} 
+                  alt={getMenuItem(item.productID)?.title} 
+                />
+                <p>{getMenuItem(item.productID)?.name}</p>
+              </div>
+              <div className="price">
+                
+                <p>{countPrice(getMenuItem(item.productID)?.price, item.quantity)}{'\u20AC'}</p>
+
+              </div>
+              
+             </ShoppingCartItemContainer>
+            ))}
+          </ShoppingCartItems>
+          
+        </SectionContainer>
+        </div>
+      </StepContainer>
+      
+      
+      
+      
+      }
+
+{/* STEP 2 */}
+      {state.step2 === "true" &&
+      <StepContainer $active>
+        <StepNumber $active>2</StepNumber>
+        <div className="step-details">
+          <SectionContainer title="Delivery address" >
+          <Form onSubmit={formik.handleSubmit}>
+            {userData?.addressesList?.slice(0, 3).map((address) => (
+              <InputRadio key={address.addressID}>    
+                  <input
+                    type="radio"
+                    id={address.addressID}
+                    name="option"
+                    value={address.address}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    checked={formik.values.option === address.address}
+                  />
+                  <label htmlFor={address.addressID}>{address.address}</label>   
+              </InputRadio>
+            ))}
+      
+ 
+              <InputRadio>
+                <input
+                  type="radio"
+                  name="option"
+                  value="custom"
+                  checked={formik.values.option === 'custom'}
+                  onChange={formik.handleChange}
+                />
+                <label>
+                  <Input
+                    type="text"
+                    name="customAddress"
+                    value={formik.values.customAddress}
+                    onChange={formik.handleChange}
+                    placeholder="Enter new address"
+                    onBlur={formik.handleBlur}
+                    onFocus={() => formik.setFieldValue('option', 'custom')} // Ustawienie wartości opcji
+                    onClick={() => formik.setFieldValue('option', 'custom')} // Ustawienie wartości opcji
+                    touched={formik.touched.customAddress}
+                    error={formik.errors.customAddress}
+                  />
+                </label>
+
+              </InputRadio>
+          
+        {/* {formik.values.option === 'custom' && formik.errors.customAddress ? (
+          <div style={{ color: 'red' }}>{formik.errors.customAddress}</div>
+        ) : null} */}
+   
+
+            {formik.errors.option && (
+              <div style={{ color: 'red' }}>{formik.errors.option}</div>
+            )}
+
+            <SectionFooter>
+
+            {formik.isValid && formik.dirty ? (
+  <Button buttonType="primary" type="submit">Next</Button>
+) : (
+  <Button buttonType="disabled" disabled>Next</Button>
+)}
+            
+            </SectionFooter>
+
+            
+          </Form>
+          
+        </SectionContainer>
+          
+        </div>
+        
+
+      </StepContainer>
+}
+
+{state.step2 === "false" &&
+<StepContainer>
+  <StepNumber>2</StepNumber>
+    <div className="step-details">
+      <SectionContainer>
+        <HeaderEdit>
+          <SectionHeader>Delivery address</SectionHeader> 
+          <Button buttonType="icon" iconLeft={iconEdit} onClick={()=> dispatch({ type: "SET_STEP2", payload: "true" })}/>
+        </HeaderEdit>
+        
+        <div style={{display: "flex", columnGap: "16px", padding: "16px"}}>
+          <img src={iconPin} alt="" />
+          <p>{order.deliveryAddress}</p>  
+    </div>
+
+
+  </SectionContainer>
+      
+    </div>
+  
+
+</StepContainer>
+}
+
+{state.step2 === "disabled" && 
+    <StepContainer>
+      <StepNumber>3</StepNumber>
+      <SectionContainer title="Delivery address">
+      </SectionContainer>
+    </StepContainer>
+
+}
+
+
+
+
+
+
+
+{/* STEP 3 */}
+    {state.step3 === "true" &&
+      <StepContainer $active>
+        <StepNumber $active>3</StepNumber>
+        <div className="step-details">
+          <SectionContainer title="Payment method">
+            <Form onSubmit={(event) => {event.preventDefault(); dispatch({ type: "SET_STEP3", payload: "false" })}}>
+              <InputRadio>
+                <input id="BankTransfer" type="radio" name="option" value="BankTransfer" onChange={() => {
+        setOrder({ ...order, paymentMethod: "BankTransfer" });
+        setActiveButtonPayment(true);
+      }} checked={order?.paymentMethod === "BankTransfer"}/>
+                <label htmlFor="BankTransfer">Bank transfer</label>    
+              </InputRadio>
+                
+              <InputRadio>
+                <input id="PayPal" type="radio" name="option" value="PayPal" onChange={() => {
+        setOrder({ ...order, paymentMethod: "PayPAl" });
+        setActiveButtonPayment(true);
+      }} checked={order?.paymentMethod === "PayPal"}/>
+                <label htmlFor="PayPal">PayPal</label>
+                <img src={iconPayPal} alt=""/>
+              </InputRadio>
+
+              <InputRadio>
+                <input id="CreditDebitCard" type="radio" name="option" value="CreditDebitCard" onChange={() => {
+        setOrder({ ...order, paymentMethod: "CreditDebitCard" });
+        setActiveButtonPayment(true);
+      }} checked={order?.paymentMethod === "CreditDebitCard"} />
+                <label htmlFor="CreditDebitCard">Credit/Debit Card</label>  
+                <div className="cardLogo">
+                  <img src={iconMastercard} alt=""/>
+                  <img src={iconVisa} alt=""/>
+                </div>
+              </InputRadio> 
+                           
+               <SectionFooter>
+                {activeButtonPayment ? 
+                  <Button buttonType="primary" type="submit">Next</Button> :
+                  <Button buttonType="disabled" disabled>Next</Button>
+                }       
+            </SectionFooter>
+            </Form>
+          
+        </SectionContainer>
+
+        </div>
+         
+      </StepContainer>
+    }
+
+      {state.step3 === "false" &&
+
+    <StepContainer>
+      <StepNumber>3</StepNumber>
+      <div className="step-details">
+        <SectionContainer>
+          <HeaderEdit>
+          <SectionHeader>Payment method</SectionHeader> 
+          <Button buttonType="icon" iconLeft={iconEdit} onClick={()=> dispatch({ type: "SET_STEP3", payload: "true" })}/>
+        </HeaderEdit>
+        <div style={{display: "flex", columnGap: "16px", padding: "16px"}}>
+          <p>{order.paymentMethod}</p>
+        {order.paymentMethod === "PayPal" && <img src={iconPayPal} alt=""/> }
+        {order.paymentMethod === "CreditDebitCard" &&
+          <div className="cardLogo">
+            <img src={iconMastercard} alt=""/>
+            <img src={iconVisa} alt=""/>
+          </div> }
+        </div>
+        
+      </SectionContainer>
+
+      </div>
+      
+    </StepContainer>
+}
+
+    {state.step3 === "disabled" &&
+
+    <StepContainer>
+      <StepNumber>3</StepNumber>
+      <SectionContainer title="Payment method">
+
+ 
+      </SectionContainer>
+    </StepContainer>
+}
+
+    {!state.step1 && state.step2 === "false" && state.step3 === "false" &&
+      <PageFooter>
+        <Button buttonType="textBlack" onClick={()=>navigate("/")}>Cancel</Button>
+        <Button buttonType="primary" onClick={() => createOrder(order)}>Order now</Button>
+      </PageFooter>
+}
+
+      </PageContainer>
+
+
+
   )
 }
 

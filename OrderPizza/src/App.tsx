@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { Layout, Login, Register, ForgotPassword, Home, Menu, PersonalData, OrderSummary, Orders, OrdersManagement } from "./components";
+import { Layout, Login, Register, ForgotPassword, Home, Menu, PersonalData, OrderSummary, Orders, OrdersManagement, Contact } from "./components";
 import {ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import GlobalStyle from './styles/Globals.ts';
@@ -21,6 +21,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/menu" element={<Menu/>} />
+            <Route path="/contact" element={<Contact/>}/>
 
             {/* Private routes */}
             <Route path="/personal-data" element={<PersonalData/>} />

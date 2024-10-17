@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { query, where, collection, onSnapshot, Timestamp, orderBy, updateDoc, doc} from "firebase/firestore";
 import {db} from "./../firebase/firebase"
 import { generateDate, generateHour } from '../utils/convertTime';
-import getMenuItem from '../utils/getMenuItems';
+import getMenuItem from '../utils/getMenuItem';
 import arrowDown from "./../assets/arrow-down.png"
 import arrowUp from "./../assets/arrow-up.png"
 
