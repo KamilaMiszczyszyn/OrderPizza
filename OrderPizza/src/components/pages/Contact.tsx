@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import {PageContainer, PageHeader, SectionContainer, SectionHeader} from "./../index"
+import {PageContainer, SectionContainer} from "./../index"
 
 import pinIcon from "./../../assets/pin-black.svg"
 import mailIcon from "./../../assets/mail-black.svg"
