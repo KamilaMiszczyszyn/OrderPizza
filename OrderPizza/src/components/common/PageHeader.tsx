@@ -1,6 +1,6 @@
 import styled from "styled-components"
 
-const H1 = styled.h1`
+const H2 = styled.h2`
     width: 100%;
     border-bottom: 1px solid ${props => props.theme.colors.neutral[900]};
     font-size: 4.0rem;
@@ -8,7 +8,7 @@ const H1 = styled.h1`
 `
 const PageHeader = ({children}) => {
   return (
-    <H1>{children}</H1>
+    <H2>{children}</H2>
   )
 }
 
