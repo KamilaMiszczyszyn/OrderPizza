@@ -15,10 +15,11 @@ const StyledButton = styled.button<ButtonTypes>`
     border-radius: 10px;
     padding: 8px 16px;
     display: flex;
-    justify-content: baseline;
+    justify-content: center;
     column-gap: 8px;
     width: auto;
     align-self: center;
+    align-items: center;
 
 
     ${props => props.buttonType === 'primaryLarge' && css`

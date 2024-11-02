@@ -81,8 +81,6 @@ const OrderTrucker = styled.div`
     justify-self: center;
     display: flex;
 
-    
-
     div{
         display: grid;
         grid-template-areas: 
@@ -290,7 +288,7 @@ const DeliveryTrucker = ({ order }: ComponentProps) => {
             </OrderTrucker>
         </Content>
     
-        <Details className={showDetails ? "open" : ""}>
+        <Details>
             <div className='orderID'>
                 <h4>OrderID</h4>
                 <p>{order.orderID}</p>

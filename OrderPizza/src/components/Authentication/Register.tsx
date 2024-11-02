@@ -6,9 +6,36 @@ import {setDoc, doc} from 'firebase/firestore'
 import {auth, db} from "./../../firebase/firebase"
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import {Input, Button} from "./../index"
 
  const Container = styled.div`
-    width: 400px;
+    width: 390px;
+    border-radius: 10px;
+    border: 1px solid ${props=> props.theme.colors.neutral[200]};
+    padding: 48px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 32px;
+
+    form{
+      display: flex;
+      flex-direction: column;
+      row-gap: 32px;
+
+      div{
+        width: 100%;
+      }
+    }
+
+    h2{
+      text-align: center;
+    }
+
+    div.footer{
+      display: flex;
+      justify-content: flex-end;
+
+    }
 `
 
 const Register = () => {
@@ -65,30 +92,27 @@ const Register = () => {
 
   return (
     <Container>
+      <h2>Create account</h2>
       <form onSubmit={formik.handleSubmit}>
-        <label htmlFor="firstName">Name</label>
-        <input id="firstName" type="text" name="firstName" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.firstName}/>
-        {formik.touched.firstName && formik.errors.firstName ? <p>{formik.errors.firstName}</p> : null}
+        <Input label="First name" id="firstName" type="text" name="firstName" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.firstName} error={formik.errors.firstName} touched={formik.touched.firstName}/>
+        
+        <Input label="Last name" id="lastName" type="text" name="lastName" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.lastName} error={formik.errors.lastName} touched={formik.touched.lastName}/>
 
-        <label htmlFor="lastName">Lastname</label>
-        <input id="lastName" type="text" name="lastName" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.lastName}/>
-        {formik.touched.lastName && formik.errors.lastName ? <p>{formik.errors.lastName}</p> : null}
+        <Input label="E-mail" id="email" type="text" name="email" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.email} error={formik.errors.email} touched={formik.touched.email}/>
+        
+        <Input label="Password" id="password" type="password" name="password" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.password} error={formik.errors.password} touched={formik.touched.password}/>
+      
+        <Input label="Confirm password" id="confirmPassword" type="password" name="confirmPassword" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.confirmPassword} error={formik.errors.confirmPassword} touched={formik.touched.confirmPassword}/>
+      
+        <div className='footer'>
+          <Button buttonType='textBlack' to="/login">Cancel</Button>
+          <Button buttonType="secondary" type="submit">Create account</Button>   
 
-        <label htmlFor="email">Email</label>
-        <input id="email" type="text" name="email" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.email}/>
-        {formik.touched.email && formik.errors.email ? <p>{formik.errors.email}</p> : null}
-
-        <label htmlFor="password">Password</label>
-        <input id="password" type="password" name="password" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.password}/>
-        {formik.touched.password && formik.errors.password ? <p>{formik.errors.password}</p> : null}
-
-        <label htmlFor="confirmPassword">Confirm Password</label>
-        <input id="confirmPassword" type="password" name="confirmPassword" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.confirmPassword}/>
-        {formik.touched.confirmPassword && formik.errors.confirmPassword ? <p>{formik.errors.confirmPassword}</p> : null}
-
-        <button type="submit">Sign up</button>        
+        </div>
+             
       </form>
-      <Link to="/login">Cancel</Link>
+
+
     </Container>
   )
 }

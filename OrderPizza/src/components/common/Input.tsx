@@ -59,9 +59,10 @@ const Input = ({label, touched, error, ...props}) => {
         {label && <Label htmlFor={props.id}>{label}</Label>}
         <InputContainer>
             <input {...props}/>
-            {touched && error && <div>{error}</div>} 
+            
             {props.type==="password" && <button onClick={togglePasswordVisibility}><img src={iconEye} alt=''/></button>}     
         </InputContainer>
+        {touched && error && <div>{error}</div>} 
         
     </Container>
 

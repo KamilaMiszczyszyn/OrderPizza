@@ -5,9 +5,73 @@ import { toast } from 'react-toastify';
 import { signInWithEmailAndPassword } from '@firebase/auth'
 import {auth} from "./../../firebase/firebase"
 import styled from 'styled-components';
+import {Input, Button} from "./../index"
+import pizzaImg from "./../../assets/login-pizza.png"
 
-const Container = styled.div`
-    width: 400px;
+const Container=styled.div`
+display: flex;
+column-gap: 24px;
+height: 581px;
+max-width: 979px;
+width: 100%;
+
+
+div.pizza-img{
+  background-image: url(${pizzaImg});
+  width: 100%;
+  width: 100%;  
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 1; 
+  border-radius: 10px;
+
+}
+
+`
+
+const ContainerForm = styled.div`
+    min-width: 390px;
+    border-radius: 10px;
+    border: 1px solid ${props=> props.theme.colors.neutral[200]};
+    padding: 48px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 40px;
+
+    h2{
+      text-align: center;
+    }
+
+    form{
+      display: flex;
+      flex-direction: column;
+      row-gap: 24px;
+
+      div{
+        width: 100%;
+      }
+    }
+
+    div.line{
+      display: flex;
+      column-gap: 8px;
+      align-items: center;
+      div{
+        height: 1px;
+        background-color: ${props=> props.theme.colors.neutral[900]};
+        width: 100%;
+      }
+
+    }
+
+    div.create-account{
+      display: flex;
+      flex-direction: column;
+      row-gap: 24px;
+    }
+
+  
 `
 
 const Login = () => {
@@ -42,21 +106,34 @@ const Login = () => {
 
   return (
     <Container>
+      <ContainerForm>
+      <h2>Login</h2>
+
       <form onSubmit={formik.handleSubmit}>
 
-      <label htmlFor="email">Email</label>
-      <input id="email" type="text" name="email" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.email}/>
-      {formik.touched.email && formik.errors.email ? <p>{formik.errors.email}</p> : null}
+      <Input label="E-mail" id="email" type="text" name="email" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.email} error={formik.errors.email} touched={formik.touched.email}/>
 
-      <label htmlFor="password">Password</label>
-      <input id="password" type="password" name="password" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.password}/>
-      {formik.touched.password && formik.errors.password ? <p>{formik.errors.password}</p> : null}
-
-      <button type="submit">Log in</button>        
+      <Input label="Password "id="password" type="password" name="password" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.password} error={formik.errors.password} touched={formik.touched.password}/>
+      
+      <Button style={{width:"100%"}} buttonType="secondary" type="submit">Log in</Button>        
     </form>
-    <p>You do not have an account yet?<Link to="/register"> Register now!</Link></p>
+
+    <div className='line'>
+      <div></div>
+      <span>or</span>
+      <div></div>
+    </div>
+
+    <div className='create-account'>
+      <h2>Don't have an account?</h2>
+      <Button buttonType="secondary" onClick={()=> navigate("/register")}>Create account</Button>
+    </div>
+
+    </ContainerForm>
+    <div className='pizza-img'></div>
 
     </Container>
+    
     
   )
 }
