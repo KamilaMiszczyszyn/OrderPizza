@@ -28,5 +28,6 @@ import Contact from "./pages/Contact"
 import CustomerFeedback from "./pages/CustomerFeedback"
 import Feedback from "./common/Feedback"
 import DeliveryTrucker from "./common/DeliveryTrucker"
+import ShoppingCartDropdown from "./layout/ShoppingCartDropdown"
 
-export {Login, Register, ForgotPassword, Layout, Navbar, Footer, Home, Menu, PersonalData, ShoppingCart, OrderSummary, Orders, OrdersManagement, PageHeader, SectionHeader, MenuItemPizza, Button, MenuItemDrink, SectionContainer, PageContainer, ReviewMain, ReviewsSection, Contact, Input, CustomerFeedback, Feedback, DeliveryTrucker}
+export {Login, Register, ForgotPassword, Layout, Navbar, Footer, Home, Menu, PersonalData, ShoppingCart, OrderSummary, Orders, OrdersManagement, PageHeader, SectionHeader, MenuItemPizza, Button, MenuItemDrink, SectionContainer, PageContainer, ReviewMain, ReviewsSection, Contact, Input, CustomerFeedback, Feedback, DeliveryTrucker, ShoppingCartDropdown}

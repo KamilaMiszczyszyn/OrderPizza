@@ -343,7 +343,7 @@ const OrderSummary = () => {
                   <div>
                     <img 
                     src={getMenuItem(item.productID)?.img ? getMenuItem(item.productID)?.img : iconAdd} 
-                    alt={getMenuItem(item.productID)?.title} 
+                    alt={getMenuItem(item.productID)?.name} 
                   />
                 </div>
                 <p>{getMenuItem(item.productID)?.name}</p>
