@@ -29,5 +29,8 @@ import CustomerFeedback from "./pages/CustomerFeedback"
 import Feedback from "./common/Feedback"
 import DeliveryTrucker from "./common/DeliveryTrucker"
 import ShoppingCartDropdown from "./layout/ShoppingCartDropdown"
+import Loader from "./pages/Loader"
+import QualityIcon from "./common/QualityIcon"
+import MenuDropdown from "./layout/MenuDropdown"
 
-export {Login, Register, ForgotPassword, Layout, Navbar, Footer, Home, Menu, PersonalData, ShoppingCart, OrderSummary, Orders, OrdersManagement, PageHeader, SectionHeader, MenuItemPizza, Button, MenuItemDrink, SectionContainer, PageContainer, ReviewMain, ReviewsSection, Contact, Input, CustomerFeedback, Feedback, DeliveryTrucker, ShoppingCartDropdown}
+export {Login, Register, ForgotPassword, Layout, Navbar, Footer, Home, Menu, PersonalData, ShoppingCart, OrderSummary, Orders, OrdersManagement, PageHeader, SectionHeader, MenuItemPizza, Button, MenuItemDrink, SectionContainer, PageContainer, ReviewMain, ReviewsSection, Contact, Input, CustomerFeedback, Feedback, DeliveryTrucker, ShoppingCartDropdown, Loader, QualityIcon, MenuDropdown}

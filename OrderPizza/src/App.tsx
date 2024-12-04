@@ -1,41 +1,52 @@
 import { Routes, Route } from "react-router-dom";
-import { Layout, Login, Register, ForgotPassword, Home, Menu, PersonalData, OrderSummary, Orders, OrdersManagement, Contact, CustomerFeedback } from "./components";
-import {ToastContainer } from 'react-toastify';
+import { Layout, Login, Register, ForgotPassword, Home, Menu, PersonalData, OrderSummary, Orders, OrdersManagement, Contact, CustomerFeedback, Loader } from "./components";
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import GlobalStyle from './styles/Globals.ts';
-
+import { useState, useEffect } from "react"; // Dodaj import useEffect
 
 
 
 function App() {
- 
+    const [loading, setLoading] = useState(true);
 
-  return (
-    <>
-      <GlobalStyle/>
-         <Routes>
-          <Route path="/" element={<Layout />}>
-            {/* Public routes */}
-            <Route path="/" element={<Home/>}/>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/menu" element={<Menu/>} />
-            <Route path="/contact" element={<Contact/>}/>
-            <Route path="/customer-feedback" element={<CustomerFeedback/>}/>
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(false); 
+        }, 2000); 
+    }, []);
 
-            {/* Private routes */}
-            <Route path="/personal-data" element={<PersonalData/>} />
-            <Route path="/order-summary" element={<OrderSummary/>} />
-            <Route path="/orders" element={<Orders/>} />
-            <Route path="/orders-management" element={<OrdersManagement/>}/>
+    return ( 
+        <>
+            {loading ? (
+                <Loader />
+            ) : (
+                <>
+                    <GlobalStyle/>
 
+                    <Routes>
+                        <Route path="/" element={<Layout />}>
+                            {/* Public routes */}
+                            <Route path="/" element={<Home />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
+                            <Route path="/forgot-password" element={<ForgotPassword />} />
+                            <Route path="/menu" element={<Menu />} />
+                            <Route path="/contact" element={<Contact />} />
+                            <Route path="/customer-feedback" element={<CustomerFeedback />} />
 
-          </Route>
-        </Routes>  
-        <ToastContainer />
-    </>
-  )
+                            {/* Private routes */}
+                            <Route path="/personal-data" element={<PersonalData />} />
+                            <Route path="/order-summary" element={<OrderSummary />} />
+                            <Route path="/orders" element={<Orders />} />
+                            <Route path="/orders-management" element={<OrdersManagement />} />
+                        </Route>
+                    </Routes>  
+                    <ToastContainer />
+                </>
+            )}
+        </>
+    );
 }
 
-export default App
+export default App;

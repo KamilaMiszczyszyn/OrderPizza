@@ -4,7 +4,7 @@ import {Button} from "./../index"
 import iconAdd from "./../../assets/icons/add.svg"
 
 const Container = styled.div`
-    max-width: 186px;
+    width: 100%;
     padding: 16px;
     border-radius: 10px;
     border: 1px solid ${props=> props.theme.colors.neutral[200]};
@@ -12,6 +12,14 @@ const Container = styled.div`
     flex-direction: column;
     row-gap: 24px;
     background-color: ${props=> props.theme.colors.white};
+
+     @media (min-width: 490px) and (max-width: 864px) {
+        width: 186px;
+    }
+
+    @media (max-width: 490px) {
+        width: 100%;
+    }
 
     & > img {
         width: 125px;
@@ -29,22 +37,36 @@ const Container = styled.div`
     
 `
 
-const H3 = styled.h3`
-    font-size: 2.4rem;
-`
-
 const Footer = styled.div`
     display: flex;
     flex-direction: column;
     row-gap: 12px;
+    justify-content: flex-end;
+
+    @media (max-width: 490px) {
+        flex-direction: row;
+        column-gap: 24px;
+        justify-content: space-between;
+    }
 
     
     div p.price{
         color: ${props => props.theme.colors.primary[700]};
+        font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+        line-height: initial;
     }
 
     div p.size{
         color: ${props => props.theme.colors.neutral[700]};
+        line-height: initial;
+    }
+
+    button{
+        width: 100%;
+
+        @media (max-width: 490px) {
+        width: auto;
+    }
     }
 `
 const MenuItemDrink = ({drink}) => {
@@ -55,13 +77,13 @@ const MenuItemDrink = ({drink}) => {
     <Container>
         <img src={require(drink.img)}/>
         <div>
-            <H3>{drink.name}</H3>
+            <h4>{drink.name}</h4>
             <Footer>
                 <div>
-                    <p className="price">{drink.price}{'\u20AC'}</p>
-                    <p className="size">32</p>
+                    <p className="price">{drink.price} {'\u20AC'}</p>
+                    <p className="size">500 ml</p>
                 </div>
-                <Button type="secondary" iconLeft={iconAdd} onClick={() => addToCart(drink.productID)}>Add to cart</Button>
+                <Button buttonType="secondary" iconLeft={iconAdd} onClick={() => addToCart(drink.productID)}>Add to cart</Button>
             </Footer>
         </div>
         

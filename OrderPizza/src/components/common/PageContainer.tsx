@@ -5,7 +5,7 @@ const Container = styled.section`
     display: flex;
     flex-direction: column;
     row-gap: 48px;
-    width: 864px;
+    width: 100%;
     
 `
 const PageContainer = ({title, children}) => {

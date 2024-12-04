@@ -1,69 +1,60 @@
 import { createGlobalStyle } from "styled-components";
-import close from "./../assets/close.png"
 
 const GlobalStyle = createGlobalStyle`
-*,
-*::after,
-*::before {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
 
 html{
     font-size: 62.5%; 
 }
 
 body{
-    font-size: 1.6rem; 
+    font-size: ${props=> props.theme.typography.fontSize["sm"]};
+    font-family: ${props=> props.theme.typography.fontFamily["base"]};
+    font-weight: ${props=> props.theme.typography.fontWeight["regular"]}; 
     background-color: ${props=> props.theme.colors.white};
-    font-family: "Inter", sans-serif;
+    line-height: 1.5;
+    letter-spacing: 2%;
+    color: ${props=> props.theme.colors.neutral[900]};
+    
 }
 
-label{
-    display: block;
-    margin: 20px 0 0 0;
+
+h2{
+    font-size: ${props=> props.theme.typography.fontSize["xxxl"]};
+    font-family: ${props=> props.theme.typography.fontFamily["alternate"]};
+    font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+
+     @media (max-width: 490px) {
+        font-size: ${props=> props.theme.typography.fontSize["xxl"]};
+        }
 }
 
-input{
-    width: 100%;
-    padding: 10px;
-    border: 1px solid ${props=> props.theme.colors.black};
-    border-radius: 10px;
-    margin: 5px 0;
+h3{
+    font-size: ${props=> props.theme.typography.fontSize["xxl"]};
+    font-family: ${props=> props.theme.typography.fontFamily["alternate"]};
+    font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+
+    @media (max-width: 490px) {
+        font-size: ${props=> props.theme.typography.fontSize["xl"]};
+        }
 }
 
-input:focus{
-    outline: none;
-    border: 1px solid ${props=> props.theme.colors.primary};
+h4{
+    font-size: ${props=> props.theme.typography.fontSize["xl"]};
+    font-family: ${props=> props.theme.typography.fontFamily["alternate"]};
+    font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+
+    @media (max-width: 490px) {
+        font-size: ${props=> props.theme.typography.fontSize["lg"]};
+        }
 }
 
 button{
-    border-radius: 10px;
-    padding: 10px 30px;
-    border: none;
-    background-color: ${props=> props.theme.colors.black};
-    color: ${props=> props.theme.colors.white};
     cursor: pointer;
-    font-weight: 700;
-    font-size: 1.6rem;
+    border: none;
+    font-size: ${props=> props.theme.typography.fontSize["sm"]};
+    font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
 }
 
-button:hover{
-    opacity: 0.8;
-}
-
-button.close{
-    background-image: url(${close});
-    background-size: cover;
-    background-color: transparent;
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
 `
 
 export default GlobalStyle

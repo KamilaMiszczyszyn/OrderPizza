@@ -11,10 +11,22 @@ interface ComponentProps {
     step4?: boolean;
 }
 
-const StepContainer = styled.div<{ $top: string; $left: string}>`
+const StepContainer = styled.div<{ $top: string; $left: string; $right: string}>`
     position: absolute;
     top: ${props => props.$top}; 
     left: ${props => props.$left}; 
+    right: ${props => props.$right}; 
+
+    h3{
+        text-align: center;
+    }
+
+    @media (max-width: 490px) {
+        position: static;
+        top: auto;
+        left: auto;
+        right: auto;
+    }
 `
 
 const BorderRed= styled.div`
@@ -89,52 +101,53 @@ const NumCircle = styled.div`
 `
 
 
-const InstructionStep = ({step1 = false, step2 = false, step3 = false, step4 = false}: ComponentProps ) => {
+const InstructionStep = ({step1, step2, step3, step4}: ComponentProps ) => {
   return (
     <>
     {step1 && 
-    <StepContainer $top="15px" $left="188px" >
+    <StepContainer $top="0" $left="40px">
         <BorderRed>
             <BorderBlack>
                 <NumCircle><span>1</span></NumCircle>
                 <img src={userIcon} alt=""/>
-                <h2>Log in or Sign up</h2>
+                <h4>Log in or Sign up</h4>
             </BorderBlack>
         </BorderRed>
     </StepContainer>
    }
 
     {step2 && 
-        <StepContainer $top="337px" $left="658px">
+        <StepContainer $top="294px" $right="-40px">
             <BorderRedVariant2>        
                 <BorderBlackVariant2>
                     <NumCircle><span>2</span></NumCircle>
                     <img src={pizzaIcon} alt=""/>
-                    <h2>Choose pizza and drink</h2>
+                    <h4>Choose pizza</h4>
+                    <h4>and drink</h4>
                 </BorderBlackVariant2>
             </BorderRedVariant2>
         </StepContainer>
     }
 
     {step3 && 
-        <StepContainer $top="356px" $left="61px">
+        <StepContainer $top="588px" $left="-40px">
             <BorderRed>
                 <BorderBlack>
                     <NumCircle><span>3</span></NumCircle>
                     <img src={payIcon} alt=""/>
-                    <h2>Pay for order</h2>
+                    <h4>Pay for order</h4>
                 </BorderBlack>
             </BorderRed>       
         </StepContainer>
     }
 
     {step4 && 
-        <StepContainer $top="668px" $left="431px">
+        <StepContainer $top="882px" $right="40px">
             <BorderRedVariant2>
                 <BorderBlackVariant2>
                     <NumCircle><span>4</span></NumCircle>
                     <img src={deliveryIcon} alt=""/>
-                    <h2>Wait for delivery</h2>
+                    <h4>Wait for delivery</h4>
                 </BorderBlackVariant2>
             </BorderRedVariant2>
         

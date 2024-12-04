@@ -30,7 +30,9 @@ const Container = styled.div`
     border-radius: 10px;
     border: 1px solid ${props=> props.theme.colors.neutral[200]};
     position: relative;
+    width: 100%;
 `
+
 const Date = styled.div`
     position: absolute;
     top: 8px;
@@ -40,13 +42,30 @@ const Date = styled.div`
     background-color: ${props=> props.theme.colors.neutral[50]};
     display: flex;
     column-gap: 16px;
+    color: ${props=> props.theme.colors.neutral[700]};
+    font-size: ${props=> props.theme.typography.fontSize["xs"]};
+
+    @media (max-width: 608px) {
+    left: 8px;
+    right: initial;
+    }
+    
 `
 const Content= styled.div`
+    min-height: 228px;
     width: 100%;
     padding: 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    @media (max-width: 864px) {
+    justify-content: center;
+    }
+
+    @media (max-width: 608px) {
+    padding: 64px 24px 24px 24px;
+    }
 `
 const ScooterIcon = styled.div`
 
@@ -73,6 +92,10 @@ const ScooterIcon = styled.div`
         align-items: center;
     }
 
+    @media (max-width: 864px) {
+    display: none ;
+    }
+
 `
 
 const OrderTrucker = styled.div`
@@ -80,6 +103,12 @@ const OrderTrucker = styled.div`
     align-self: center;
     justify-self: center;
     display: flex;
+
+    @media (max-width: 608px) {
+        flex-direction: column;
+        row-gap: 10px;
+
+        }
 
     div{
         display: grid;
@@ -89,11 +118,29 @@ const OrderTrucker = styled.div`
         row-gap: 10px;
         grid-template-columns: 110px 40px;
 
+        @media (max-width: 608px) {
+        grid-template-areas: 
+        "point status"
+        "load .";
+        grid-template-columns: 48px auto;
+        grid-template-rows: 48px 40px;
+        column-gap: 24px;
+
+        }
+
 
 
         span{
             grid-area: status;
             justify-self: center;
+            align-self: center;
+            color: ${props=> props.theme.colors.neutral[700]};
+            
+
+            @media (max-width: 608px) {
+                justify-self: left;
+
+        }
         }
 
 
@@ -112,6 +159,12 @@ const OrderTrucker = styled.div`
             justify-content: center;
             align-items: center;
             column-gap: 7px; 
+
+            @media (max-width: 608px) {
+            flex-direction: column;
+            row-gap: 7px;
+
+        }
 
             div{
                 background-color:${props=> props.theme.colors.neutral[100]};
@@ -134,6 +187,11 @@ const OrderTrucker = styled.div`
                 background-color: ${props=> props.theme.colors.primary[500]};
             }
         } 
+
+        span{
+            color: ${props=> props.theme.colors.neutral[900]};
+            font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+        }
     }
 
     div.pending{
@@ -162,28 +220,48 @@ const OrderTrucker = styled.div`
 
     div:last-child {
     grid-template-columns: 110px 0; 
+
+    @media (max-width: 608px) {
+        grid-template-rows: 48px 0;
+        grid-template-columns: 48px auto; 
+
+        }
     }
     
 `
 
-const Details=styled.div<{ $showDetails: boolean }>`
-    padding: 24px;
-    background-color: ${props=> props.theme.colors.neutral[50]} ;
+const Details = styled.div<{ $visibleDetails: boolean }>`
+    background-color: ${(props) => props.theme.colors.neutral[50]};
+  display: grid;
+  grid-template-columns: auto 200px 150px;
+  column-gap: 32px;
+  max-height: ${(props) => (props.$visibleDetails ? "1000px" : "0")};
+  padding: ${(props) => (props.$visibleDetails ? "24px" : "0 24px")};
+  overflow: hidden;
+  transition: 
+    max-height 0.3s ease-in-out ${(props) => (props.$visibleDetails ? "0s" : "0.1s")},
+    padding 0.3s ease-in-out ${(props) => (props.$visibleDetails ? "0s" : "0.1s")};
 
-    display: grid;
-    grid-template-columns: auto 200px 150px;
-    column-gap: 32px;
+  @media (max-width: 608px) {
+    display: flex;
+    flex-direction: column;
+    row-gap: 24px;
+  }
 
-    &>div{
-        display: flex;
-        flex-direction: column;
-        row-gap: 24px;
+  h4 {
+    font-size: ${(props) => props.theme.typography.fontSize["sm"]};
+  }
 
-    }
+  & > div {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+    opacity: ${(props) => (props.$visibleDetails ? "1" : "0")};
+    transition: opacity 0.2s ease-in-out ${(props) => (props.$visibleDetails ? "0.2s" : "0s")};
+  }
 
-    div.items{
-        
-        div.content{
+    div.items {
+        div.content {
             display: flex;
             flex-direction: column;
             row-gap: 8px;
@@ -194,31 +272,26 @@ const Details=styled.div<{ $showDetails: boolean }>`
             justify-content: space-between;
             align-items: center;
 
-            div{
-                background-color: ${props=> props.theme.colors.neutral[100]};
+            div {
+                background-color: ${props => props.theme.colors.neutral[100]};
                 border-radius: 4px;
                 width: 24px;
-                height: 24px; 
+                height: 24px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-
             }
         }
     }
 
-    div.total-price{
-        p{
+    div.total-price {
+        p {
             text-align: right;
         }
     }
-    
-    overflow: hidden;
-  max-height: ${props => props.$showDetails ? "1000px" : "0"};
-  transition: max-height 0.4s ease-in-out;
-    
 
-`
+    
+`;
     
   
     
@@ -288,7 +361,7 @@ const DeliveryTrucker = ({ order }: ComponentProps) => {
             </OrderTrucker>
         </Content>
     
-        <Details>
+        <Details $visibleDetails={showDetails}>
             <div className='orderID'>
                 <h4>OrderID</h4>
                 <p>{order.orderID}</p>

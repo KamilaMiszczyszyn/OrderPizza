@@ -6,25 +6,27 @@ const Container = styled.div`
     display:flex;
     flex-direction: column;
     row-gap: 4px;
+    width: 100%;
 `
 
 const Label = styled.label`
     font-size: 14px;
     color: ${props=> props.theme.colors.neutral[700]};
     margin: 0;
-    width: 250px;
+    width: 100%;
 `
 
 const InputContainer = styled.div`
     border-bottom: 1px solid ${props=> props.theme.colors.neutral[700]};
     display: flex;
     padding: 8px;
-    width: 250px;
+    width: 100%;
 
     input{
         background: none;
         border: none;
         padding: 0;
+        width: 100%;
         
     }
 

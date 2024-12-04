@@ -11,20 +11,23 @@ import pizzaImg from "./../../assets/login-pizza.png"
 const Container=styled.div`
 display: flex;
 column-gap: 24px;
-height: 581px;
 max-width: 979px;
 width: 100%;
+margin: 16px;
+justify-content: center;
 
 
 div.pizza-img{
   background-image: url(${pizzaImg});
-  width: 100%;
-  width: 100%;  
-  height: 100%;
+  width: 100%; 
   background-size: cover;
   background-position: center;
   flex-shrink: 1; 
   border-radius: 10px;
+
+  @media (max-width: 768px) {
+      display: none;
+    }
 
 }
 
@@ -39,8 +42,9 @@ const ContainerForm = styled.div`
     flex-direction: column;
     row-gap: 40px;
 
-    h2{
-      text-align: center;
+    @media (max-width: 490px) {
+      min-width: 300px;
+      width: 100%;
     }
 
     form{
@@ -72,6 +76,12 @@ const ContainerForm = styled.div`
     }
 
   
+`
+const H2 = styled.h2`
+  font-size: ${props=> props.theme.typography.fontSize["xl"]};
+  font-family: ${props=> props.theme.typography.fontFamily["alternate"]};
+  font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+  text-align: center;
 `
 
 const Login = () => {
@@ -107,7 +117,7 @@ const Login = () => {
   return (
     <Container>
       <ContainerForm>
-      <h2>Login</h2>
+      <H2>Login</H2>
 
       <form onSubmit={formik.handleSubmit}>
 
@@ -125,7 +135,7 @@ const Login = () => {
     </div>
 
     <div className='create-account'>
-      <h2>Don't have an account?</h2>
+      <H2>Don't have an account?</H2>
       <Button buttonType="secondary" onClick={()=> navigate("/register")}>Create account</Button>
     </div>
 

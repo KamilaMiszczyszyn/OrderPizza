@@ -11,6 +11,10 @@ const Container = styled.section`
     display: flex;
     flex-direction: column; 
     row-gap: 32px;
+
+    @media (max-width: 490px) {
+    padding: 0;
+  }
     
 `
 

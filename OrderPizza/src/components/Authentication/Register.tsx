@@ -16,6 +16,7 @@ import {Input, Button} from "./../index"
     display: flex;
     flex-direction: column;
     row-gap: 32px;
+    margin: 16px;
 
     form{
       display: flex;
@@ -27,15 +28,19 @@ import {Input, Button} from "./../index"
       }
     }
 
-    h2{
-      text-align: center;
-    }
 
     div.footer{
       display: flex;
       justify-content: flex-end;
 
     }
+`
+
+const H2 = styled.h2`
+  font-size: ${props=> props.theme.typography.fontSize["xl"]};
+  font-family: ${props=> props.theme.typography.fontFamily["alternate"]};
+  font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+  text-align: center;
 `
 
 const Register = () => {
@@ -92,7 +97,7 @@ const Register = () => {
 
   return (
     <Container>
-      <h2>Create account</h2>
+      <H2>Create account</H2>
       <form onSubmit={formik.handleSubmit}>
         <Input label="First name" id="firstName" type="text" name="firstName" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.firstName} error={formik.errors.firstName} touched={formik.touched.firstName}/>
         

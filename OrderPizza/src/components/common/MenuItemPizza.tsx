@@ -12,6 +12,7 @@ const Container = styled.div`
     display: flex;
     column-gap: 24px;
     background-color: ${props=> props.theme.colors.white};
+    
 
     & > img {
             width: 200px;
@@ -23,8 +24,17 @@ const Container = styled.div`
         flex-direction: column;
         justify-content: space-between;
         width: 100%;
+
+        @media (max-width: 490px) {
+        row-gap: 8px;
+    }
         
    
+    }
+
+    @media (max-width: 490px) {
+        flex-direction: column;
+        align-items: center;
     }
 `
 
@@ -38,20 +48,24 @@ const Description = styled.p`
     color: ${props => props.theme.colors.neutral[700]};
 `
 
-const H3 = styled.h3`
-    font-size: 2.4rem;
-`
 const Footer = styled.div`
     display: flex;
     justify-content: flex-end;
     column-gap: 24px;
+
+    @media (max-width: 490px) {
+        justify-content: space-between;
+    }
     
     div p.price{
         color: ${props => props.theme.colors.primary[700]};
+        font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+        line-height: initial;
     }
 
     div p.size{
         color: ${props => props.theme.colors.neutral[700]};
+        line-height: initial;
     }
 `
 
@@ -82,16 +96,16 @@ const MenuItemPizza = ({pizza}) => {
         <img src={require(pizza.img)}/>
         <div>
             <Header>
-                <H3>{pizza.name}</H3>
+                <h4>{pizza.name}</h4>
                 {pizza.vegan && <VeganIcon><img src={leafIcon}/><span>vegan</span></VeganIcon>}
             </Header>
             <Description>{pizza.ingredients.join(", ")}</Description>
             <Footer>
                 <div>
-                    <p className="price">{pizza.price}{'\u20AC'}</p>
-                    <p className="size">32</p>
+                    <p className="price">{pizza.price} {'\u20AC'}</p>
+                    <p className="size">{'\u00D8'} 32</p>
                 </div>
-                <Button type="secondary" iconLeft={iconAdd} onClick={() => addToCart(pizza.productID)}>Add to cart</Button>
+                <Button buttonType="secondary" iconLeft={iconAdd} onClick={() => addToCart(pizza.productID)}>Add to cart</Button>
             </Footer>
         </div>
     </Container>

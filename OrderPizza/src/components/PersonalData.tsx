@@ -6,6 +6,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import {Input, PageContainer, SectionContainer, Button} from "./index"
+import iconAdd from "./../assets/add-white.svg"
 
 type UserData = {
   firstName?: string,
@@ -15,23 +16,46 @@ type UserData = {
   address?: string,
 }
 
+const Container=styled.div`
+width: 864px;
+margin: 128px 0;
+
+@media (max-width: 864px) {
+    width: 100%;
+    margin: 16px;   
+    }
+`
+
 const FormGeneral = styled.form`
-  width: 577px;
   display: flex;
   flex-direction: column;
   row-gap: 32px;
+
+  @media (max-width: 577px) {
+      align-items: center;
+    }
   
+
   div.inputs{
+    width: 577px;
     display: grid;
     grid-template-columns: auto auto;
     column-gap:24px;
     row-gap: 24px;
+
+    @media (max-width: 577px) {
+      width: 250px;
+      display: flex;
+      flex-direction: column;
     
-  }
+    }
+
+    }
 
   div.formFooter{
     display: flex;
     justify-content: flex-end;
+    align-self: flex-end;
   }
  
 `
@@ -55,10 +79,27 @@ const AddressContainer = styled.div`
 `
 
 const FormAddress = styled.form`
+  max-width: 400px;
   display: flex;
   column-gap: 16px;
   justify-content: baseline;
   padding: 16px;
+
+  button{
+    white-space: nowrap;
+    @media (max-width: 490px) {
+      display: none;
+    }
+
+  }
+
+  button.icon{
+    display: none;
+    @media (max-width: 490px) {
+      display: initial
+    }
+
+  }
  
 `
 
@@ -175,7 +216,8 @@ const PersonalData = () => {
 
   return (
 
-    <PageContainer title="Personal data">
+    <Container>
+      <PageContainer title="Personal data">
       <SectionContainer title="General">
         <FormGeneral onSubmit={formikGeneral.handleSubmit}>
           <div className="inputs">
@@ -229,7 +271,7 @@ const PersonalData = () => {
 
             </div>
             <div className="formFooter">
-              <Button type="submit">Save</Button> 
+              <Button buttonType="secondary" type="submit">Save</Button> 
             </div>
 
                  
@@ -238,7 +280,7 @@ const PersonalData = () => {
       </SectionContainer>
 
       <SectionContainer title="Delivery address">
-        <></>
+        <h4>Favourite adresses</h4>
 
         {userData?.addressesList?.map((address) => 
           <AddressContainer key={address.addressID}>
@@ -247,7 +289,7 @@ const PersonalData = () => {
           </AddressContainer>
         )}
 
-        {userData?.addressesList?.length<3 && <FormAddress onSubmit={formikAddress.handleSubmit}>
+        {(userData?.addressesList?.length<3 || !userData?.addressesList) && <FormAddress onSubmit={formikAddress.handleSubmit}>
           <Input
             type="text"
             name="address" 
@@ -257,7 +299,8 @@ const PersonalData = () => {
             touched={formikAddress.touched.address}
             error={formikAddress.errors.address}
           />
-          <Button type="submit">Add address</Button> 
+          <Button className="icon" buttonType="icon" iconLeft={iconAdd} type="submit"></Button> 
+          <Button buttonType="secondary" iconLeft={iconAdd} type="submit">Add address</Button> 
 
         </FormAddress>}
 
@@ -265,7 +308,11 @@ const PersonalData = () => {
 
       </SectionContainer>
 
-    </PageContainer> 
+    </PageContainer>
+
+    </Container>
+
+     
   )
 }
 

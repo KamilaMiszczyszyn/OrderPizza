@@ -21,19 +21,34 @@ type FeedbackFormData ={
   feedbackText: string,
 }
 
+const Container=styled.div`
+width: 864px;
+margin: 128px 0;
+
+@media (max-width: 864px) {
+    width: 100%;
+    margin: 16px;   
+    }
+`
+
 const PageContent=styled.div`
   display: flex;
   flex-direction: column;
   row-gap: 56px;
 `
 const TotalReviews = styled.section`
-display: flex;
-column-gap: 32px;
-justify-content: center;
-align-items: center;
+  display: flex;
+  column-gap: 32px;
+  justify-content: center;
+  align-items: center;
 
-div.review-average{
-    border: 1px solid ${props => props.theme.colors.neutral[200]};
+  @media (max-width: 490px) {
+    flex-direction: column;
+    row-gap: 32px;
+    }
+
+  div.review-average {
+    border: 1px solid ${(props) => props.theme.colors.neutral[200]};
     border-radius: 10px;
     row-gap: 8px;
     display: flex;
@@ -41,19 +56,38 @@ div.review-average{
     justify-content: center;
     align-items: center;
     padding: 24px;
+    width: 207px;
 
     div {
-        display: flex;
-        column-gap: 8px;
+      display: flex;
+      column-gap: 8px;
     }
-}
-    
-`
+
+    p.rating{
+      font-size: 48px;
+      font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+      font-family: ${props=> props.theme.typography.fontFamily["alternate"]};
+    }
+
+    p.reviews{
+      color: ${(props) => props.theme.colors.neutral[700]};
+      font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+
+    }
+  }
+`;
+
 const RatingBreakdown=styled.div`
 display: flex;
 flex-direction: column;
 row-gap: 8px;
-width: 430px;
+width: 50%;
+
+@media (max-width: 864px) {
+    width: 100%;
+    }
+
+
 
 div.rating{
     display: flex;
@@ -85,7 +119,15 @@ const FeedbackForm = styled.form`
   row-gap: 24px;
 
   
+div.input{
+  width: 240px;
 
+  @media (max-width: 490px) {
+    width: 100%;
+    }
+
+
+}
 
 div.stars-container{
   display: flex;
@@ -103,10 +145,24 @@ div.textarea-container {
     border: 1px solid ${props => props.theme.colors.neutral[200]};
     padding: 16px;
     border-radius: 10px;
+    resize: none;
+    max-height: 100px;
+
+    &:focus {
+    border: 1px solid ${props => props.theme.colors.neutral[900]};
+    outline: none; 
+  }
+
+    &::placeholder{
+      color: ${props => props.theme.colors.neutral[500]};
+      font-family: ${props=> props.theme.typography.fontFamily["base"]};
+    }
   }
 
   p{
     text-align: right;
+    color: ${props => props.theme.colors.neutral[700]};
+    font-size: ${props=> props.theme.typography.fontSize["xs"]};
   }
 
 }
@@ -148,7 +204,7 @@ const calculateAverageRating = (reviews: Array<Review>) => {
     0,
     );
     const averageRating: number = sumRating/reviews.length
-    return averageRating
+    return averageRating.toFixed(1)
   }
 
 const countRatingsByValue = (reviews: Array<Review>, value: number) => {
@@ -224,15 +280,16 @@ setFeedbackFormData({firstName: "", selectedStars: null, feedbackText: ""})
 
 
   return (
-    <PageContainer title="Customer feedback">
+    <Container>
+      <PageContainer title="Customer feedback">
       <PageContent>
         <TotalReviews>
             <div className="review-average">
                 <div>
                     <img src={bigStarIcon} alt='' />
-                    <p>{calculateAverageRating(reviews)}</p>
+                    <p className="rating">{calculateAverageRating(reviews)}</p>
                 </div>
-                <p>{reviews.length} reviews</p>
+                <p className="reviews">{reviews.length} reviews</p>
             </div>
 
             <RatingBreakdown>
@@ -270,7 +327,9 @@ setFeedbackFormData({firstName: "", selectedStars: null, feedbackText: ""})
         <SectionContainer title="Leave feedback">
             <p>Share your feedback with us and help us improve our services. Your feedback will be sent anonymously.</p>
             <FeedbackForm onSubmit={handleSubmit}>
-                  <Input
+
+                  <div className="input">
+                    <Input
                     label="First name" 
                     id="firstName" 
                     type="text" 
@@ -279,6 +338,9 @@ setFeedbackFormData({firstName: "", selectedStars: null, feedbackText: ""})
                     value={feedbackFormData.firstName}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFeedbackFormData({...feedbackFormData, firstName: event.target.value})}
                     />
+                    
+                  </div>
+                  
 
                     <div className="stars-container">
                       {ratings.map(e => (
@@ -302,7 +364,6 @@ setFeedbackFormData({firstName: "", selectedStars: null, feedbackText: ""})
                         onChange={(event) => setFeedbackFormData({...feedbackFormData, feedbackText: event.target.value})}
                         maxLength={200}
                         placeholder="Write a feedback..."
-                        style={{ resize: 'none' }} 
                       />
                     <p>Characters left:  {200-feedbackFormData.feedbackText.length}</p> 
                 </div>
@@ -321,15 +382,12 @@ setFeedbackFormData({firstName: "", selectedStars: null, feedbackText: ""})
 
 
         </SectionContainer>
-
-
       </PageContent>
-        
-        
-
-        
 
     </PageContainer>
+
+    </Container>
+    
   )
 }
 

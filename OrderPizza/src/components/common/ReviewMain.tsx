@@ -1,12 +1,25 @@
 import styled from 'styled-components'
 import starChecked from './../../assets/star-checked.svg'
 import starUnchecked from './../../assets/star-unchecked.svg'
+import {Timestamp } from "firebase/firestore";
+import userIcon from "./../../assets/user-small.svg"
+
+interface Review {
+  date: Timestamp,
+  firstName: string,
+  stars: number,
+  feedback: string,
+  id?: string,
+}
+
+
+
 
 interface ComponentProps {
-  user: string,
-  stars: number,
-  review: string,
+  review: Review;
 }
+
+
 
 const Container = styled.div`
 height: 270px;
@@ -15,6 +28,10 @@ position: relative;
 display: flex;
 flex-direction: column;
 row-gap: 8px;
+
+@media (max-width: 490px) {
+      width: 300px;
+    }
 `
 
 const ReviewContainer = styled.div`
@@ -33,10 +50,17 @@ font-size: 96px;
 font-family: 'Times New Roman', Times, serif;
 position: absolute;
 left: 24px;
-top: -55px;
+top: -24px;
+z-index: 1;
 `
 const StarsContainer = styled.div`
   display: flex;
+`
+
+const Author = styled.div`
+display: flex;
+column-gap: 4px;
+justify-content: flex-end;
 `
 
 const generateStars = (stars: number) => {
@@ -55,14 +79,15 @@ const generateStars = (stars: number) => {
 }
 
 
-function ReviewMain({user, stars, review}: ComponentProps) {
+function ReviewMain({review}: ComponentProps) {
+
   return (
     <Container>
         <Decor>"</Decor>
         <ReviewContainer>
           
           <StarsContainer>
-            {generateStars(stars).map((star, index) =>
+            {generateStars(review.stars).map((star, index) =>
             {
               if(star){
               return <img key={index} src={starChecked} alt=''/>
@@ -72,9 +97,13 @@ function ReviewMain({user, stars, review}: ComponentProps) {
             } 
             )}
           </StarsContainer>
-          <p>{review}</p>
+          <p>{review.feedback}</p>
         </ReviewContainer>
-        <p>{user}</p>
+        <Author>
+          <img src={userIcon} alt=''/>
+          <p>{review.firstName}</p>
+        </Author>
+        
     </Container>
 
   )

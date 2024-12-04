@@ -10,13 +10,20 @@ import { NavLink } from "react-router-dom"
 
 
 const Container = styled.footer`
+width: 100%;
   background-color: ${props=> props.theme.colors.neutral[900]};
-  height: 364px;
   color: ${props=> props.theme.colors.neutral[50]};
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   column-gap: 48px;  
+  padding: 100px 0;
+
+  @media (max-width: 490px) {
+        flex-direction: column;
+        align-items: center;
+        row-gap: 48px;
+    }
 
 `
 
@@ -28,6 +35,10 @@ const ContactSection = styled.section`
 
 const Logo = styled.h2`
   font-size: 2.4rem;
+
+  @media (max-width: 490px) {
+    text-align: center;
+    }
 `
 
 const ContactContainer= styled.div`
@@ -44,10 +55,18 @@ const ContactContainer= styled.div`
 `
 const H3 = styled.h3`
   font-size: 2.0rem;
+
+  @media (max-width: 490px) {
+    text-align: center;
+    }
 `
 
 const NavSection = styled.section`
   width: 300px;
+
+  @media (max-width: 768px) {
+    width: 200px;
+    }
 
   ul{
     list-style: none;
@@ -58,6 +77,11 @@ const NavSection = styled.section`
     li{
       padding: 16px 8px;
       padding: 8px 0;
+
+      @media (max-width: 490px) {
+        text-align: center;
+    }
+
     }
   }
   

@@ -1,35 +1,51 @@
 import { NavLink, Link, useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useState, useContext } from "react"
-import {auth} from "./../firebase/firebase"
-import { signOut } from "firebase/auth"
 import {doc, getDoc} from 'firebase/firestore'
 import styled from 'styled-components'
 import { AuthContext } from "../context/AuthContext"
 import { db } from "./../firebase/firebase"
 import cart from "./../assets/shopping-cart.svg"
-import {ShoppingCartDropdown, Button } from "./index"
+import {ShoppingCartDropdown, Button, MenuDropdown } from "./index"
 import {ShoppingCartContext} from "./../context/ShoppingCartContext"
 import userIcon from "./../assets/user-small-white.svg"
 import arrowIcon from "./../assets/arrow-down-white.svg"
 import arrowBackIcon from "./../assets/arrow-back.svg"
+import hamburgerIcon from "./../assets/hamburger-menu.svg"
 
 
 
 const Nav = styled.nav`
   height: 100%;
-  background-color: ${props=> props.theme.colors.black};
-  color: ${props=> props.theme.colors.white};
+  width: 100%;
+  background-color: ${props=> props.theme.colors.neutral[900]};
+  color: ${props=> props.theme.colors.neutral[50]};
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 8px 24px;
   position: relative;
   
 
-  div {
+  &>div {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 24px;
+
+    button.dropdown-btn{
+      @media (max-width: 864px) {
+        display: none;
+    }
+
+    }
+  }
+
+  div.logged-out{
+    &>button{
+      @media (max-width: 490px) {
+        display: none;
+    }
+    }
   }
 `
 
@@ -69,12 +85,18 @@ const NavBack=styled.nav`
 
 
 const Logo = styled.h1<{ $black?: boolean }>`
-  color: ${props => props.$black ? props.theme.colors.black : props.theme.colors.white};
+  color: ${props => props.$black ? props.theme.colors.black : props.theme.colors.neutral[50]};
 `;
 
 const NavList= styled.ul`
   display: flex;
   gap: 20px;
+
+
+
+  @media (max-width: 864px) {
+        display: none;
+    }
 
   li {
     list-style-type: none;
@@ -84,8 +106,9 @@ const NavList= styled.ul`
 
 const StyledNavLink = styled(NavLink)`
   text-decoration: none;
-  color: ${props=> props.theme.colors.white};
+  color: ${props=> props.theme.colors.neutral[50]};
   padding: 8px 16px;
+  font-weight: ${props=> props.theme.typography.fontWeight["bold"]};
 
     &:hover{
       background-color: ${props=> props.theme.colors.neutral[800]};
@@ -107,55 +130,13 @@ const StyledNavLink = styled(NavLink)`
 
 `
 
-const DropdownMenu = styled.div`
-  position: absolute;
-  top: 60px;
-  right:24px;
-  box-shadow: ${props=> props.theme.shadow};
-  width: 300px;
-  border-radius: 0 0 10px 10px;
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-  border: 1px solid ${props=> props.theme.colors.neutral[200]};
-  background-color: ${props=> props.theme.colors.white};;
 
-  ul{
-    list-style: none;
-    width: 100%;
-    border-bottom: 1px solid ${props=> props.theme.colors.neutral[200]};
-    padding-bottom: 8px;
-    display: flex;
-    flex-direction: column;
-    row-gap: 8px;
-
-    li {
-    padding: 8px 0;
-
-    a {
-      text-decoration: none;
-      display: block;
-      padding: 8px 16px;
-
-    &:hover {
-        background-color: ${props => props.theme.colors.neutral[50]};
-        border-radius: 10px;
-      }
-    }
-    
-  }
-  }
-
-  
-
-  button {
-    width: 100%;
-  }
-`
 
 
 const CartButton=styled.div`
   position: relative;
+  display: flex;
+  align-items: center;
 
   div{
     border-radius: 50%;
@@ -163,21 +144,60 @@ const CartButton=styled.div`
     height: 16px;
     background-color: ${props=> props.theme.colors.primary[500]};
     position: absolute;
-    top: -10px;
-    right: -10px;
+    top: -5px;
+    right: -5px;
+    font-size: 1.1rem;
+    font-weight: ${props=> props.theme.typography.fontWeight["bold"]};
+    text-align: center;
   }
   
   button{
     background-image: url(${cart});
     background-color: transparent;
     background-repeat: no-repeat;
-    background-size: contain;
+    background-position: center;
     border: none;
-    width: 24px;
-    height: 24px;
+    width: 33px;
+    height: 33px;
     padding: 0px;
+
+    &:hover{
+      border-radius: 50%;
+      background-color: ${props => props.theme.colors.neutral[800]};
+
+    }
   }
  
+`
+
+const Greeting=styled.p`
+font-weight: ${props=> props.theme.typography.fontWeight["bold"]};
+
+ @media (max-width: 864px) {
+        display: none;
+    }
+
+`
+
+const ButtonHamburger=styled.button`
+  display: none;
+  padding: 8px;
+  background: none;
+
+   @media (max-width: 864px) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+  &:hover{
+      background-color: ${props=> props.theme.colors.neutral[800]};
+      border-radius: 10px;
+
+    }
+
+
+  
 `
 
 
@@ -212,13 +232,24 @@ const Navbar = () => {
     getData(currentUser)
   }, [currentUser])
 
-    const logout = async () => {
-    try{
-      await signOut(auth);
-    }catch(error){
-      console.log(error)
+
+  useEffect(() => {
+    const isSmallScreen = () => window.matchMedia('(max-width: 490px)').matches;
+
+    if (isSmallScreen() && (dropdownMenu || shoppingCart) ) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     }
-  }
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, [dropdownMenu, shoppingCart]);
+
+   
 
   const countTotalQuantity = () =>{
       const totalQuantity = shoppingCartItems.reduce((accumulator, currentValue) => {
@@ -237,23 +268,23 @@ const Navbar = () => {
         <button onClick={()=> navigate(-1)}>
           <img src={arrowBackIcon} alt="Back" />
         </button>
-        <Logo $black>OrderPizza</Logo>
+        <Link style={{textDecoration: "none"}} to="/"><Logo $black>OrderPizza</Logo></Link>
       </NavBack>
     ) : (
       <>
         <Nav>
           <div>
-            <Logo>OrderPizza</Logo>
+            <Link style={{textDecoration: "none"}} to="/"><Logo>OrderPizza</Logo></Link>
             <NavList>
               <li><StyledNavLink to='/menu'>Menu</StyledNavLink></li>
-              <li><StyledNavLink to='/'>Promotions</StyledNavLink></li>
+              <li><StyledNavLink to='/promotions'>Promotions</StyledNavLink></li>
               <li><StyledNavLink to='/contact'>Contact</StyledNavLink></li>
             </NavList>
           </div>
 
           {currentUser ? (
             <div>
-              <p>Hi, {name}!</p>
+              <Greeting>Hi, {name}!</Greeting>
 
               <CartButton>
                 <div>{countTotalQuantity()}</div>
@@ -261,6 +292,7 @@ const Navbar = () => {
               </CartButton>
 
               <Button 
+                className="dropdown-btn"
                 buttonType="textWhite" 
                 iconLeft={userIcon} 
                 iconRight={arrowIcon} 
@@ -268,23 +300,22 @@ const Navbar = () => {
               >
                 My account
               </Button>
+              <ButtonHamburger onClick={() => setDropdownMenu(!dropdownMenu)}><img src={hamburgerIcon} alt=''/></ButtonHamburger>
             </div>
           ) : (
-            <Button buttonType="primary" onClick={() => navigate("./login")}>Log in</Button>
-          )}
-
-          {dropdownMenu && (
-            <DropdownMenu>
-              <ul>
-                <li><Link to="/personal-data">Personal data</Link></li>
-                <li><Link to="/orders">Orders</Link></li>
-              </ul>
-              <Button style={{ width: "100%" }} buttonType="secondary" onClick={logout}>Log out</Button>
-            </DropdownMenu>
+            <div className="logged-out">
+                <Button buttonType="primary" onClick={() => navigate("./login")}>Log in</Button>
+              <ButtonHamburger onClick={() => setDropdownMenu(!dropdownMenu)}><img src={hamburgerIcon} alt=''/></ButtonHamburger>
+            </div>
+            
           )}
         </Nav>
 
-        {shoppingCart && <ShoppingCartDropdown />}
+        {dropdownMenu && <MenuDropdown dropdownMenu={dropdownMenu}
+    setDropdownMenu={setDropdownMenu} />}
+
+        {shoppingCart && <ShoppingCartDropdown shoppingCart={shoppingCart}
+    setShoppingCart={setShoppingCart} />}
       </>
     )}
   </>

@@ -20,6 +20,7 @@ const StyledButton = styled.button<ButtonTypes>`
     width: auto;
     align-self: center;
     align-items: center;
+    
 
 
     ${props => props.buttonType === 'primaryLarge' && css`
@@ -81,6 +82,7 @@ const StyledButton = styled.button<ButtonTypes>`
 
 
     ${props => props.buttonType === 'textWhite' && css`
+    background-color: transparent;
     color: ${props=> props.theme.colors.neutral[50]};
 
     &:hover{

@@ -27,10 +27,24 @@ type Order = {
     price: number,
 }
 
+const Container=styled.div`
+width: 864px;
+margin: 128px 0;
+
+@media (max-width: 864px) {
+    width: 100%;
+    margin: 16px;   
+    }
+`
 
 const Table = styled.table`
  width: 100%;
  border-collapse: collapse;
+
+
+@media (max-width: 864px) {
+display: none;
+}
 
 
  th {
@@ -102,18 +116,6 @@ const Table = styled.table`
     align-items: center;
     border-bottom: none;
     padding: 0px;
-    
-
-     div{
-    background-color: ${props=> props.theme.colors.neutral[100]};
-    border-radius: 4px;
-    width: 24px;
-    height: 24px; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
- }
 
     }
     
@@ -124,7 +126,31 @@ const Table = styled.table`
 
 
 `
+const QuantityContainer=styled.div`
+background-color: ${props=> props.theme.colors.neutral[100]};
+    border-radius: 4px;
+    width: 24px;
+    height: 24px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+`
 
+const TableMobile = styled.div`
+    display: flex;
+    flex-direction: column;
+    display: none;
+
+    @media (max-width: 864px) {
+    display: initial;
+    }
+
+    div{
+        border-bottom: ${props=> props.theme.colors.neutral[200]};
+        padding: 24px;
+    }
+`
 
 const Orders = () => {
     const currentUser = useContext(AuthContext)
@@ -165,7 +191,8 @@ const Orders = () => {
 
 
   return (
-    <PageContainer title="Orders">
+    <Container>
+        <PageContainer title="Orders">
         <SectionContainer title="Delivery trucker">
             {orders?.map(order => order.status !==  "completed" &&
             <DeliveryTrucker key={order.orderID} order={order}/>
@@ -193,7 +220,7 @@ const Orders = () => {
                         <table>
                             <tbody className="items">
                             {order.products.map((item) =>
-                            <tr  key={item.productID}><td><p>{getMenuItem(item.productID)?.name}</p> <div>{item.quantity}</div></td></tr>)}
+                            <tr  key={item.productID}><td><p>{getMenuItem(item.productID)?.name}</p> <QuantityContainer>{item.quantity}</QuantityContainer></td></tr>)}
                             </tbody>
 
                         </table>
@@ -204,8 +231,28 @@ const Orders = () => {
             </tbody>
             
         </Table>
+        <TableMobile>
+            {orders && orders.map((order) =>
+                order.status === "completed" &&
+                <div key={order.orderID}>
+                    <h4># {order.orderID}</h4>
+                    <p>Date:{generateDate(order.date.toDate())}{generateHour(order.date.toDate())}</p>
+                    <p>Products:</p>
+                    {order.products.map((item) =>
+                    <div><p>{getMenuItem(item.productID)?.name}</p> <div>{item.quantity}</div></div>)}
+                    <p>Total price: {order.price}{'\u20AC'} </p>
+
+
+                </div>
+
+            )}
+
+        </TableMobile>
         </SectionContainer>
     </PageContainer>
+
+    </Container>
+    
   )
 }
 

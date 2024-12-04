@@ -29,16 +29,62 @@ type UserData = {
   address?: string,
 }
 
+const Container=styled.div`
+width: 864px;
+margin: 128px 0;
+
+@media (max-width: 864px) {
+    width: 100%;
+    margin: 16px;   
+    }
+`
+
 const StepContainer= styled.div<{ $active?: boolean; }>`
   display: flex;
   column-gap: 24px;
   margin-bottom: 56px;
 
+  >div.step-number{
+    margin-top: 16px;
+
+    @media (max-width: 490px) {
+    display: none;
+  }
+
+  }
+
   >div.step-details{
     border-radius: 10px;
     border: ${props => props.$active ? "none" : `1px solid ${props.theme.colors.neutral[200]}`};
     flex: 1;
+
+    @media (max-width: 490px) {
+    border: none;
   }
+  }
+`
+
+const StepHeader = styled.div`
+
+@media (max-width: 490px) {
+  display: flex;
+  align-items: center;
+  column-gap: 24px;
+  }
+
+
+  div.step-number {
+    display: none;
+
+    @media (max-width: 490px) {
+    display: initial;
+  }
+
+  
+
+}
+
+
 `
 
 const StepNumber= styled.div<{ $active?: boolean; }>`
@@ -50,14 +96,24 @@ const StepNumber= styled.div<{ $active?: boolean; }>`
     justify-content: center;
     align-items: center;
     color: ${props=> props.$active ? props.theme.colors.neutral[50] : props.theme.colors.neutral[700] };
-    font-size: 24px;
-    margin-top: 16px;
+    font-size: ${props=> props.theme.typography.fontSize["xl"]};
+
+    @media (max-width: 490px) {
+    width: 40px;
+    height: 40px;
+    font-size: ${props=> props.theme.typography.fontSize["lg"]};
+  }
 `
+
 
 const ShoppingCartItemContainer = styled.div`
 display: flex;
 justify-content: space-between;
 padding: 16px 24px;
+
+@media (max-width: 490px) {
+    flex-direction: column;
+  }
 
 
 div.name{
@@ -84,6 +140,11 @@ div.price{
   justify-content: space-between;
   align-items: center;
   width: 140px;
+
+  @media (max-width: 490px) {
+    align-self: flex-end;
+  }
+
 
   & > p {
   margin-left: auto; 
@@ -175,6 +236,15 @@ const PageFooter = styled.div`
   display: flex;
   justify-content: flex-end;
   column-gap: 16px;
+
+  @media (max-width: 490px) {
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+
+    button{
+      width: 100%;
+    }
+  }
 
 
 `
@@ -327,14 +397,16 @@ const OrderSummary = () => {
 
   return (
 
+    <Container>
       <PageContainer title="Order summary">
 
 {/* STEP 1 */}
       {state.step1 &&
       <StepContainer $active>
-        <StepNumber $active>1</StepNumber>
+        <div className="step-number"><StepNumber $active>1</StepNumber></div>
         <div className="step-details">
-          <SectionContainer title="Shopping Cart">
+          <SectionContainer>
+            <StepHeader><div className="step-number"><StepNumber $active>1</StepNumber></div><SectionHeader>Shopping Cart</SectionHeader></StepHeader>
           <ShoppingCartItems $active>
             {shoppingCartItems.map((item =>
              <ShoppingCartItemContainer  key={item.productID}>
@@ -400,12 +472,12 @@ const OrderSummary = () => {
 
       {!state.step1 &&
       <StepContainer>
-        <StepNumber>1</StepNumber>
+        <div className="step-number"><StepNumber>1</StepNumber></div>
         <div className="step-details">
           <SectionContainer>
             <HeaderEdit>
-              <SectionHeader>Shopping Cart</SectionHeader> 
-              <Button buttonType="icon" iconLeft={iconEdit} onClick={()=> dispatch({ type: "TOGGLE_STEP1" })}/>
+              <StepHeader><div className="step-number"><StepNumber>1</StepNumber></div><SectionHeader>Shopping Cart</SectionHeader> </StepHeader>
+              <Button buttonType="icon" iconLeft={iconEdit} onClick={()=> {dispatch({ type: "TOGGLE_STEP1" }); order.deliveryAddress ? dispatch({ type: "SET_STEP2", payload: "false" }) :  dispatch({ type: "SET_STEP2", payload: "disabled" }); order.paymentMethod ? dispatch({ type: "SET_STEP3", payload: "false" }): dispatch({ type: "SET_STEP3", payload: "disabled" })}}/>
             </HeaderEdit>
           <ShoppingCartItems>
             {shoppingCartItems.map((item =>
@@ -440,9 +512,10 @@ const OrderSummary = () => {
 {/* STEP 2 */}
       {state.step2 === "true" &&
       <StepContainer $active>
-        <StepNumber $active>2</StepNumber>
+        <div className="step-number"><StepNumber $active>2</StepNumber></div>
         <div className="step-details">
-          <SectionContainer title="Delivery address" >
+          <SectionContainer>
+            <StepHeader><div className="step-number"><StepNumber $active>2</StepNumber></div><SectionHeader>Delivery address</SectionHeader></StepHeader>
           <Form onSubmit={formik.handleSubmit}>
             {userData?.addressesList?.slice(0, 3).map((address) => (
               <InputRadio key={address.addressID}>    
@@ -517,12 +590,12 @@ const OrderSummary = () => {
 
 {state.step2 === "false" &&
 <StepContainer>
-  <StepNumber>2</StepNumber>
+  <div className="step-number"><StepNumber>2</StepNumber></div>
     <div className="step-details">
       <SectionContainer>
         <HeaderEdit>
-          <SectionHeader>Delivery address</SectionHeader> 
-          <Button buttonType="icon" iconLeft={iconEdit} onClick={()=> dispatch({ type: "SET_STEP2", payload: "true" })}/>
+          <StepHeader><div className="step-number"><StepNumber>2</StepNumber></div><SectionHeader>Delivery address</SectionHeader></StepHeader>
+          <Button buttonType="icon" iconLeft={iconEdit} onClick={()=> {dispatch({ type: "SET_STEP2", payload: "true" }); order.paymentMethod ? dispatch({ type: "SET_STEP3", payload: "false" }): dispatch({ type: "SET_STEP3", payload: "disabled" })}}/>
         </HeaderEdit>
         
         <div style={{display: "flex", columnGap: "16px", padding: "16px"}}>
@@ -541,8 +614,9 @@ const OrderSummary = () => {
 
 {state.step2 === "disabled" && 
     <StepContainer>
-      <StepNumber>3</StepNumber>
-      <SectionContainer title="Delivery address">
+      <div className="step-number"><StepNumber>3</StepNumber></div>
+      <SectionContainer>
+        <StepHeader><div className="step-number"><StepNumber>2</StepNumber></div><SectionHeader>Delivery address</SectionHeader></StepHeader>
       </SectionContainer>
     </StepContainer>
 
@@ -557,9 +631,10 @@ const OrderSummary = () => {
 {/* STEP 3 */}
     {state.step3 === "true" &&
       <StepContainer $active>
-        <StepNumber $active>3</StepNumber>
+         <div className="step-number"><StepNumber $active>3</StepNumber></div>
         <div className="step-details">
-          <SectionContainer title="Payment method">
+          <SectionContainer>
+            <StepHeader><div className="step-number"><StepNumber $active>3</StepNumber></div><SectionHeader>Payment method</SectionHeader></StepHeader>
             <Form onSubmit={(event) => {event.preventDefault(); dispatch({ type: "SET_STEP3", payload: "false" })}}>
               <InputRadio>
                 <input id="BankTransfer" type="radio" name="option" value="BankTransfer" onChange={() => {
@@ -571,7 +646,7 @@ const OrderSummary = () => {
                 
               <InputRadio>
                 <input id="PayPal" type="radio" name="option" value="PayPal" onChange={() => {
-        setOrder({ ...order, paymentMethod: "PayPAl" });
+        setOrder({ ...order, paymentMethod: "PayPal" });
         setActiveButtonPayment(true);
       }} checked={order?.paymentMethod === "PayPal"}/>
                 <label htmlFor="PayPal">PayPal</label>
@@ -605,15 +680,15 @@ const OrderSummary = () => {
       </StepContainer>
     }
 
-      {state.step3 === "false" &&
+      {(state.step3 === "false" || (state.step3 === "disabled" && state.step1 === "false" && state.step3 === "false"))  &&
 
     <StepContainer>
-      <StepNumber>3</StepNumber>
+      <div className="step-number"><StepNumber>3</StepNumber></div>
       <div className="step-details">
         <SectionContainer>
           <HeaderEdit>
-          <SectionHeader>Payment method</SectionHeader> 
-          <Button buttonType="icon" iconLeft={iconEdit} onClick={()=> dispatch({ type: "SET_STEP3", payload: "true" })}/>
+          <StepHeader><div className="step-number"><StepNumber>3</StepNumber></div><SectionHeader>Payment method</SectionHeader></StepHeader>
+          <Button buttonType="icon" iconLeft={iconEdit} onClick={()=> {dispatch({ type: "SET_STEP3", payload: "true" })}}/>
         </HeaderEdit>
         <div style={{display: "flex", columnGap: "16px", padding: "16px"}}>
           <p>{order.paymentMethod}</p>
@@ -635,8 +710,9 @@ const OrderSummary = () => {
     {state.step3 === "disabled" &&
 
     <StepContainer>
-      <StepNumber>3</StepNumber>
-      <SectionContainer title="Payment method">
+      <div className="step-number"><StepNumber>3</StepNumber></div>
+      <SectionContainer>
+        <StepHeader><div className="step-number"><StepNumber>3</StepNumber></div><SectionHeader>Payment method</SectionHeader></StepHeader>
 
  
       </SectionContainer>
@@ -652,6 +728,10 @@ const OrderSummary = () => {
 
       </PageContainer>
 
+
+    </Container>
+
+      
 
 
   )

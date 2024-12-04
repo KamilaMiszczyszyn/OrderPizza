@@ -9,6 +9,7 @@ import countPrice from "./../../utils/countPrice"
 import getMenuItem from "../../utils/getMenuItem"
 import subtotalPrice from "../../utils/subtotalPrice"
 import { useNavigate} from 'react-router-dom';
+import closeIcon from "./../../assets/close.svg"
 
 const Container = styled.div`
     padding: 24px;
@@ -20,27 +21,66 @@ const Container = styled.div`
     top: 60px;
     right: 192px;
 
-    div.subtotal-price{
-        margin: 8px 0 24px 0;
-        display: flex;
-        justify-content: flex-end;
-        column-gap: 16px;
-        padding: 0 16px;
+    @media (min-width: 490px) and (max-width: 864px) {
+        right: 80px;
     }
 
+    @media (max-width: 490px) {
+        top: 0;
+        right: 0;
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        
+        }
+
+    
+
 `
+const CloseButton=styled.button`
+background: none;
+display: none;
+
+@media (max-width: 490px) {
+        display: initial;
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        
+        }
+`
+
+const Logo = styled.h1`
+  color: ${props => props.theme.colors.neutral[900]};
+  margin-bottom: 24px;
+  display: none;
+   @media (max-width: 490px) {
+        display: initial;
+        
+        }
+
+
+`;
+
 const ShoppingCartItemsContainer=styled.div`
     display: flex;
     flex-direction: column;
     row-gap: 24px;
     padding: 0  16px 24px 16px;
-    border-bottom:  1px solid ${props=> props.theme.colors.neutral[200]};
+    flex: 1;
+    
     
 `
 
 const ShoppingCartItem=styled.div`
     display: flex;
     justify-content: space-between;
+
+    @media (max-width: 490px) {
+        flex-direction: column;
+        }
 
     div.name{
         display: flex;
@@ -65,6 +105,10 @@ const ShoppingCartItem=styled.div`
         width: 150px;
         align-items: center;
 
+        @media (max-width: 490px) {
+        align-self: flex-end;
+        }
+
         div.quantity{
             display: flex;
             align-items: center;
@@ -75,14 +119,36 @@ const ShoppingCartItem=styled.div`
     }
     
 `
-const ShoppingCartDropdown = () => {
+
+const Footer=styled.div`
+    border-top:  1px solid ${props=> props.theme.colors.neutral[200]};
+    display: flex;
+    flex-direction: column;
+    row-gap: 24px;
+    padding-top: 24px;
+
+    div.subtotal-price{
+        margin: 8px 0 0 0;
+        display: flex;
+        justify-content: flex-end;
+        column-gap: 16px;
+        padding: 0 16px;
+    }
+
+
+    
+`
+
+const ShoppingCartDropdown = ({shoppingCart, setShoppingCart}) => {
  const {shoppingCartItems} = useContext(ShoppingCartContext);
  const changeQuantity=useShoppingCartQuantity();
   const navigate = useNavigate();
  
   return (
     <Container>
-            <ShoppingCartItemsContainer>
+    <CloseButton onClick={() => setShoppingCart(!shoppingCart)}><img src={closeIcon} alt="Close"/></CloseButton>
+        <Logo>OrderPizza</Logo>
+                <ShoppingCartItemsContainer>
             {shoppingCartItems.map(item => 
             <ShoppingCartItem>
                 <div className="name">
@@ -109,9 +175,18 @@ const ShoppingCartDropdown = () => {
             </ShoppingCartItem>
             )}
         </ShoppingCartItemsContainer>
-        <div className="subtotal-price"><p>Subtotal price:</p><p>{subtotalPrice(shoppingCartItems)}  {'\u20AC'}</p></div>
         
-        <Button style={{width: "100%"}} onClick={()=>navigate("/order-summary")}>Order summary</Button>
+        
+
+        <Footer>
+            <div className="subtotal-price"><p>Subtotal price:</p><p>{subtotalPrice(shoppingCartItems)}  {'\u20AC'}</p></div>
+
+            <Button buttonType="secondary" style={{width: "100%"}} onClick={()=>navigate("/order-summary")}>Order summary</Button>
+
+        </Footer>
+        
+
+           
         
     </Container>
   )
