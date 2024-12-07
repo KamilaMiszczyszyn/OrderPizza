@@ -1,6 +1,6 @@
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
-import {useNavigate, Link} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {createUserWithEmailAndPassword, signOut} from 'firebase/auth'
 import {setDoc, doc} from 'firebase/firestore'
 import {auth, db} from "./../../firebase/firebase"
@@ -110,7 +110,7 @@ const Register = () => {
         <Input label="Confirm password" id="confirmPassword" type="password" name="confirmPassword" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.confirmPassword} error={formik.errors.confirmPassword} touched={formik.touched.confirmPassword}/>
       
         <div className='footer'>
-          <Button buttonType='textBlack' to="/login">Cancel</Button>
+          <Button buttonType='textBlack' onClick={()=> navigate("./login")}>Cancel</Button>
           <Button buttonType="secondary" type="submit">Create account</Button>   
 
         </div>

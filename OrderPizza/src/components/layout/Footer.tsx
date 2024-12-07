@@ -1,11 +1,11 @@
 import styled from "styled-components"
-import pinIcon from "./../assets/pin-white.svg"
-import mailIcon from "./../assets/mail-white.svg"
-import phoneIcon from "./../assets/phone-white.svg"
+import pinIcon from "./../../assets/pin-white.svg"
+import mailIcon from "./../../assets/mail-white.svg"
+import phoneIcon from "./../../assets/phone-white.svg"
 
-import fbIcon from "./../assets/socialmedia-fb.png"
-import igIcon from "./../assets/socialmedia-insta.png"
-import ttIcon from "./../assets/socialmedia-tt.png"
+import fbIcon from "./../../assets/socialmedia-fb.png"
+import igIcon from "./../../assets/socialmedia-insta.png"
+import ttIcon from "./../../assets/socialmedia-tt.png"
 import { NavLink } from "react-router-dom"
 
 

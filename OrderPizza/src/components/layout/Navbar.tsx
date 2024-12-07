@@ -2,15 +2,15 @@ import { NavLink, Link, useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useState, useContext } from "react"
 import {doc, getDoc} from 'firebase/firestore'
 import styled from 'styled-components'
-import { AuthContext } from "../context/AuthContext"
-import { db } from "./../firebase/firebase"
-import cart from "./../assets/shopping-cart.svg"
-import {ShoppingCartDropdown, Button, MenuDropdown } from "./index"
-import {ShoppingCartContext} from "./../context/ShoppingCartContext"
-import userIcon from "./../assets/user-small-white.svg"
-import arrowIcon from "./../assets/arrow-down-white.svg"
-import arrowBackIcon from "./../assets/arrow-back.svg"
-import hamburgerIcon from "./../assets/hamburger-menu.svg"
+import { AuthContext } from "../../context/AuthContext"
+import { db } from "../../firebase/firebase"
+import cart from "./../../assets/shopping-cart.svg"
+import {ShoppingCartDropdown, Button, MenuDropdown } from "./../index"
+import {ShoppingCartContext} from "../../context/ShoppingCartContext"
+import userIcon from "./../../assets/user-small-white.svg"
+import arrowIcon from "./../../assets/arrow-down-white.svg"
+import arrowBackIcon from "./../../assets/arrow-back.svg"
+import hamburgerIcon from "./../../assets/hamburger-menu.svg"
 
 
 

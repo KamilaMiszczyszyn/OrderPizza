@@ -1,19 +1,19 @@
 import styled from "styled-components"
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
-import {db} from "./../firebase/firebase"
+import {db} from "./../../firebase/firebase"
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
-import {Input, PageContainer, SectionContainer, Button} from "./index"
-import iconAdd from "./../assets/add-white.svg"
+import { AuthContext } from "./../../context/AuthContext"
+import {Input, PageContainer, SectionContainer, Button} from "./../index"
+import iconAdd from "./../../assets/add-white.svg"
 
 type UserData = {
   firstName?: string,
   lastName?: string,
   email?: string,
   phone?: number,
-  address?: string,
+  addressesList?: Array<string>,
 }
 
 const Container=styled.div`

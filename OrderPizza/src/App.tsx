@@ -1,9 +1,9 @@
 import { Routes, Route } from "react-router-dom";
-import { Layout, Login, Register, ForgotPassword, Home, Menu, PersonalData, OrderSummary, Orders, OrdersManagement, Contact, CustomerFeedback, Loader } from "./components";
+import { Layout, Login, Register, Home, Menu, PersonalData, OrderSummary, Orders, OrdersManagement, Contact, CustomerFeedback, Loader } from "./components/index.ts"
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import GlobalStyle from './styles/Globals.ts';
-import { useState, useEffect } from "react"; // Dodaj import useEffect
+import { useState, useEffect } from "react"; 
 
 
 
@@ -30,7 +30,6 @@ function App() {
                             <Route path="/" element={<Home />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/register" element={<Register />} />
-                            <Route path="/forgot-password" element={<ForgotPassword />} />
                             <Route path="/menu" element={<Menu />} />
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/customer-feedback" element={<CustomerFeedback />} />

@@ -1,5 +1,5 @@
-import menuItems from "./../data/items.json"
-import {PageContainer, SectionContainer, MenuItemPizza, MenuItemDrink } from "./index"
+import menuItems from "../../data/items.json"
+import {PageContainer, SectionContainer, MenuItemPizza, MenuItemDrink } from "./../index"
 import styled from "styled-components"
 
 const Container=styled.div`

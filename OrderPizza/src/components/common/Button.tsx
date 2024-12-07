@@ -4,14 +4,14 @@ interface ButtonTypes {
     buttonType: "primaryLarge" | "primary" | "secondary" | "textWhite" | "textBlack" | "icon" | "disabled"
 } 
 
-interface ComponentProps {
+interface ComponentProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children?: React.ReactNode; 
-    buttonType?: ButtonTypes["buttonType"];
+    buttonType: ButtonTypes["buttonType"];
     iconLeft?: string;
     iconRight?: string;
 }
 
-const StyledButton = styled.button<ButtonTypes>`
+const StyledButton = styled.button<{$buttonType: ButtonTypes["buttonType"]}>`
     border-radius: 10px;
     padding: 8px 16px;
     display: flex;
@@ -23,7 +23,7 @@ const StyledButton = styled.button<ButtonTypes>`
     
 
 
-    ${props => props.buttonType === 'primaryLarge' && css`
+    ${props => props.$buttonType === 'primaryLarge' && css`
     padding: 16px 32px;
     color: ${props=> props.theme.colors.neutral[50]};
     background-color: ${props=> props.theme.colors.primary[500]};
@@ -39,7 +39,7 @@ const StyledButton = styled.button<ButtonTypes>`
     `}
 
 
-    ${props => props.buttonType === 'primary' && css`
+    ${props => props.$buttonType === 'primary' && css`
     color: ${props=> props.theme.colors.neutral[50]};
     background-color: ${props=> props.theme.colors.primary[500]};
 
@@ -53,7 +53,7 @@ const StyledButton = styled.button<ButtonTypes>`
     `}
 
 
-    ${props => props.buttonType === 'secondary' && css`
+    ${props => props.$buttonType === 'secondary' && css`
     color: ${props=> props.theme.colors.neutral[50]};
     background-color: ${props=> props.theme.colors.neutral[900]};
 
@@ -67,7 +67,7 @@ const StyledButton = styled.button<ButtonTypes>`
     `}
 
 
-    ${props => props.buttonType === 'textBlack' && css`
+    ${props => props.$buttonType === 'textBlack' && css`
     color: ${props=> props.theme.colors.neutral[900]};
     background-color: transparent;
 
@@ -81,7 +81,7 @@ const StyledButton = styled.button<ButtonTypes>`
     `}
 
 
-    ${props => props.buttonType === 'textWhite' && css`
+    ${props => props.$buttonType === 'textWhite' && css`
     background-color: transparent;
     color: ${props=> props.theme.colors.neutral[50]};
 
@@ -95,7 +95,7 @@ const StyledButton = styled.button<ButtonTypes>`
     `}
 
 
-    ${props => props.buttonType === 'icon' && css`
+    ${props => props.$buttonType === 'icon' && css`
     border-radius: 150%;
     color: ${props=> props.theme.colors.neutral[50]};
     background-color: ${props=> props.theme.colors.neutral[900]};
@@ -113,7 +113,7 @@ const StyledButton = styled.button<ButtonTypes>`
     }
     `}
 
-    ${props => props.buttonType === 'disabled' && css`
+    ${props => props.$buttonType === 'disabled' && css`
     color: ${props=> props.theme.colors.neutral[500]};
     background-color: ${props=> props.theme.colors.neutral[200]};
    
@@ -126,16 +126,15 @@ const StyledButton = styled.button<ButtonTypes>`
 `
 
 
-const Button = ({children, buttonType, iconLeft, iconRight, ...props}: ComponentProps) => {
+const Button = ({ children, buttonType, iconLeft, iconRight, ...props }: ComponentProps) => {
 
-    
   return (
-    <StyledButton buttonType={buttonType} {...props}>
-        {iconLeft && <img src={iconLeft} alt=''/>}    
-        {children}
-        {iconRight && <img src={iconRight} alt=''/>}
+    <StyledButton $buttonType={buttonType} {...props}>
+      {iconLeft && <img src={iconLeft} alt='' />}
+      {children}
+      {iconRight && <img src={iconRight} alt='' />}
     </StyledButton>
-  )
-}
+  );
+};
 
 export default Button

@@ -1,9 +1,9 @@
 import { useFormik } from 'formik'
-import {useNavigate, Link} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import { signInWithEmailAndPassword } from '@firebase/auth'
-import {auth} from "./../../firebase/firebase"
+import {auth} from "../../firebase/firebase"
 import styled from 'styled-components';
 import {Input, Button} from "./../index"
 import pizzaImg from "./../../assets/login-pizza.png"

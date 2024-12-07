@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import SectionHeader from "./SectionHeader"
+import {SectionHeader} from "./../index"
 
 interface ComponentProps {
   title?: string;

@@ -1,12 +1,11 @@
 import { useState, useEffect, useContext } from "react"
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import { query, where, collection, onSnapshot, Timestamp } from "firebase/firestore";
-import {db} from "./../firebase/firebase"
+import {db} from "../../firebase/firebase"
 import styled from "styled-components";
-import deliveryIcon from "./../assets/deliveryicon.png"
-import { generateDate, generateHour } from "../utils/convertTime";
-import getMenuItem from "../utils/getMenuItem";
-import {PageContainer, SectionContainer, DeliveryTrucker} from "./index"
+import { generateDate, generateHour } from "../../utils/convertTime";
+import getMenuItem from "../../utils/getMenuItem";
+import {PageContainer, SectionContainer, DeliveryTrucker} from "./../index"
 
 
 

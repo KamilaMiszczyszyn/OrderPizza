@@ -1,22 +1,22 @@
-import {db} from "./../firebase/firebase"
+import {db} from "./../../firebase/firebase"
 import { doc, getDoc, addDoc, collection, Timestamp } from "firebase/firestore";
 import { useContext, useEffect, useState, useReducer } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import styled from 'styled-components';
-import {ShoppingCartContext} from "./../context/ShoppingCartContext"
+import {ShoppingCartContext} from "./../../context/ShoppingCartContext"
 import { toast } from 'react-toastify';
 import { useNavigate} from 'react-router-dom';
-import {PageContainer, SectionContainer, Button, Input, SectionHeader} from "./index"
-import useShoppingCartQuantity from '../hooks/useShoppingCartQuantity';
-import getMenuItem from '../utils/getMenuItem';
-import iconAdd from "./../assets/add-white.svg"
-import iconMinus from "./../assets/minus-white.svg"
-import iconPin from "./../assets/pin-red.svg"
-import iconEdit from "./../assets/edit-white.svg"
-import iconPayPal from "./../assets/PayPal.png"
-import iconMastercard from "./../assets/mastercard.png"
-import iconVisa from "./../assets/visa.png"
-import subtotalPrice from "../utils/subtotalPrice";
+import {PageContainer, SectionContainer, Button, Input, SectionHeader} from "./../index"
+import useShoppingCartQuantity from '../../hooks/useShoppingCartQuantity';
+import getMenuItem from '../../utils/getMenuItem';
+import iconAdd from "./../../assets/add-white.svg"
+import iconMinus from "./../../assets/minus-white.svg"
+import iconPin from "./../../assets/pin-red.svg"
+import iconEdit from "./../../assets/edit-white.svg"
+import iconPayPal from "./../../assets/PayPal.png"
+import iconMastercard from "./../../assets/mastercard.png"
+import iconVisa from "./../../assets/visa.png"
+import subtotalPrice from "./../../utils/subtotalPrice"
 
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
@@ -557,10 +557,6 @@ const OrderSummary = () => {
                 </label>
 
               </InputRadio>
-          
-        {/* {formik.values.option === 'custom' && formik.errors.customAddress ? (
-          <div style={{ color: 'red' }}>{formik.errors.customAddress}</div>
-        ) : null} */}
    
 
             {formik.errors.option && (

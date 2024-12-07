@@ -2,6 +2,13 @@ import styled from "styled-components"
 import iconEye from "./../../assets/eye.svg"
 import { useState } from "react"
 
+interface ComponentProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    label?: string,
+    touched?: boolean,
+    error?: string,
+
+}
+
 const Container = styled.div`
     display:flex;
     flex-direction: column;
@@ -49,7 +56,7 @@ const InputContainer = styled.div`
 
 
 
-const Input = ({label, touched, error, ...props}) => {
+const Input = ({label, touched, error, ...props}: ComponentProps) => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     const togglePasswordVisibility = () => {
@@ -62,7 +69,7 @@ const Input = ({label, touched, error, ...props}) => {
         <InputContainer>
             <input {...props}/>
             
-            {props.type==="password" && <button onClick={togglePasswordVisibility}><img src={iconEye} alt=''/></button>}     
+            {props.type === "password" && <button onClick={togglePasswordVisibility}><img src={iconEye} alt=''/></button>}     
         </InputContainer>
         {touched && error && <div>{error}</div>} 
         

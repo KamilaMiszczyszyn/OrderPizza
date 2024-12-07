@@ -1,11 +1,11 @@
 import { useReducer, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { query, where, collection, onSnapshot, Timestamp, orderBy, updateDoc, doc} from "firebase/firestore";
-import {db} from "./../firebase/firebase"
-import { generateDate, generateHour } from '../utils/convertTime';
-import getMenuItem from '../utils/getMenuItem';
-import arrowDown from "./../assets/arrow-down.png"
-import arrowUp from "./../assets/arrow-up.png"
+import {db} from "./../../firebase/firebase"
+import { generateDate, generateHour } from './../../utils/convertTime'
+import getMenuItem from '../../utils/getMenuItem';
+import arrowDown from "./../../assets/arrow-down.png"
+import arrowUp from "./../../assets/arrow-up.png"
 
 type ShoppingCartItem = {
     productID: number, 
@@ -293,7 +293,7 @@ const OrdersManagement = () => {
             <p>Phone: {order.phone}</p>
             <p>Products: 
               {order.products.map((item) =>
-               <span key={item.productID}> {getMenuItem(item.productID)?.title} x {item.quantity},</span>)}
+               <span key={item.productID}> {getMenuItem(item.productID)?.name} x {item.quantity},</span>)}
             </p>
             
           </div>
