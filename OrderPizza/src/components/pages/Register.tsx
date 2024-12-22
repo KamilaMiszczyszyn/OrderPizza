@@ -80,7 +80,8 @@ const Register = () => {
             const user={
               firstName,
               lastName,
-              email,          
+              email, 
+              role: "user",       
             }
 
             await setDoc(doc(db,'users', userCredential.user?.uid), user);

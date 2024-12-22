@@ -202,7 +202,7 @@ const ButtonHamburger=styled.button`
 
 
 const Navbar = () => {
-  const currentUser = useContext(AuthContext)
+  const {uid} = useContext(AuthContext)
   const {shoppingCartItems} = useContext(ShoppingCartContext)
 
   const [dropdownMenu, setDropdownMenu]=useState<boolean>(false)
@@ -229,8 +229,8 @@ const Navbar = () => {
             }}
 
     }
-    getData(currentUser)
-  }, [currentUser])
+    getData(uid)
+  }, [uid])
 
 
   useEffect(() => {
@@ -282,7 +282,8 @@ const Navbar = () => {
             </NavList>
           </div>
 
-          {currentUser ? (
+          {(uid && uid !== "kcOGnWfFvfNCDFPTveERhx1icBG3") 
+          && 
             <div>
               <Greeting>Hi, {name}!</Greeting>
 
@@ -302,13 +303,19 @@ const Navbar = () => {
               </Button>
               <ButtonHamburger onClick={() => setDropdownMenu(!dropdownMenu)}><img src={hamburgerIcon} alt=''/></ButtonHamburger>
             </div>
-          ) : (
-            <div className="logged-out">
+            }
+          {!uid && <div className="logged-out">
                 <Button buttonType="primary" onClick={() => navigate("./login")}>Log in</Button>
               <ButtonHamburger onClick={() => setDropdownMenu(!dropdownMenu)}><img src={hamburgerIcon} alt=''/></ButtonHamburger>
-            </div>
+            </div>}
+
+        {uid === "kcOGnWfFvfNCDFPTveERhx1icBG3" &&
+        <Button buttonType="primary" onClick={() => navigate("./login")}>Go to dashboard</Button>
+        }
+          
             
-          )}
+            
+  
         </Nav>
 
         {dropdownMenu && <MenuDropdown dropdownMenu={dropdownMenu}

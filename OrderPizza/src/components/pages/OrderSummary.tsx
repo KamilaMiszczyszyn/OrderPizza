@@ -290,7 +290,7 @@ const reducer = (state: ReducerState, action: ActionReducer) => {
 
 
 const OrderSummary = () => {
-    const currentUser = useContext(AuthContext)
+    const {uid} = useContext(AuthContext)
     const [userData, setUserData] = useState<UserData | null>(null)
     const [activeButtonPayment, setActiveButtonPayment] = useState<boolean>(false)
     const {shoppingCartItems, setShoppingCartItems} = useContext(ShoppingCartContext);
@@ -355,9 +355,9 @@ const OrderSummary = () => {
             }}
   }
 
-    getPersonalData(currentUser)
+    getPersonalData(uid)
 
-  }, [currentUser])
+  }, [uid])
 
 
 
@@ -373,7 +373,7 @@ const OrderSummary = () => {
 
     const orderData = {
         products: shoppingCartItems,
-        customerID: currentUser,
+        customerID: uid,
         deliveryAddress: order.deliveryAddress,
         date: Timestamp.fromDate(new Date()),
         status: "ordered", 

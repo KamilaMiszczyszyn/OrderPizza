@@ -1,9 +1,12 @@
 import { Routes, Route } from "react-router-dom";
-import { Layout, Login, Register, Home, Menu, PersonalData, OrderSummary, Orders, OrdersManagement, Contact, CustomerFeedback, Loader } from "./components/index.ts"
+import { Layout, Login, Register, Home, Menu, PersonalData, OrderSummary, Orders, OrdersManagement, Contact, CustomerFeedback, Loader, OrdersHistory } from "./components/index.ts"
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import GlobalStyle from './styles/Globals.ts';
 import { useState, useEffect } from "react"; 
+import PrivateRoute from "./utils/PrivateRoute.tsx";
+import AdminRoute from "./utils/AdminRoute.tsx";
+
 
 
 
@@ -24,23 +27,43 @@ function App() {
                 <>
                     <GlobalStyle/>
 
-                    <Routes>
+                   <Routes>
                         <Route path="/" element={<Layout />}>
-                            {/* Public routes */}
-                            <Route path="/" element={<Home />} />
-                            <Route path="/login" element={<Login />} />
-                            <Route path="/register" element={<Register />} />
-                            <Route path="/menu" element={<Menu />} />
-                            <Route path="/contact" element={<Contact />} />
-                            <Route path="/customer-feedback" element={<CustomerFeedback />} />
+                        <Route index element={<Home />} />
+                        <Route path="login" element={<Login />} />
+                        <Route path="register" element={<Register />} />
+                        <Route path="menu" element={<Menu />} />
+                        <Route path="contact" element={<Contact />} />
+                        <Route path="customer-feedback" element={<CustomerFeedback />} />
+                        <Route path="orders-history-2" element={<OrdersHistory />} />
 
-                            {/* Private routes */}
-                            <Route path="/personal-data" element={<PersonalData />} />
-                            <Route path="/order-summary" element={<OrderSummary />} />
-                            <Route path="/orders" element={<Orders />} />
-                            <Route path="/orders-management" element={<OrdersManagement />} />
+                        <Route
+                            path="personal-data"
+                            element={<PrivateRoute element={<PersonalData />} />}
+                            />
+                            <Route
+                            path="order-summary"
+                            element={<PrivateRoute element={<OrderSummary />} />}
+                            />
+                            <Route
+                            path="orders"
+                            element={<PrivateRoute element={<Orders />} />}
+                            />
+                        
+
+                        <Route
+                            path="orders-history"
+                            element={<AdminRoute element={<OrdersHistory />} />}
+                            />
+                            <Route
+                            path="orders-management"
+                            element={<PrivateRoute element={<OrdersManagement />} />}
+                            />
                         </Route>
-                    </Routes>  
+                        
+                    </Routes>
+
+
                     <ToastContainer />
                 </>
             )}

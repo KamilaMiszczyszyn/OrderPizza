@@ -152,7 +152,7 @@ const TableMobile = styled.div`
 `
 
 const Orders = () => {
-    const currentUser = useContext(AuthContext)
+    const {uid} = useContext(AuthContext)
     const [orders, setOrders] = useState<Array<Order> | null>(null)
 
  useEffect(() => {
@@ -184,9 +184,9 @@ const Orders = () => {
             }
   }
 
-    getOrders(currentUser)
+    getOrders(uid)
 
-  }, [currentUser])
+  }, [uid])
 
 
   return (

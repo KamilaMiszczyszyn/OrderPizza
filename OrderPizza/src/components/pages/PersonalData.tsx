@@ -104,7 +104,7 @@ const FormAddress = styled.form`
 `
 
 const PersonalData = () => {
-    const currentUser = useContext(AuthContext)
+    const {uid} = useContext(AuthContext)
     const [userData, setUserData] = useState<UserData | null>(null)
 
     const formikGeneral = useFormik({
@@ -139,9 +139,9 @@ const PersonalData = () => {
               phone,        
       }
 
-      if(currentUser){
+      if(uid){
         try{
-          const docRef = doc(db, "users", currentUser);
+          const docRef = doc(db, "users", uid);
           await updateDoc(docRef, user);
           setUserData(user);
         }catch(error){
@@ -177,9 +177,9 @@ const PersonalData = () => {
               addressesList: newAddressesList,
       }
 
-      if(currentUser){
+      if(uid){
         try{
-          const docRef = doc(db, "users", currentUser);
+          const docRef = doc(db, "users", uid);
           await updateDoc(docRef, user);
           formikAddress.resetForm(); 
           setUserData(user);
@@ -209,9 +209,9 @@ const PersonalData = () => {
             }}
   }
 
-    getPersonalData(currentUser)
+    getPersonalData(uid)
 
-  }, [currentUser])
+  }, [uid])
 
 
   return (
