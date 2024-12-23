@@ -51,21 +51,15 @@ const FooterContainer=styled.div`
 
 const Layout = () => {
  
-  const { role } = useContext(AuthContext); // Pobierz rolę użytkownika
+  const { role } = useContext(AuthContext); 
   const location = useLocation();
 
-  // Sprawdzamy, czy jesteśmy na stronie admina
-  const isAdminPage = location.pathname.startsWith('/orders-management') || location.pathname.startsWith('/orders-history') 
+  const isAdminPage = location.pathname.startsWith('/orders-management') || location.pathname.startsWith('/orders-history') || location.pathname.startsWith('/dashboard')
   
-  // Sprawdzamy, czy użytkownik jest adminem (np. z roli)
   const isAdmin = role === 'admin';
 
   console.log(isAdmin)
   console.log(isAdminPage)
-
-  
-
-
 
   return (
     <>

@@ -227,7 +227,7 @@ const divWidth = (reviews: Array<Review>, value: number) => {
 
 
 const CustomerFeedback = () => {
-    const [reviews,setReviews]=useState([]);
+    const [reviews,setReviews]=useState<Array<Review> | null>(null);
     const [stars,setStars] = useState<number | null>(null)
     const [feedbackFormData, setFeedbackFormData]=useState<FeedbackFormData>({firstName: "", selectedStars: null, feedbackText: ""})
 

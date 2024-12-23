@@ -9,10 +9,12 @@ import customersIcon from './../../assets/admin-customers.svg'
 const Container= styled.nav`
     background-color: ${props=> props.theme.colors.neutral[900]};
     height: 100%;
+    padding: 24px;
 `
 
 const Logo = styled.h1`
   color: ${props=> props.theme.colors.neutral[50]};
+  margin-bottom: 48px;
 `;
 
 const NavList= styled.ul`
