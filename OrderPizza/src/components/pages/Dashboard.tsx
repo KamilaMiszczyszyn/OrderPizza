@@ -144,13 +144,13 @@ const FeedbackSection = styled.section`
     }
 
     div.container::-webkit-scrollbar-track {
-        background-color: ${props => props.theme.colors.neutral[50]}; /* Kolor tła toru */
-        border-radius: 10px; /* Zaokrąglony tor */
+        background-color: ${props => props.theme.colors.neutral[50]}; 
+        border-radius: 10px; 
     }
 
     div.container::-webkit-scrollbar-thumb {
         background-color: ${props => props.theme.colors.neutral[200]};
-        border-radius: 10px; /* Zaokrąglony kciuk */
+        border-radius: 10px; 
     }
 
     div.container::-webkit-scrollbar-thumb:hover {

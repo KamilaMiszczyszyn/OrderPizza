@@ -11,5 +11,6 @@ import OrderSummary from "./OrderSummary";
 import PersonalData from "./PersonalData";
 import { OrdersHistory } from "./OrdersHistory";
 import Dashboard from "./Dashboard"
+import Customers from "./Customers";
 
-export {Home, Contact, CustomerFeedback, Loader, Login, Register, Menu, Orders, OrdersManagement, OrderSummary, PersonalData, OrdersHistory, Dashboard}
+export {Home, Contact, CustomerFeedback, Loader, Login, Register, Menu, Orders, OrdersManagement, OrderSummary, PersonalData, OrdersHistory, Dashboard, Customers}

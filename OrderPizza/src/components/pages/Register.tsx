@@ -2,7 +2,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup';
 import {useNavigate} from "react-router-dom";
 import {createUserWithEmailAndPassword, signOut} from 'firebase/auth'
-import {setDoc, doc} from 'firebase/firestore'
+import {setDoc, doc, Timestamp} from 'firebase/firestore'
 import {auth, db} from "./../../firebase/firebase"
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
@@ -81,6 +81,7 @@ const Register = () => {
               firstName,
               lastName,
               email, 
+              createdAt: Timestamp.fromDate(new Date()),
               role: "user",       
             }
 

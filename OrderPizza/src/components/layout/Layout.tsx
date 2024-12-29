@@ -54,7 +54,7 @@ const Layout = () => {
   const { role } = useContext(AuthContext); 
   const location = useLocation();
 
-  const isAdminPage = location.pathname.startsWith('/orders-management') || location.pathname.startsWith('/orders-history') || location.pathname.startsWith('/dashboard')
+  const isAdminPage = location.pathname.startsWith('/orders-management') || location.pathname.startsWith('/orders-history') || location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/customers')
   
   const isAdmin = role === 'admin';
 
