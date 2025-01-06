@@ -310,7 +310,7 @@ const Navbar = () => {
             </div>}
 
         {uid === "kcOGnWfFvfNCDFPTveERhx1icBG3" &&
-        <Button buttonType="primary" onClick={() => navigate("./login")}>Go to dashboard</Button>
+        <Button buttonType="primary" onClick={() => navigate("./dashboard")}>Go to dashboard</Button>
         }
           
             

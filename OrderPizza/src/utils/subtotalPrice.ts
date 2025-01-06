@@ -7,8 +7,8 @@ import menuItems from "./../data/items.json"
   }
   
   const subtotalPrice = (items: Array<Item>) =>{
-    let total = 0
-      total = items.reduce((accumulator, currentValue) => {
+    let subtotal = 0
+      subtotal = items.reduce((accumulator, currentValue) => {
       const quantity = currentValue.quantity;
       const filteredMenuItems = menuItems.pizzas.find((elem) => elem.productID === currentValue.productID) ||  menuItems.drinks.find((elem) => elem.productID === currentValue.productID)
       const price = filteredMenuItems?.price;
@@ -20,7 +20,7 @@ import menuItems from "./../data/items.json"
     },
     0)
 
-    return total
+    return subtotal
 
   }
 

@@ -34,7 +34,11 @@ const InputContainer = styled.div`
         border: none;
         padding: 0;
         width: 100%;
-        
+
+        &:focus {
+        outline: none; 
+    }
+
     }
 
     button{
@@ -54,6 +58,10 @@ const InputContainer = styled.div`
     
 `
 
+const Alert = styled.p`
+    font-size: ${props=> props.theme.typography.fontSize["xs"]};
+`
+
 
 
 const Input = ({label, touched, error, ...props}: ComponentProps) => {
@@ -71,7 +79,7 @@ const Input = ({label, touched, error, ...props}: ComponentProps) => {
             
             {props.type === "password" && <button onClick={togglePasswordVisibility}><img src={iconEye} alt=''/></button>}     
         </InputContainer>
-        {touched && error && <div>{error}</div>} 
+        {touched && error && <Alert>{error}</Alert>} 
         
     </Container>
 

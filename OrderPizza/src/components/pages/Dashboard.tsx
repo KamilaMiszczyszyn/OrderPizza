@@ -1,9 +1,12 @@
 import styled from "styled-components"
 import { useState, useEffect } from "react";
-import { collection, onSnapshot, where, query, orderBy, limit } from "firebase/firestore";
+import { collection, onSnapshot, where, query, orderBy, limit, deleteDoc, doc} from "firebase/firestore";
 import { db } from "./../../firebase/firebase";
 import { Timestamp } from "firebase/firestore";
-import { OrderStatusIcon, Feedback } from "./../index"
+import { OrderStatusIcon, Feedback, PromotionModal, Button } from "./../index"
+import iconAdd from "./../../assets/add-white.svg"
+import { generateDate } from "../../utils/convertTime";
+import optionsIcon from "./../../assets/options.svg"
 
 type ShoppingCartItem = {
     productID: number, 
@@ -30,6 +33,16 @@ type Review = {
   feedback: string, 
   date: Timestamp;
   id?: string,
+}
+
+type Promotion = {
+
+    createdAt: Timestamp,
+    startDate: Timestamp,
+    endDate: Timestamp,
+    type: string , 
+    id: string,
+  
 }
 
 
@@ -161,8 +174,94 @@ const FeedbackSection = styled.section`
 
 const PromotionsSection = styled.section`
   grid-area: promotions;
+
+  div.promotions-container{
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+    
+
+  }
+
+  div.footer{
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+  
+  }
  
 `;
+
+const Promotion=styled.div`
+height: 74px;
+
+display: flex;
+column-gap: 8px;
+align-items: flex-start;
+position: relative;
+
+span.number{
+  font-size: ${props=> props.theme.typography.fontSize["xl"]};
+  font-family: ${props=> props.theme.typography.fontFamily["alternate"]};
+  font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+  color: ${props => props.theme.colors.primary[500]}; 
+}
+
+div.content{
+  height: 100%;
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme.colors.neutral[200]};
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
+  padding: 16px;
+
+}
+
+
+div.promotion-type{
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  font-family: ${props=> props.theme.typography.fontFamily["alternate"]};
+  font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+
+  span.B2G1{
+    font-size: 1.4rem;
+
+  }
+  span.B2G1-free{
+    font-size: 3.4rem;
+
+  }
+
+  span.percentage{
+    font-size: 4.2rem;
+  }
+} 
+
+div.period{
+  display: flex;
+  flex-direction: column;
+  row-gap: 4px;
+
+  h3{
+  font-size: ${props=> props.theme.typography.fontSize["xs"]};
+  font-weight: ${props=> props.theme.typography.fontWeight["regular"]}; 
+  color: ${props => props.theme.colors.neutral[700]}; 
+}
+
+p{
+  font-size: ${props=> props.theme.typography.fontSize["sm"]};
+  font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+
+
+}
+
+}
+
+`
 
 const H2 = styled.h2`
   font-size: ${props=> props.theme.typography.fontSize["xl"]};
@@ -197,6 +296,47 @@ p{
 }
 
 `
+
+const Options=styled.div`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+
+    div.container{
+    position: realative;
+  }`
+
+
+const OptionsButton = styled.button`
+background-color: transparent;
+`
+
+const Dropdown=styled.div`
+  width: 80px;
+  border-radius:  10px;
+  border: 1px solid ${props=> props.theme.colors.neutral[200]};
+  position: absolute;
+  right: 0;
+  top: 24px;
+  background-color: ${props=> props.theme.colors.white};
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+  z-index: 1;
+
+`
+const DropdownItem = styled.button`
+  padding: 8px 16px;
+  background-color: transparent;
+  text-align: left;
+
+  &:hover{
+    background-color: ${props=> props.theme.colors.neutral[50]};
+  }
+
+
+`
+
 //Date
 
 enum Weekdays {
@@ -271,6 +411,11 @@ const getTotalOrders = (orders: Array<Order> | null, orderStatus?: OrderStatus):
 const Dashboard = () => {
     const [orders, setOrders] = useState<Array<Order> | null>(null)
     const [reviews,setReviews]=useState<Array<Review> | null>(null);
+     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [promotions, setPromotions] = useState<Array<Promotion> | null>(null);
+    const [optionsDropdown, setOptionsDropdown] = useState<string | null>(null);
+
+    console.log(promotions)
     
     useEffect(() => {
         const getOrders= () =>{
@@ -318,7 +463,7 @@ const Dashboard = () => {
       }, [])
 
        useEffect(() => {
-            const getReviewsData = () => {
+            const getReviews = () => {
                 const q = query(
                             collection(db, "reviews"),
                             orderBy("date", "asc"), 
@@ -327,19 +472,65 @@ const Dashboard = () => {
                 const unsubscribe = onSnapshot(q, (querySnapshot) => {
                     const reviewsArr: Array<Review> = [];
                     querySnapshot.forEach((doc) => {
-                        reviewsArr.push({...doc.data(), id: doc.id});
+                        reviewsArr.push({...doc.data(), id: doc.id} as Review);
                     });
                     setReviews(reviewsArr);}
                 )
                 return () => unsubscribe();
             };
       
-            getReviewsData();
+            getReviews();
       }, []);
 
+       useEffect(() => {
+    const q = query(
+      collection(db, "promotions"),
+      orderBy("createdAt", "asc")
+    );
+
+    
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const promotions: Array<Promotion> = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          createdAt: data.createdAt,  
+          startDate: data.startDate,  
+          endDate: data.endDate,      
+          type: data.type, 
+          id: doc.id,                  
+        };
+      });
+
+      setPromotions(promotions);  
+    });
+
+   
+    return () => unsubscribe();
+  }, []);
+
+
+
+
+      const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const deletePromotion = async (promotionId: string) => {
+  try {
+    const promotionRef = doc(db, "promotions", promotionId);
+    await deleteDoc(promotionRef);
+  } catch (error) {
+    console.error( error);
+  }
+};
 
   return (
-    <Container>
+    <>
+    <PromotionModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
+      <Container>
         <DateSection>
             <span className="date">{getDate().date}</span>
             <span className="month">{getDate().month}</span>
@@ -407,10 +598,56 @@ const Dashboard = () => {
         </FeedbackSection>
         <PromotionsSection>
             <H2>Promotions</H2>
+            <div className="promotions-container">
+              {promotions?.map((promotion, index) => (
+                  <Promotion key={promotion.id}>
+                    <Options>
+                      <div className="container">
+                        <OptionsButton onClick={()=>setOptionsDropdown(promotion.id)}><img src={optionsIcon} alt=''/></OptionsButton>
+                      {optionsDropdown === promotion.id && (
+                            <Dropdown>
+                              <DropdownItem onClick={() => deletePromotion(promotion.id)}>Delete</DropdownItem>
+                            </Dropdown>
+                          )}
+
+                      </div>
+                      
+                    </Options>
+                    <span className="number">{`0${index + 1}`}</span>
+                    <div className="content">
+                      <div className="promotion-type">
+                        {promotion.type === "B2G1" ? (
+                          <>
+                            <span className="B2G1">BUY 2 GET 1</span>
+                            <span className="B2G1-free">FREE</span>
+                          </>
+                        ) : (
+                          <span className="percentage">{`${promotion.type}%`}</span>
+                        )}
+                      </div>
+                      <div className="period">
+                        <h3>Period</h3>
+                      <p>{`${generateDate(promotion.startDate.toDate())} to ${generateDate(promotion.endDate?.toDate())}`}</p>
+
+                      </div>
+                      
+                    </div>
+                    
+                  </Promotion>
+                ))}
+
+            </div>
+            <div className="footer">
+              {promotions && promotions.length <3 && <Button buttonType="secondary" iconLeft={iconAdd} onClick={()=>setIsModalOpen(!isModalOpen)}>Add promotion</Button>}
+            </div>
+            
+            
 
         </PromotionsSection>
 
     </Container>
+      </>
+    
   )
 }
 

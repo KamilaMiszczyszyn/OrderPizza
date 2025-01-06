@@ -8,6 +8,13 @@ import { signOut } from "firebase/auth"
 import {auth} from "./../../firebase/firebase"
 import {Button} from "./../index"
 
+type ComponentProps = {
+
+  dropdownMenu: boolean,
+  setDropdownMenu: (value: boolean) => void;
+
+}
+
 
 const Container=styled.div`
 position: absolute;
@@ -21,6 +28,7 @@ position: absolute;
   padding: 24px;
   border: 1px solid ${props=> props.theme.colors.neutral[200]};
   background-color: ${props=> props.theme.colors.white};
+  row-gap: 24px;
 
    @media (max-width: 490px) {
     border-radius: 0;
@@ -50,6 +58,7 @@ position: absolute;
       text-decoration: none;
       display: block;
       padding: 8px 16px;
+      color: 
 
     &:hover {
         background-color: ${props => props.theme.colors.neutral[50]};
@@ -98,17 +107,20 @@ const Logo = styled.h1`
 
 `;
 
- const logout = async () => {
+ 
+
+const MenuDropdown = ({dropdownMenu, setDropdownMenu}: ComponentProps) => {
+     const navigate = useNavigate();
+     const currentUser = useContext(AuthContext)
+
+     const logout = async () => {
     try{
       await signOut(auth);
+      navigate("/login")
     }catch(error){
       console.log(error)
     }
   }
-
-const MenuDropdown = ({dropdownMenu, setDropdownMenu}) => {
-     const navigate = useNavigate();
-     const currentUser = useContext(AuthContext)
   return (
     <Container>
               <CloseButton onClick={() => setDropdownMenu(!dropdownMenu)}><img src={closeIcon} alt="Close"/></CloseButton>

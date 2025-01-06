@@ -1,5 +1,5 @@
 import {db} from "./../../firebase/firebase"
-import { doc, getDoc, addDoc, collection, Timestamp } from "firebase/firestore";
+import { doc, getDoc, addDoc, collection, Timestamp, onSnapshot } from "firebase/firestore";
 import { useContext, useEffect, useState, useReducer } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import styled from 'styled-components';
@@ -17,6 +17,7 @@ import iconPayPal from "./../../assets/PayPal.png"
 import iconMastercard from "./../../assets/mastercard.png"
 import iconVisa from "./../../assets/visa.png"
 import subtotalPrice from "./../../utils/subtotalPrice"
+import totalPrice from "../../utils/totalPrice";
 
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
@@ -27,6 +28,14 @@ type UserData = {
   email?: string,
   phone?: number,
   address?: string,
+}
+
+type Promotion = {
+    createdAt: Timestamp,
+    startDate: Timestamp,
+    endDate: Timestamp,
+    type: string , 
+    id: string,
 }
 
 const Container=styled.div`
@@ -169,6 +178,10 @@ border-bottom: ${props => props.$active ? `1px solid ${props.theme.colors.neutra
 `
 
 const PriceSummary=styled.div`
+display: flex;
+flex-direction: column;
+row-gap: 16px;
+align-items: flex-end;
 
 div.subtotal-price, div.delivery-price, div.total-price{
   display: flex;
@@ -302,19 +315,23 @@ const OrderSummary = () => {
 
     const [order, setOrder] = useState({})
 
+    const [promotions, setPromotions] = useState<Array<Promotion> | null>(null);
+
+    const [promotionType, setPromotionType]=useState<null | string>(null)
+
      const formik = useFormik({
     initialValues: {
-      option: '',  // wartość początkowa dla radio
-      customAddress: '',  // wartość początkowa dla input text
+      option: '', 
+      customAddress: '',  
     },
     validationSchema: Yup.object({
       option: Yup.string().required('Wybór opcji jest wymagany'),
       customAddress: Yup.string().when('option', {
-        is: 'custom', // Używamy prostego warunku sprawdzającego, czy opcja to 'custom'
+        is: 'custom', 
         then: (schema) => schema
-          .required('Adres zamieszkania jest wymagany')  // Wymagane, jeśli wybrano 'custom'
-          .matches(/\d+/, 'Address must contain a house number'),  // Walidacja, że musi być liczba
-        otherwise: (schema) => schema.notRequired(),  // W innych przypadkach nie jest wymagane
+          .required('Adres zamieszkania jest wymagany') 
+          .matches(/\d+/, 'Address must contain a house number'),  
+        otherwise: (schema) => schema.notRequired(),  
       }),
     }),
 
@@ -338,6 +355,32 @@ const OrderSummary = () => {
       },
   });
 
+  const formikPromotion = useFormik({
+    initialValues: {
+      promotion: '',  
+    },
+    validationSchema: Yup.object({
+      promotion: Yup.string().required('Promotion code is required'),
+      }),
+
+    onSubmit: (values) => {
+
+      if(promotions){
+        const promotionFind = promotions.find((promo) => promo.type === values.promotion);
+        if(promotionFind){
+          setPromotionType(promotionFind.type)
+        }else{
+          formikPromotion.setFieldError('promotion', 'The promotion code is incorrect');
+
+        }
+      }else {
+        formikPromotion.setFieldError('promotion', 'The promotion code is incorrect');
+      }
+
+      
+      } 
+  });
+
   useEffect(() => {
     const getPersonalData= async(user: string | null)=>{
       if(user){
@@ -358,6 +401,26 @@ const OrderSummary = () => {
     getPersonalData(uid)
 
   }, [uid])
+
+  useEffect(() => {  
+          const unsubscribe = onSnapshot(collection(db, "promotions"), (querySnapshot) => {
+            const promotions: Array<Promotion> = querySnapshot.docs.map((doc) => {
+              const data = doc.data();
+              return {
+                createdAt: data.createdAt,  
+                startDate: data.startDate,  
+                endDate: data.endDate,      
+                type: data.type, 
+                id: doc.id,                  
+              };
+            });
+      
+            setPromotions(promotions);  
+          });
+      
+         
+          return () => unsubscribe();
+        }, []);
 
 
 
@@ -444,9 +507,26 @@ const OrderSummary = () => {
               <p>0 {'\u20AC'}</p>
               
             </div>
+            <form style={{display: "flex", rowGap:"16px", alignItems: "center", width: "300px"}} onSubmit={formikPromotion.handleSubmit}>
+              <Input
+                  label="Promotion code"
+                  type="text"
+                  name="promotion"
+                  placeholder="Enter code"
+                  value={formikPromotion.values.promotion}
+                  onChange={formikPromotion.handleChange}
+                  onBlur={formikPromotion.handleBlur}
+                  touched={formikPromotion.touched.promotion}
+                  error={formikPromotion.errors.promotion}
+                />
+       
+              <Button buttonType="secondary" type="submit">Apply</Button>
+            
+
+            </form>
             <div className="total-price">
               <p>Total price:</p>
-              <p>{subtotalPrice(shoppingCartItems)} {'\u20AC'}</p>
+              <p>{totalPrice(shoppingCartItems, promotionType)} {'\u20AC'}</p>
               
             </div>
 

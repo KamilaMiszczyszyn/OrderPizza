@@ -207,17 +207,26 @@ const calculateAverageRating = (reviews: Array<Review>) => {
     return averageRating.toFixed(1)
   }
 
-const countRatingsByValue = (reviews: Array<Review>, value: number) => {
+const countRatingsByValue = (reviews: Array<Review> | null, value: number) => {
+  if (reviews){
     return reviews.filter(review => review.stars === value).length;
+
+  }
+    return 0
   }
 
 
-const divWidth = (reviews: Array<Review>, value: number) => {
-    const countRating :number = reviews.reduce(
+const divWidth = (reviews: Array<Review> | null, value: number) => {
+    if(reviews){
+      const countRating :number = reviews.reduce(
     (accumulator, currentValue) => currentValue.stars === value ? accumulator + 1 : accumulator,
     0)
     const total: number = reviews.length;
     return total > 0 ? (countRating / total) * 100 : 0;
+
+    }
+    return 0
+    
 
 }
 
@@ -289,7 +298,7 @@ setFeedbackFormData({firstName: "", selectedStars: null, feedbackText: ""})
                     <img src={bigStarIcon} alt='' />
                     <p className="rating">{calculateAverageRating(reviews)}</p>
                 </div>
-                <p className="reviews">{reviews.length} reviews</p>
+                <p className="reviews">{reviews ? reviews.length : "0"} reviews</p>
             </div>
 
             <RatingBreakdown>
@@ -377,7 +386,7 @@ setFeedbackFormData({firstName: "", selectedStars: null, feedbackText: ""})
 
         <SectionContainer>
           <FeedbackContainer>
-          {reviews.map((review) => <Feedback key={review.id} {...review} />)}
+          {reviews && reviews.map((review) => <Feedback key={review.id} {...review} />)}
         </FeedbackContainer>
 
 

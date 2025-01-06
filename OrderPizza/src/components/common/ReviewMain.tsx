@@ -3,6 +3,7 @@ import starChecked from './../../assets/star-checked.svg'
 import starUnchecked from './../../assets/star-unchecked.svg'
 import {Timestamp } from "firebase/firestore";
 import userIcon from "./../../assets/user-small.svg"
+import decorIcon from "./../../assets/review-decor.svg"
 
 interface Review {
   date: Timestamp,
@@ -22,9 +23,8 @@ interface ComponentProps {
 
 
 const Container = styled.div`
-height: 270px;
+height: 300px;
 width: 320px;
-position: relative;
 display: flex;
 flex-direction: column;
 row-gap: 8px;
@@ -44,13 +44,13 @@ flex-direction: column;
 row-gap: 10px;
 `
 
-const Decor= styled.span`
-color: ${props => props.theme.colors.primary[500]};
-font-size: 96px;
-font-family: 'Times New Roman', Times, serif;
-position: absolute;
+const Decor= styled.div`
+background-image: url(${decorIcon});
+width: 48px;
+height: 48px;
+position: relative;
 left: 24px;
-top: -24px;
+top: 24px;
 z-index: 1;
 `
 const StarsContainer = styled.div`
@@ -83,7 +83,7 @@ function ReviewMain({review}: ComponentProps) {
 
   return (
     <Container>
-        <Decor>"</Decor>
+        <Decor></Decor>
         <ReviewContainer>
           
           <StarsContainer>

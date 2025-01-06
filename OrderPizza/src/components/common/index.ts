@@ -12,5 +12,6 @@ import ReviewMain from "./ReviewMain"
 import SectionContainer from "./SectionContainer"
 import SectionHeader from "./SectionHeader"
 import OrderStatusIcon from "./OrderStatusIcon"
+import PromotionCard from "./PromotionCard"
 
-export {Button, DeliveryTrucker, Feedback, Input, InstructionStep, MenuItemPizza, MenuItemDrink, PageContainer, PageHeader, QualityIcon, ReviewMain, SectionContainer, SectionHeader, OrderStatusIcon}
+export {Button, DeliveryTrucker, Feedback, Input, InstructionStep, MenuItemPizza, MenuItemDrink, PageContainer, PageHeader, QualityIcon, ReviewMain, SectionContainer, SectionHeader, OrderStatusIcon, PromotionCard}

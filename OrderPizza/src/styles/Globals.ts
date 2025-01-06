@@ -55,6 +55,11 @@ button{
     font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
 }
 
+a{
+    color: ${props=> props.theme.colors.neutral[900]};
+}
 `
+
+
 
 export default GlobalStyle

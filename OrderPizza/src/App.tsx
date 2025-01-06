@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { Layout, Login, Register, Home, Menu, PersonalData, OrderSummary, Orders, OrdersManagement, Contact, CustomerFeedback, Loader, OrdersHistory, Dashboard, Customers } from "./components/index.ts"
+import { Layout, Login, Register, Home, Menu, PersonalData, OrderSummary, Orders, OrdersManagement, Contact, CustomerFeedback, Loader, OrdersHistory, Dashboard, Customers, Promotions } from "./components/index.ts"
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import GlobalStyle from './styles/Globals.ts';
@@ -35,7 +35,7 @@ function App() {
                         <Route path="menu" element={<Menu />} />
                         <Route path="contact" element={<Contact />} />
                         <Route path="customer-feedback" element={<CustomerFeedback />} />
-                        <Route path="orders-history-2" element={<OrdersHistory />} />
+                        <Route path="promotions" element={<Promotions />} />
 
                         <Route
                             path="personal-data"
@@ -49,6 +49,7 @@ function App() {
                             path="orders"
                             element={<PrivateRoute element={<Orders />} />}
                             />
+                            
 
                         
                         <Route
