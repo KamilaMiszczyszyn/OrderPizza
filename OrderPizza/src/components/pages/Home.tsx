@@ -6,7 +6,6 @@ import InstructionStep from "../common/InstructionStep"
 import {ReviewsSection, Button, QualityIcon} from "./../index"
 import aboutUsImg from "./../../assets/aboutus-img.png"
 import aboutUsImgMobile from "./../../assets/aboutus-img-mobile.png"
-
 import fbIcon from "./../../assets/socialmedia-fb.png"
 import igIcon from "./../../assets/socialmedia-insta.png"
 import ttIcon from "./../../assets/socialmedia-tt.png"
@@ -37,12 +36,12 @@ const HeroSection = styled.div`
   display: flex;
   justify-content: flex-end;
 
-  @media (min-width: 490px) and (orientation: portrait) {
+  @media (min-width: 768px) and (orientation: portrait) {
   aspect-ratio: 1440 / 959;
   height: auto;
   }
 
-  @media (max-width: 490px) {
+  @media (max-width: 768px) {
     background-image: url(${heroImgVertical});
     background-size: cover;
     justify-content: center;
@@ -57,7 +56,7 @@ const HeroSection = styled.div`
     row-gap: 32px;
     width: 50%;
 
-    @media (max-width: 490px) {
+    @media (max-width: 768px) {
     width: 100%;
   }
 
@@ -90,6 +89,7 @@ const HeroSection = styled.div`
     row-gap: 40px;
     height: 50%;
     background-image: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.7));
+    padding: 40px;
 
     @media (max-width: 490px) {
     padding: 32px 0;
@@ -102,11 +102,19 @@ const HeroSection = styled.div`
       row-gap: 8px;
 
       p:nth-child(1){
-      font-size: ${props=> props.theme.typography.fontSize["lg"]};
+        font-size: ${props=> props.theme.typography.fontSize["xxl"]};
+        @media (max-width: 1040px) {
+          font-size: ${props=> props.theme.typography.fontSize["xl"]};
+        }
+      
       }
 
       p:nth-child(2){
-        font-size: ${props=> props.theme.typography.fontSize["lg"]};
+        font-size: ${props=> props.theme.typography.fontSize["xxl"]};
+        @media (max-width: 1040px) {
+          font-size: ${props=> props.theme.typography.fontSize["xl"]};
+        }
+        
       }
 
     }
@@ -269,7 +277,7 @@ const AboutUsSection = styled.section`
   display: flex;
 
 
-  @media (max-width: 490px) {
+  @media (max-width: 864px) {
       flex-direction: column;
      
     }
@@ -281,7 +289,7 @@ const AboutUsSection = styled.section`
     flex-direction: column;
     row-gap: 24px;
 
-    @media (max-width: 490px) {
+    @media (max-width: 864px) {
       padding: 40px;
       width: 100%;
     }
@@ -300,7 +308,7 @@ const AboutUsSection = styled.section`
     background-image: url(${aboutUsImg});
     background-size: cover;
 
-    @media (max-width: 490px) {
+    @media (max-width: 864px) {
       width: 100%;
       background-image: url(${aboutUsImgMobile});
       aspect-ratio: 720 / 510;

@@ -3,6 +3,7 @@ import {PageHeader} from "./../index"
 
 
 interface ComponentProps {
+  small?: boolean,
   title?: string,
   children: React.ReactNode,
 }
@@ -10,14 +11,14 @@ interface ComponentProps {
 const Container = styled.section`
     display: flex;
     flex-direction: column;
-    row-gap: 48px;
+    row-gap: 32px;
     width: 100%;
     
 `
-const PageContainer = ({title, children}: ComponentProps) => {
+const PageContainer = ({title, small, children}: ComponentProps) => {
   return (
     <Container>
-        <PageHeader>{title}</PageHeader>
+        <PageHeader small={small}>{title}</PageHeader>
         <div>{children}</div>
     </Container>
   )

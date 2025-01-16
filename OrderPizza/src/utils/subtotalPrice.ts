@@ -3,7 +3,7 @@ import menuItems from "./../data/items.json"
   
   interface Item {
     productID: number,
-    quantity: 2
+    quantity: number,
   }
   
   const subtotalPrice = (items: Array<Item>) =>{

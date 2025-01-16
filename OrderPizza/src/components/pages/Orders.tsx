@@ -19,7 +19,6 @@ type Order = {
     products: Array<ShoppingCartItem>,
     customerID: string,
     deliveryAddress: string,
-    phone: string,
     date: Timestamp,
     status: string, 
     orderID: string,
@@ -114,7 +113,7 @@ display: none;
     justify-content: space-between;
     align-items: center;
     border-bottom: none;
-    padding: 0px;
+    padding: 2px 0;
 
     }
     
@@ -150,6 +149,14 @@ const TableMobile = styled.div`
         padding: 24px;
     }
 `
+
+const Empty = styled.p`
+    font-size: ${props=> props.theme.typography.fontSize["lg"]};
+    font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+    text-align: center;
+
+`
+
 
 const Orders = () => {
     const {uid} = useContext(AuthContext)
@@ -192,11 +199,16 @@ const Orders = () => {
   return (
     <Container>
         <PageContainer title="Orders">
-        <SectionContainer title="Delivery trucker">
-            {orders?.map(order => order.status !==  "completed" &&
-            <DeliveryTrucker key={order.orderID} order={order}/>
+
+        {orders && orders.some(order => order.status !== "completed") && (
+            <SectionContainer title="Delivery trucker">
+                {orders.map(order => 
+                order.status !== "completed" && (
+                    <DeliveryTrucker key={order.orderID} order={order} />
+                )
+                )}
+            </SectionContainer>
             )}
-        </SectionContainer>
 
         <SectionContainer title="Transaction history">
             <Table>
@@ -246,7 +258,11 @@ const Orders = () => {
 
             )}
 
+            
         </TableMobile>
+        {(!orders || orders.length === 0 || (orders.length === 1 && orders[0].status !== "completed")) && 
+  <Empty>Your transaction history is empty</Empty>}
+
         </SectionContainer>
     </PageContainer>
 
@@ -254,5 +270,6 @@ const Orders = () => {
     
   )
 }
+
 
 export default Orders

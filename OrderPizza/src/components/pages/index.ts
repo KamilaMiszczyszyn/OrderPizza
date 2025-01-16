@@ -13,5 +13,6 @@ import { OrdersHistory } from "./OrdersHistory";
 import Dashboard from "./Dashboard"
 import Customers from "./Customers";
 import Promotions from "./Promotions";
+import ThankYou from "./ThankYou"
 
-export {Home, Contact, CustomerFeedback, Loader, Login, Register, Menu, Orders, OrdersManagement, OrderSummary, PersonalData, OrdersHistory, Dashboard, Customers, Promotions}
+export {Home, Contact, CustomerFeedback, Loader, Login, Register, Menu, Orders, OrdersManagement, OrderSummary, PersonalData, OrdersHistory, Dashboard, Customers, Promotions, ThankYou}

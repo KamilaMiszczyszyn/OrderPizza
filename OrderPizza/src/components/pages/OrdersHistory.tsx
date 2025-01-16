@@ -2,7 +2,7 @@ import { PageContainer } from "../index"
 import styled from "styled-components"
 import { useState, useEffect, useReducer } from "react"
 import sortIcon from './../../assets/sort.svg'
-import { Timestamp, collection, orderBy, query, onSnapshot } from "firebase/firestore"
+import { Timestamp, collection, orderBy, query, onSnapshot, where } from "firebase/firestore"
 import { db } from "../../firebase/firebase"
 import { generateDate, generateHour } from "../../utils/convertTime"
 import getMenuItem from "../../utils/getMenuItem"
@@ -32,7 +32,6 @@ type Order = {
     products: Array<ShoppingCartItem>,
     customerID: string,
     deliveryAddress: string,
-    phone: string,
     date: Timestamp,
     status: string, 
     orderID: string,
@@ -43,6 +42,7 @@ type Order = {
 
 const Container = styled.div`
   width: 872px;
+ height: 90vh;
 `
 const Content = styled.div`
   padding: 0 24px;
@@ -94,6 +94,7 @@ const Dropdown=styled.div`
   flex-direction: column;
   row-gap: 8px;
   padding: 16px 0;
+  box-shadow: ${props=> props.theme.shadow};
 
 `
 const DropdownItem = styled.button`
@@ -114,7 +115,7 @@ const Header=styled.div`
     background-color: ${props=> props.theme.colors.neutral[900]};
     border-radius: 10px 10px 0 0;
     display: grid;
-    grid-template-columns: 1fr 160px 158px;
+    grid-template-columns: 1fr 100px 218px;
     column-gap: 32px;
     padding: 16px 40px 16px 24px;
 `
@@ -130,7 +131,7 @@ const ListContainer = styled.div`
   flex-direction: column;
   row-gap: 24px;
   padding: 0 16px 0 0;
-  height: 302.4px;
+  height: 55vh;
   overflow-y: scroll;
 
   &::-webkit-scrollbar {
@@ -158,7 +159,7 @@ const ListItem=styled.div`
     border: 1px solid ${props=> props.theme.colors.neutral[200]};
   div.content { 
     display: grid;
-    grid-template-columns: 1fr 160px 100px auto ;
+    grid-template-columns: 1fr 100px 160px auto ;
     column-gap: 32px;
     align-items: center;
     padding: 16px 24px;
@@ -269,10 +270,11 @@ const getPhoneNumber = (id: string, users: Array<User> | null): string => {
   if(users){
     const user = users.find((user) => user.userID === id); 
     if (user) {
-      return user.phone ? `+ ${user.phone.slice(0,1)} ${user.phone.slice(2)}` : "-"
+      console.log(user.phone)
+      return user.phone ? `${user.phone.slice(0, 3)} ${user.phone.slice(3, 6)} ${user.phone.slice(6)}` : "-"
     }
   } 
-   return "No phone number";
+   return "-";
 }
 
 
@@ -303,19 +305,17 @@ export const OrdersHistory = () => {
               const getOrders= () =>{
                   try{
                       const collectionRef = collection(db, 'orders');
-                      let q = query(collectionRef, orderBy("date"))
-  
-                      if(state === "recencyASC"){
-                        q = query(collectionRef, orderBy("date"))
-                        
-                      }
-                  
-                      if(state === "recencyDESC"){
-                        q = query(collectionRef, orderBy("date", 'desc'))
-                        
+                      let q = query(collectionRef, where("status", "==", "completed"), orderBy("date"));
+
+                      if (state === "recencyASC") {
+                        q = query(collectionRef, where("status", "==", "completed"), orderBy("date","desc"));
                       }
 
-                    
+                      if (state === "recencyDESC") {
+                        q = query(collectionRef, where("status", "==", "completed"), orderBy("date"));
+                      }
+
+                      
                       const unsubscribe =  onSnapshot( q, (querySnapshot) => {
                       
                       const orders= querySnapshot.docs.map((doc) => (
@@ -345,6 +345,7 @@ export const OrdersHistory = () => {
               getOrders()
           
             }, [state])
+
 
             useEffect(() => {
             const getUsers= () =>{
@@ -386,7 +387,7 @@ export const OrdersHistory = () => {
 
   return (
     <Container>
-      <PageContainer title="Orders history">
+      <PageContainer title="Orders history" small>
         <Content>
           <div className="options">
         <OrdersQuantity>
@@ -407,19 +408,15 @@ export const OrdersHistory = () => {
       </div>
         <Header>
             <H3>Order ID</H3>
-            <H3>Items</H3>
             <H3>Date</H3>
+            <H3>Items</H3>
         </Header>
         <ListContainer>
           {orders?.map(order => 
           <ListItem key={order.orderID}>
             <div className="content">
               <p className="orderID">{order.orderID}</p>
-                <div className="items">
-                  {order.products?.map((item) =>
-                    <div className="item"  key={item.productID}><p>{getMenuItem(item.productID)?.name}</p> <QuantityContainer>{item.quantity}</QuantityContainer></div>)}
-                </div>
-                <div className="date">
+              <div className="date">
                   {order.date ?
                   <>
                   <p>{generateDate(order.date.toDate())} </p>
@@ -427,7 +424,12 @@ export const OrdersHistory = () => {
                   }
 
                 </div>    
-                <button onClick={() => setDetails(details === order.orderID ? null : order.orderID)}>{details ? <img src={upIcon} alt=''/> : <img src={downIcon} alt=''/>}</button>  
+                <div className="items">
+                  {order.products?.map((item) =>
+                    <div className="item"  key={item.productID}><p>{getMenuItem(item.productID)?.name}</p> <QuantityContainer>{item.quantity}</QuantityContainer></div>)}
+                </div>
+                
+                <button onClick={() => setDetails(details === order.orderID ? null : order.orderID)}>{details === order.orderID ? <img src={upIcon} alt=''/> : <img src={downIcon} alt=''/>}</button>  
             </div>
             {details === order.orderID && 
             <div className="details">

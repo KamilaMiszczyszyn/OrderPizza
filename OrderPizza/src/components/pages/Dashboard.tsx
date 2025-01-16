@@ -7,6 +7,7 @@ import { OrderStatusIcon, Feedback, PromotionModal, Button } from "./../index"
 import iconAdd from "./../../assets/add-white.svg"
 import { generateDate } from "../../utils/convertTime";
 import optionsIcon from "./../../assets/options.svg"
+import { useNavigate } from "react-router-dom";
 
 type ShoppingCartItem = {
     productID: number, 
@@ -120,6 +121,7 @@ const SalesSummarySection = styled.section`
     font-size: ${props=> props.theme.typography.fontSize["xl"]};
     font-family: ${props=> props.theme.typography.fontFamily["alternate"]};
     font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+    text-align: end;
   }
 
 `;
@@ -149,6 +151,16 @@ const FeedbackSection = styled.section`
     flex-direction: column;
     row-gap: 24px;
     overflow-y: scroll;
+
+    button{
+      color: ${props => props.theme.colors.primary[500]};
+      background-color: transparent;
+      align-self: flex-end;
+
+      &:hover{
+        color: ${props => props.theme.colors.primary[700]};
+      }
+    }
   }
     
 
@@ -292,6 +304,7 @@ p{
     font-size: ${props=> props.theme.typography.fontSize["xl"]};
     font-family: ${props=> props.theme.typography.fontFamily["alternate"]};
     font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+    text-align: end;
 
 }
 
@@ -323,12 +336,14 @@ const Dropdown=styled.div`
   flex-direction: column;
   row-gap: 8px;
   z-index: 1;
+  box-shadow: ${props=> props.theme.shadow};
 
 `
 const DropdownItem = styled.button`
   padding: 8px 16px;
   background-color: transparent;
   text-align: left;
+  border-radius:  10px;
 
   &:hover{
     background-color: ${props=> props.theme.colors.neutral[50]};
@@ -336,6 +351,7 @@ const DropdownItem = styled.button`
 
 
 `
+
 
 //Date
 
@@ -375,18 +391,15 @@ const getDate = (): { date: number, month: string, day: string } => {
     
 }
 
-const getIncome = (orders: Array<Order> | null): number => {
-    if(orders){
-        const income = orders.reduce(
-            (order, currentValue) => order.price + currentValue,
-            0,
-            );
-        return income
 
-    } else{ 
-        return 0
-    }
-}
+const getIncome = (orders: Array<Order> | null): number => {
+  if (orders) {
+    const income: number = orders.reduce((accumulator, currentValue) => accumulator + currentValue.price, 0);
+    return income;
+  } else {
+    return 0;
+  }
+};
 
 
 
@@ -414,8 +427,7 @@ const Dashboard = () => {
      const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [promotions, setPromotions] = useState<Array<Promotion> | null>(null);
     const [optionsDropdown, setOptionsDropdown] = useState<string | null>(null);
-
-    console.log(promotions)
+    const navigate = useNavigate()
     
     useEffect(() => {
         const getOrders= () =>{
@@ -445,6 +457,7 @@ const Dashboard = () => {
                     status: doc.data().status,
                     orderID: doc.id,
                     price: doc.data().price,
+                    phone: doc.data().phone,
                     }))
                     setOrders(orders);
                     })
@@ -539,18 +552,18 @@ const Dashboard = () => {
         </DateSection>
         <SalesSummarySection>
             <div className="income">
-                <H3>Todays income</H3>
+                <H3>Today&apos;s income</H3>
                 <p>{getIncome(orders)} {'\u20AC'}</p>
                 
             </div>
             <div className="orders">
-                <H3>Todays orders</H3>
+                <H3>Today&apos;s orders</H3>
                 <p>{getTotalOrders(orders)}</p>
             </div>
 
         </SalesSummarySection>
         <OrdersSummarySection>
-            <H2>Today/&aposs orders summary</H2>
+            <H2>Today&apos;s orders summary</H2>
             <div className="container">
                 <OrderStatus>
                 <OrderStatusIcon ordered/>
@@ -593,6 +606,7 @@ const Dashboard = () => {
             <H2 >Customer feedback</H2>
             <div className="container">
                {reviews?.map((review) => <Feedback key={review.id} {...review} />)}
+               <button onClick={()=> navigate("/customer-feedback")}>more</button>
             </div>
 
         </FeedbackSection>
@@ -603,7 +617,7 @@ const Dashboard = () => {
                   <Promotion key={promotion.id}>
                     <Options>
                       <div className="container">
-                        <OptionsButton onClick={()=>setOptionsDropdown(promotion.id)}><img src={optionsIcon} alt=''/></OptionsButton>
+                        <OptionsButton onClick={()=>setOptionsDropdown(optionsDropdown ? null : promotion.id )}><img src={optionsIcon} alt=''/></OptionsButton>
                       {optionsDropdown === promotion.id && (
                             <Dropdown>
                               <DropdownItem onClick={() => deletePromotion(promotion.id)}>Delete</DropdownItem>
@@ -622,7 +636,7 @@ const Dashboard = () => {
                             <span className="B2G1-free">FREE</span>
                           </>
                         ) : (
-                          <span className="percentage">{`${promotion.type}%`}</span>
+                          <span className="percentage">{`${promotion.type.slice(5)}%`}</span>
                         )}
                       </div>
                       <div className="period">

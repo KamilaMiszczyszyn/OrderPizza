@@ -1,11 +1,12 @@
 import { Routes, Route } from "react-router-dom";
-import { Layout, Login, Register, Home, Menu, PersonalData, OrderSummary, Orders, OrdersManagement, Contact, CustomerFeedback, Loader, OrdersHistory, Dashboard, Customers, Promotions } from "./components/index.ts"
+import { Layout, Login, Register, Home, Menu, PersonalData, OrderSummary, Orders, OrdersManagement, Contact, CustomerFeedback, Loader, OrdersHistory, Dashboard, Customers, Promotions, ThankYou } from "./components/index.ts"
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import GlobalStyle from './styles/Globals.ts';
 import { useState, useEffect } from "react"; 
 import PrivateRoute from "./utils/PrivateRoute.tsx";
 import AdminRoute from "./utils/AdminRoute.tsx";
+import updateData from "./utils/updateData.ts";
 
 
 
@@ -14,6 +15,7 @@ function App() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        updateData();
         setTimeout(() => {
             setLoading(false); 
         }, 2000); 
@@ -49,6 +51,7 @@ function App() {
                             path="orders"
                             element={<PrivateRoute element={<Orders />} />}
                             />
+                            <Route path="thank-you" element={<ThankYou />} />
                             
 
                         

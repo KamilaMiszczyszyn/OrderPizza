@@ -7,7 +7,7 @@ import checkedStar  from "./../../assets/star-checked.svg"
 
 type ComponentProps = {
     firstName: string,
-    stars: number,
+    stars: number | null,
     feedback: string,
     date: Timestamp,
 }
@@ -69,7 +69,7 @@ const Feedback = ({firstName, stars, feedback, date}: ComponentProps) => {
         <FeedbackText>
             <div className="stars-container">
                       {ratings.map(e => (
-                        <Star key={e} className={(e <= stars) ? 'active' : ''} />
+                        <Star key={e} className={(e <= (stars ?? 0)) ? 'active' : ''} />
                       ))}
                     </div>
             <p>{feedback}</p>

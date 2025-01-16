@@ -5,7 +5,7 @@ import { generateDate } from '../../utils/convertTime'
 type ComponentProps = {
     startDate: Timestamp,
     endDate: Timestamp,
-    type: string ,  
+    type: "B2G1" |  "PROMO20" | "PROMO30" | "PROMO40",
 }
 
 const Container = styled.div`
@@ -24,7 +24,18 @@ height: 100%;
   height: 100%;
   background-color: ${props => props.theme.colors.neutral[200]};
 
+   @media (max-width: 490px) {
+    width: 100%;
+    height: 1px;
+
+  }
+
  }
+ @media (max-width: 490px) {
+    flex-direction: column;
+    row-gap: 16px;
+
+  }
     
 `
 

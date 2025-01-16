@@ -7,13 +7,19 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "./../../context/AuthContext"
 import {Input, PageContainer, SectionContainer, Button} from "./../index"
 import iconAdd from "./../../assets/add-white.svg"
+import successIcon from "./../../assets/success.svg"
+
+type Address = {
+  addressID: number;
+  address: string;
+};
 
 type UserData = {
   firstName?: string,
   lastName?: string,
   email?: string,
-  phone?: number,
-  addressesList?: Array<string>,
+  phone?: string,
+  addressesList?: Array<Address>;
 }
 
 const Container=styled.div`
@@ -37,14 +43,14 @@ const FormGeneral = styled.form`
   
 
   div.inputs{
-    width: 577px;
+    width: 600px;
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: 300px 300px;
     column-gap:24px;
     row-gap: 24px;
 
     @media (max-width: 577px) {
-      width: 250px;
+      width: 300px;
       display: flex;
       flex-direction: column;
     
@@ -54,11 +60,23 @@ const FormGeneral = styled.form`
 
   div.formFooter{
     display: flex;
-    justify-content: flex-end;
-    align-self: flex-end;
+    justify-content: space-between;
+    align-items: center;
+    
   }
  
 `
+
+const Success = styled.div`
+display: flex;
+column-gap: 8px;
+align-items: center;
+  p{
+    font-size: ${(props) => props.theme.typography.fontSize["xs"]};
+  color: ${(props) => props.theme.colors.success};
+  }
+  
+`;
 
 const AddressContainer = styled.div`
   display: flex;
@@ -106,6 +124,7 @@ const FormAddress = styled.form`
 const PersonalData = () => {
     const {uid} = useContext(AuthContext)
     const [userData, setUserData] = useState<UserData | null>(null)
+    const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
     const formikGeneral = useFormik({
     initialValues: {
@@ -122,7 +141,7 @@ const PersonalData = () => {
         firstName: Yup.string().required("Required"),
         lastName: Yup.string().required("Required"),
         email: Yup.string().email("Invalid Email").required("Required"),
-        phone: Yup.string().required("Required"),
+        phone: Yup.string().matches(/^[0-9]{9}$/, "Phone number must be exactly 9 digits").required("Required"),
     }),
 
     onSubmit:  async (values) => {
@@ -144,6 +163,7 @@ const PersonalData = () => {
           const docRef = doc(db, "users", uid);
           await updateDoc(docRef, user);
           setUserData(user);
+          setSuccessMessage("Your data has been successfully updated.");
         }catch(error){
           console.log(error)
         }
@@ -270,7 +290,8 @@ const PersonalData = () => {
             />
 
             </div>
-            <div className="formFooter">
+            <div className="formFooter">    
+              <div>{successMessage && <Success><img src={successIcon} alt=''/><p>{successMessage}</p></Success>}</div>    
               <Button buttonType="secondary" type="submit">Save</Button> 
             </div>
 
@@ -280,7 +301,7 @@ const PersonalData = () => {
       </SectionContainer>
 
       <SectionContainer title="Delivery address">
-        <h4>Favourite adresses</h4>
+        <h4>Favourite adresses (max 3)</h4>
 
         {userData?.addressesList?.map((address) => 
           <AddressContainer key={address.addressID}>
@@ -289,7 +310,8 @@ const PersonalData = () => {
           </AddressContainer>
         )}
 
-        {(userData?.addressesList?.length<3 || !userData?.addressesList) && <FormAddress onSubmit={formikAddress.handleSubmit}>
+        {((userData?.addressesList && userData.addressesList.length < 3) || !userData?.addressesList) && 
+        <FormAddress onSubmit={formikAddress.handleSubmit}>
           <Input
             type="text"
             name="address" 

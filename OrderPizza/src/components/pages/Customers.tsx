@@ -22,6 +22,7 @@ type User = {
 
 const Container = styled.div`
   width: 872px;
+  height: 90vh;
 `
 const Content = styled.div`
   padding: 0 24px;
@@ -74,6 +75,7 @@ const Dropdown=styled.div`
   flex-direction: column;
   row-gap: 8px;
   padding: 16px 0;
+  box-shadow: ${props=> props.theme.shadow};
 
 `
 const DropdownItem = styled.button`
@@ -116,7 +118,8 @@ const ListContainer = styled.div`
   flex-direction: column;
   row-gap: 24px;
   padding: 0 16px 0 0;
-  height: 302.4px;
+  height: 55vh;
+  overflow-y: scroll;
 
   &::-webkit-scrollbar {
         width: 6px; 
@@ -172,9 +175,6 @@ const Customers = () => {
 
     const [state, dispatch] = useReducer(reducer, "recencyASC");
     const [sortOption, setSortOption] = useState<boolean>(false)
-
-    console.log(users)
-    
 
     useEffect(() => {
             const getUsers= () =>{
@@ -233,7 +233,7 @@ const Customers = () => {
 
   return (
     <Container>
-      <PageContainer title="Customers">
+      <PageContainer title="Customers" small>
         <Content>
           <div className="options">
         <UsersQuantity>
@@ -261,10 +261,10 @@ const Customers = () => {
             <H3>E-mail</H3>
         </Header>
         <ListContainer>
-          {users?.map(user => 
+          {users?.filter(user => user.role !== "admin" ).map(user => 
           <ListItem key={user.userID}>
                 <p className="fullname">{`${user.lastName} ${user.firstName}`}</p>
-                <p className="phone-number">{user.phone ? `+ ${user.phone.slice(0,1)} ${user.phone.slice(2)}` : "-"}</p>
+                <p className="phone-number">{user.phone ? `${user.phone.slice(0, 3)} ${user.phone.slice(3, 6)} ${user.phone.slice(6)}` : "-"}</p>
                 <p className="email">{user.email}</p>       
             </ListItem>
 

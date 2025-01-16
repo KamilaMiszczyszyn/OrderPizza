@@ -79,6 +79,8 @@ const NavbarAdmin = () => {
   const logout = async () => {
       try{
         await signOut(auth);
+        window.location.reload();
+        navigate("/")
       }catch(error){
         console.log(error)
       }

@@ -9,6 +9,7 @@ import "slick-carousel/slick/slick-theme.css";
 import arrowLeftIcon from "./../../assets/arrow-left.svg"
 import arrowRightIcon from "./../../assets/arrow-right.svg"
 import { useNavigate } from 'react-router-dom';
+import { CustomArrowProps } from "react-slick";
 
 interface Review {
   date: Timestamp,
@@ -126,7 +127,7 @@ const SliderContainer = styled.div`
 `;
 
 
-const SampleNextArrow = (props: any) => {
+const SampleNextArrow = (props: CustomArrowProps) => {
   const { className, onClick } = props;
   return (
     <div
@@ -138,7 +139,7 @@ const SampleNextArrow = (props: any) => {
   );
 };
 
-const SamplePrevArrow = (props: any) => {
+const SamplePrevArrow = (props: CustomArrowProps) => {
   const { className, onClick } = props;
   return (
     <div

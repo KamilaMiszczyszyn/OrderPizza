@@ -18,16 +18,27 @@ import iconMastercard from "./../../assets/mastercard.png"
 import iconVisa from "./../../assets/visa.png"
 import subtotalPrice from "./../../utils/subtotalPrice"
 import totalPrice from "../../utils/totalPrice";
+import menuItems from "./../../data/items.json"
 
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
+
+type Address = {
+  addressID: number;
+  address: string;
+};
+
+type ShoppingCartItem =  {
+    productID: number,
+    quantity: number,
+}
 
 type UserData = {
   firstName?: string,
   lastName?: string,
   email?: string,
   phone?: number,
-  address?: string,
+  addressesList?: Array<Address>;
 }
 
 type Promotion = {
@@ -36,6 +47,16 @@ type Promotion = {
     endDate: Timestamp,
     type: string , 
     id: string,
+}
+
+type Order = {
+    products?: Array<ShoppingCartItem>,
+    customerID?: string,
+    deliveryAddress?: string,
+    date?: Timestamp,
+    status?: string, 
+    price?: number,
+    paymentMethod?: "CreditDebitCard" | "BankTransfer" | "PayPal",
 }
 
 const Container=styled.div`
@@ -201,6 +222,26 @@ div.total-price{
 }
 `
 
+const PromotionForm = styled.form`
+display: flex;
+column-gap: 16px;
+align-items: center;
+width: 400px;
+
+@media (max-width: 490px) {
+  width: 100%;
+    flex-direction: column;
+    row-gap: 8px;
+
+    button{
+      align-self: flex-end;
+    }
+  }
+
+
+  
+`
+
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -266,6 +307,17 @@ const HeaderEdit=styled.div`
   display: flex;
   justify-content: space-between;
 `
+const Empty = styled.div`
+display: flex;
+flex-direction: column;
+row-gap: 16px;
+
+p{
+    font-size: ${props=> props.theme.typography.fontSize["lg"]};
+    font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+    text-align: center;
+}
+`
 
 type ReducerState = {
   step1: boolean;
@@ -274,12 +326,12 @@ type ReducerState = {
 };
 
 type ActionReducer = {
-  type: string;
-  payload?: string;
+  type: "TOGGLE_STEP1" | "SET_STEP2" | "SET_STEP3";
+  payload?: "true" | "false" | "disabled";
 };
 
-const initialState = {
-  step1: "true",
+const initialState: ReducerState = {
+  step1: true,
   step2: "disabled",
   step3: "disabled",
 
@@ -291,10 +343,10 @@ const reducer = (state: ReducerState, action: ActionReducer) => {
       return { ...state, step1: !state.step1 };
 
     case "SET_STEP2":
-      return { ...state, step2: action.payload }; 
+      return { ...state, step2: action.payload || state.step2 }; 
 
     case "SET_STEP3":
-      return { ...state, step3: action.payload }; 
+      return { ...state, step3: action.payload || state.step3 }; 
 
     default:
       return state;
@@ -313,11 +365,13 @@ const OrderSummary = () => {
 
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    const [order, setOrder] = useState({})
+    const [order, setOrder] = useState<Order>({})
 
     const [promotions, setPromotions] = useState<Array<Promotion> | null>(null);
 
     const [promotionType, setPromotionType]=useState<null | string>(null)
+
+    const [successMessage, setSuccessMessage] = useState<null | string>(null);
 
      const formik = useFormik({
     initialValues: {
@@ -335,7 +389,7 @@ const OrderSummary = () => {
       }),
     }),
 
-    onSubmit: (values) => {
+    onSubmit: () => {
 
       const deliveryAddress= formik.values.option === "custom" ? formik.values.customAddress : formik.values.option
 
@@ -368,7 +422,23 @@ const OrderSummary = () => {
       if(promotions){
         const promotionFind = promotions.find((promo) => promo.type === values.promotion);
         if(promotionFind){
-          setPromotionType(promotionFind.type)
+          if(promotionFind.type === "B2G1"){
+            const pizzaCart = shoppingCartItems.filter((item) =>
+            menuItems.pizzas.some((p) => p.productID === item.productID)
+          );
+
+          const numberOfPizza = pizzaCart.reduce((acc, item) => acc + item.quantity, 0);
+
+          numberOfPizza <3 ? formikPromotion.setFieldError('promotion', 'You need 3 pizzas in your cart.') :
+          setSuccessMessage(` "${promotionFind.type}" is already applied.`)
+         
+
+
+          }else{
+            setPromotionType(promotionFind.type)
+            setSuccessMessage(` "${promotionFind.type}" is already applied.`)
+          }
+          
         }else{
           formikPromotion.setFieldError('promotion', 'The promotion code is incorrect');
 
@@ -432,7 +502,7 @@ const OrderSummary = () => {
   }
 
 
-  const createOrder = async(order) =>{
+  const createOrder = async (order: Order) =>{
 
     const orderData = {
         products: shoppingCartItems,
@@ -440,7 +510,7 @@ const OrderSummary = () => {
         deliveryAddress: order.deliveryAddress,
         date: Timestamp.fromDate(new Date()),
         status: "ordered", 
-        price: order.totalPrice,
+        price: order.price,
         paymentMethod: order.paymentMethod,
     }
 
@@ -448,7 +518,7 @@ const OrderSummary = () => {
      try{
         await addDoc(collection(db, "orders"), orderData);
         setShoppingCartItems([])
-        navigate("/")
+        navigate("/thank-you")
 
      }catch(error){
         toast.error("Create order failed");
@@ -470,7 +540,14 @@ const OrderSummary = () => {
         <div className="step-details">
           <SectionContainer>
             <StepHeader><div className="step-number"><StepNumber $active>1</StepNumber></div><SectionHeader>Shopping Cart</SectionHeader></StepHeader>
-          <ShoppingCartItems $active>
+          {shoppingCartItems.length === 0 ? 
+          <Empty>
+            <p>Your shopping cart is empty</p>
+            <Button buttonType="secondary" onClick={()=> navigate("/menu")}>Go to menu</Button>
+            </Empty>
+             :
+             <>
+             <ShoppingCartItems $active>
             {shoppingCartItems.map((item =>
              <ShoppingCartItemContainer  key={item.productID}>
               
@@ -507,7 +584,7 @@ const OrderSummary = () => {
               <p>0 {'\u20AC'}</p>
               
             </div>
-            <form style={{display: "flex", rowGap:"16px", alignItems: "center", width: "300px"}} onSubmit={formikPromotion.handleSubmit}>
+            <PromotionForm onSubmit={formikPromotion.handleSubmit}>
               <Input
                   label="Promotion code"
                   type="text"
@@ -518,12 +595,13 @@ const OrderSummary = () => {
                   onBlur={formikPromotion.handleBlur}
                   touched={formikPromotion.touched.promotion}
                   error={formikPromotion.errors.promotion}
+                  successMessage = {successMessage}
                 />
        
               <Button buttonType="secondary" type="submit">Apply</Button>
             
 
-            </form>
+            </PromotionForm>
             <div className="total-price">
               <p>Total price:</p>
               <p>{totalPrice(shoppingCartItems, promotionType)} {'\u20AC'}</p>
@@ -538,10 +616,12 @@ const OrderSummary = () => {
               if(state.step2 === "disabled"){
                 dispatch({ type: "SET_STEP2", payload: "true" });
               } 
-              setOrder({...order, products: shoppingCartItems, totalPrice: subtotalPrice(shoppingCartItems) })
+              setOrder({...order, products: shoppingCartItems, price: totalPrice(shoppingCartItems, promotionType) })
             }}>Next</Button>
 
           </SectionFooter>
+             </>}
+            
           
           
         </SectionContainer>
@@ -566,7 +646,7 @@ const OrderSummary = () => {
               <div className="name">
                 <img 
                   src={getMenuItem(item.productID)?.img ? getMenuItem(item.productID)?.img : iconAdd} 
-                  alt={getMenuItem(item.productID)?.title} 
+                  alt={getMenuItem(item.productID)?.name} 
                 />
                 <p>{getMenuItem(item.productID)?.name}</p>
               </div>
@@ -601,14 +681,14 @@ const OrderSummary = () => {
               <InputRadio key={address.addressID}>    
                   <input
                     type="radio"
-                    id={address.addressID}
+                    id={`${address.addressID}`}
                     name="option"
                     value={address.address}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     checked={formik.values.option === address.address}
                   />
-                  <label htmlFor={address.addressID}>{address.address}</label>   
+                  <label htmlFor={`${address.addressID}`}>{address.address}</label>   
               </InputRadio>
             ))}
       
@@ -629,8 +709,8 @@ const OrderSummary = () => {
                     onChange={formik.handleChange}
                     placeholder="Enter new address"
                     onBlur={formik.handleBlur}
-                    onFocus={() => formik.setFieldValue('option', 'custom')} // Ustawienie wartości opcji
-                    onClick={() => formik.setFieldValue('option', 'custom')} // Ustawienie wartości opcji
+                    onFocus={() => formik.setFieldValue('option', 'custom')} 
+                    onClick={() => formik.setFieldValue('option', 'custom')} 
                     touched={formik.touched.customAddress}
                     error={formik.errors.customAddress}
                   />
@@ -676,7 +756,7 @@ const OrderSummary = () => {
         
         <div style={{display: "flex", columnGap: "16px", padding: "16px"}}>
           <img src={iconPin} alt="" />
-          <p>{order.deliveryAddress}</p>  
+          <p>{order?.deliveryAddress || "No delivery address available"}</p> 
     </div>
 
 
@@ -756,7 +836,7 @@ const OrderSummary = () => {
       </StepContainer>
     }
 
-      {(state.step3 === "false" || (state.step3 === "disabled" && state.step1 === "false" && state.step3 === "false"))  &&
+      {(state.step3 === "false" || (state.step3 === "disabled" && state.step1 === false && state.step2 === "false"))  &&
 
     <StepContainer>
       <div className="step-number"><StepNumber>3</StepNumber></div>
@@ -767,9 +847,9 @@ const OrderSummary = () => {
           <Button buttonType="icon" iconLeft={iconEdit} onClick={()=> {dispatch({ type: "SET_STEP3", payload: "true" })}}/>
         </HeaderEdit>
         <div style={{display: "flex", columnGap: "16px", padding: "16px"}}>
-          <p>{order.paymentMethod}</p>
-        {order.paymentMethod === "PayPal" && <img src={iconPayPal} alt=""/> }
-        {order.paymentMethod === "CreditDebitCard" &&
+          <p>{order?.paymentMethod || "No payment method"}</p>
+        {order?.paymentMethod === "PayPal" && <img src={iconPayPal} alt=""/> }
+        {order?.paymentMethod === "CreditDebitCard" &&
           <div className="cardLogo">
             <img src={iconMastercard} alt=""/>
             <img src={iconVisa} alt=""/>

@@ -10,9 +10,6 @@ const AdminRoute = ({ element }: ComponentProps) => {
     const location = useLocation();
      const { role } = useContext(AuthContext);
 
-     
-     console.log(role)
-
     if ( !role || role !== "admin") {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }

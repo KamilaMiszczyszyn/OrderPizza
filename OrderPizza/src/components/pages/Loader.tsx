@@ -30,12 +30,20 @@ const LoadingText = styled.div`
     display: flex;
     gap: 0.5rem;
 
+     @media (max-width: 490px) {
+        font-size: ${props => props.theme.typography.fontSize["sm"]};
+    }
+
     span {
         animation-name: dot;
         animation-duration: 2s;
         animation-iteration-count: infinite;
         opacity: 0;
-        font-size: ${props => props.theme.typography.fontSize["md"]};;
+        font-size: ${props => props.theme.typography.fontSize["md"]};
+
+        @media (max-width: 490px) {
+        font-size: ${props => props.theme.typography.fontSize["sm"]};
+    }
     }
     span:nth-child(1) {
         animation-delay: 0s;

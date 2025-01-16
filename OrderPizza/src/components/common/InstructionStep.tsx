@@ -3,6 +3,8 @@ import userIcon from "./../../assets/User big.svg"
 import pizzaIcon from "./../../assets/Pizza.svg"
 import payIcon from "./../../assets/Pay.svg"
 import deliveryIcon from "./../../assets/scooter-small.svg"
+import {Button} from "./../index"
+import { useNavigate } from "react-router-dom"
 
 interface ComponentProps {
     step1?: boolean;
@@ -11,7 +13,7 @@ interface ComponentProps {
     step4?: boolean;
 }
 
-const StepContainer = styled.div<{ $top: string; $left: string; $right: string}>`
+const StepContainer = styled.div<{ $top?: string; $left?: string; $right?: string}>`
     position: absolute;
     top: ${props => props.$top}; 
     left: ${props => props.$left}; 
@@ -102,6 +104,8 @@ const NumCircle = styled.div`
 
 
 const InstructionStep = ({step1, step2, step3, step4}: ComponentProps ) => {
+    const navigate = useNavigate()
+    
   return (
     <>
     {step1 && 
@@ -111,6 +115,7 @@ const InstructionStep = ({step1, step2, step3, step4}: ComponentProps ) => {
                 <NumCircle><span>1</span></NumCircle>
                 <img src={userIcon} alt=""/>
                 <h4>Log in or Sign up</h4>
+                <Button buttonType="secondary" onClick={() => navigate("./login")}>Log in</Button>
             </BorderBlack>
         </BorderRed>
     </StepContainer>

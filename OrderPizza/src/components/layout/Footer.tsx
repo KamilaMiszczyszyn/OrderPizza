@@ -19,7 +19,7 @@ width: 100%;
   column-gap: 48px;  
   padding: 100px 0;
 
-  @media (max-width: 490px) {
+  @media (max-width: 768px) {
         flex-direction: column;
         align-items: center;
         row-gap: 48px;
@@ -31,6 +31,10 @@ const ContactSection = styled.section`
   display: flex;
   flex-direction: column;
   row-gap: 32px;
+
+   @media (max-width: 768px) {
+        align-items: center;
+    }
 `
 
 const Logo = styled.h2`
@@ -56,7 +60,7 @@ const ContactContainer= styled.div`
 const H3 = styled.h3`
   font-size: 2.0rem;
 
-  @media (max-width: 490px) {
+  @media (max-width: 768px) {
     text-align: center;
     }
 `
@@ -75,10 +79,11 @@ const NavSection = styled.section`
     row-gap: 8px;
 
     li{
+      text-align: center;
       padding: 16px 8px;
       padding: 8px 0;
 
-      @media (max-width: 490px) {
+      @media (max-width: 768px) {
         text-align: center;
     }
 

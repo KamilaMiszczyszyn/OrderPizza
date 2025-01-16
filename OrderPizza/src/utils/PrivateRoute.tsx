@@ -9,13 +9,11 @@ interface ComponentProps {
 const PrivateRoute = ({element}: ComponentProps) => {
     const location = useLocation();
     const {uid} = useContext(AuthContext);
-    console.log(uid) // zwraca nr uid kcOGnWfFvfNCDFPTveERhx1icBG3
-    console.log("Children:", element); //zwraca undefined
 
   if (!uid) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-  console.log(uid)
+
 
   return element;
 }

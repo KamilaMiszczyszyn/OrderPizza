@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, forwardRef} from "react"
 import styled from "styled-components"
 import iconAdd from "./../../assets/icons/add.svg"
 import iconMinus from "./../../assets/icons/minus.svg"
@@ -11,6 +11,13 @@ import subtotalPrice from "../../utils/subtotalPrice"
 import { useNavigate} from 'react-router-dom';
 import closeIcon from "./../../assets/close.svg"
 
+
+
+type ComponentProps = {
+    shoppingCart: boolean,
+    setShoppingCart: (value: boolean) => void,
+}
+
 const Container = styled.div`
     padding: 24px;
     width: 451px;
@@ -20,6 +27,7 @@ const Container = styled.div`
     position: absolute;
     top: 60px;
     right: 192px;
+    box-shadow: ${props=> props.theme.shadow};
 
     @media (min-width: 490px) and (max-width: 864px) {
         right: 80px;
@@ -134,23 +142,38 @@ const Footer=styled.div`
         column-gap: 16px;
         padding: 0 16px;
     }
-
-
-    
+ 
 `
 
-const ShoppingCartDropdown = ({shoppingCart, setShoppingCart}) => {
+const Empty = styled.div`
+display: flex;
+flex-direction: column;
+row-gap: 16px;
+
+p{
+    font-size: ${props=> props.theme.typography.fontSize["lg"]};
+    font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+    text-align: center;
+}
+`
+
+const ShoppingCartDropdown = forwardRef<HTMLDivElement, ComponentProps>(({shoppingCart, setShoppingCart}: ComponentProps, ref) => {
  const {shoppingCartItems} = useContext(ShoppingCartContext);
  const changeQuantity=useShoppingCartQuantity();
   const navigate = useNavigate();
  
   return (
-    <Container>
+    <Container ref={ref}>
     <CloseButton onClick={() => setShoppingCart(!shoppingCart)}><img src={closeIcon} alt="Close"/></CloseButton>
         <Logo>OrderPizza</Logo>
                 <ShoppingCartItemsContainer>
-            {shoppingCartItems.map(item => 
-            <ShoppingCartItem>
+            {shoppingCartItems.length === 0 ?
+            <Empty>
+                <p>Your shopping cart is empty</p>
+                <Button buttonType="secondary" onClick={()=> navigate("/menu")}>Go to menu</Button>
+            </Empty>
+            : shoppingCartItems.map(item => 
+            <ShoppingCartItem key={item.productID}>
                 <div className="name">
                     <div>
                         <img 
@@ -178,18 +201,19 @@ const ShoppingCartDropdown = ({shoppingCart, setShoppingCart}) => {
         
         
 
+        {shoppingCartItems.length !== 0 && 
         <Footer>
             <div className="subtotal-price"><p>Subtotal price:</p><p>{subtotalPrice(shoppingCartItems)}  {'\u20AC'}</p></div>
 
-            <Button buttonType="secondary" style={{width: "100%"}} onClick={()=>navigate("/order-summary")}>Order summary</Button>
+            <Button buttonType="secondary" style={{width: "100%"}} onClick={()=>{navigate("/order-summary"); setShoppingCart(!setShoppingCart)}}>Order summary</Button>
 
-        </Footer>
+        </Footer>}
         
 
            
         
     </Container>
   )
-}
+})
 
 export default ShoppingCartDropdown

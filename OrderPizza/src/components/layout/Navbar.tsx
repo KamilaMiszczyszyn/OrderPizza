@@ -1,5 +1,5 @@
 import { NavLink, Link, useLocation, useNavigate } from "react-router-dom"
-import { useEffect, useState, useContext } from "react"
+import { useEffect, useState, useContext, useRef } from "react"
 import {doc, getDoc} from 'firebase/firestore'
 import styled from 'styled-components'
 import { AuthContext } from "../../context/AuthContext"
@@ -11,6 +11,20 @@ import userIcon from "./../../assets/user-small-white.svg"
 import arrowIcon from "./../../assets/arrow-down-white.svg"
 import arrowBackIcon from "./../../assets/arrow-back.svg"
 import hamburgerIcon from "./../../assets/hamburger-menu.svg"
+
+type Address = {
+  addressID: number;
+  address: string;
+};
+
+type UserData = {
+  firstName?: string,
+  lastName?: string,
+  email?: string,
+  phone?: string,
+  addressesList?: Array<Address>;
+  role: string,
+}
 
 
 
@@ -50,6 +64,7 @@ const Nav = styled.nav`
 `
 
 const NavBack=styled.nav`
+width: 100%;
   padding: 8px 24px;
   height: 100%;
   padding: 8px 24px;
@@ -202,14 +217,39 @@ const ButtonHamburger=styled.button`
 
 
 const Navbar = () => {
-  const {uid} = useContext(AuthContext)
+  const {uid, role} = useContext(AuthContext)
   const {shoppingCartItems} = useContext(ShoppingCartContext)
 
   const [dropdownMenu, setDropdownMenu]=useState<boolean>(false)
-  const [name, setName] = useState<string | null>(null)
+  const [name, setName] = useState<string | undefined>(undefined)
   const [shoppingCart, setShoppingCart] = useState<boolean>(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+   const dropdownMenuRef = useRef<HTMLDivElement>(null);
+   const shoppingCartRef = useRef<HTMLDivElement>(null)
+
+  const closeDropdownMenu = (event: MouseEvent) => {
+    if (dropdownMenuRef.current && !dropdownMenuRef.current.contains(event.target as Node)) {
+      setDropdownMenu(false);
+    }
+  };
+
+  const closeShoppingCartDropdown = (event: MouseEvent) => {
+    if (shoppingCartRef.current && !shoppingCartRef.current.contains(event.target as Node)) {
+      setShoppingCart(false)
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('mousedown', closeDropdownMenu);
+    document.addEventListener('mousedown', closeShoppingCartDropdown)
+    return () => {
+      document.removeEventListener('mousedown', closeDropdownMenu);
+      document.removeEventListener('mousedown', closeShoppingCartDropdown)
+    };
+  }, []);
+  
 
   useEffect(() =>{
 
@@ -219,7 +259,7 @@ const Navbar = () => {
           const docRef = doc(db, "users", user);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
-            const userPersonalData = docSnap.data();
+            const userPersonalData = docSnap.data() as UserData;
             setName(userPersonalData.firstName)
              } else {
                  console.log("No such document!");
@@ -252,8 +292,8 @@ const Navbar = () => {
    
 
   const countTotalQuantity = () =>{
-      const totalQuantity = shoppingCartItems.reduce((accumulator, currentValue) => {
-      const quantity = currentValue.quantity;
+      const totalQuantity: number = shoppingCartItems.reduce((accumulator, currentValue) => {
+      const quantity: number = currentValue.quantity;
       return accumulator + quantity
     },
     0)
@@ -263,7 +303,7 @@ const Navbar = () => {
 
   return (
   <>
-    {location.pathname === "/order-summary" || location.pathname === "/login" ? (
+    {location.pathname === "/order-summary" || location.pathname === "/login" || location.pathname === "/register"  ? (
       <NavBack>
         <button onClick={()=> navigate(-1)}>
           <img src={arrowBackIcon} alt="Back" />
@@ -282,7 +322,7 @@ const Navbar = () => {
             </NavList>
           </div>
 
-          {(uid && uid !== "kcOGnWfFvfNCDFPTveERhx1icBG3") 
+          {(uid && role !== "admin") 
           && 
             <div>
               <Greeting>Hi, {name}!</Greeting>
@@ -309,7 +349,7 @@ const Navbar = () => {
               <ButtonHamburger onClick={() => setDropdownMenu(!dropdownMenu)}><img src={hamburgerIcon} alt=''/></ButtonHamburger>
             </div>}
 
-        {uid === "kcOGnWfFvfNCDFPTveERhx1icBG3" &&
+        {role === "admin" &&
         <Button buttonType="primary" onClick={() => navigate("./dashboard")}>Go to dashboard</Button>
         }
           
@@ -318,10 +358,10 @@ const Navbar = () => {
   
         </Nav>
 
-        {dropdownMenu && <MenuDropdown dropdownMenu={dropdownMenu}
+        {dropdownMenu && <MenuDropdown ref={dropdownMenuRef}  dropdownMenu={dropdownMenu}
     setDropdownMenu={setDropdownMenu} />}
 
-        {shoppingCart && <ShoppingCartDropdown shoppingCart={shoppingCart}
+        {shoppingCart && <ShoppingCartDropdown  ref={shoppingCartRef} shoppingCart={shoppingCart}
     setShoppingCart={setShoppingCart} />}
       </>
     )}

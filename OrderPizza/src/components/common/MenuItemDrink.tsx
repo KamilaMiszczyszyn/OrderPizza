@@ -3,6 +3,18 @@ import useAddToCart from "../../hooks/useAddToCart"
 import {Button} from "./../index"
 import iconAdd from "./../../assets/icons/add.svg"
 
+type Drink = {
+    name: string,
+    price: number,
+    productID: number,
+    img: string,
+}
+
+type ComponentProps = {
+    drink: Drink
+    
+}
+
 const Container = styled.div`
     width: 100%;
     padding: 16px;
@@ -69,7 +81,7 @@ const Footer = styled.div`
     }
     }
 `
-const MenuItemDrink = ({drink}) => {
+const MenuItemDrink = ({drink}: ComponentProps) => {
     const addToCart = useAddToCart()
 
 

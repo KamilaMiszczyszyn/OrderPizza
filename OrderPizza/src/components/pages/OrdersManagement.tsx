@@ -1,6 +1,6 @@
 import { useReducer, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { query, collection, onSnapshot, Timestamp, orderBy, updateDoc, doc} from "firebase/firestore";
+import { query, collection, onSnapshot, Timestamp, orderBy, updateDoc, doc, where} from "firebase/firestore";
 import {db} from "./../../firebase/firebase"
 import { generateDate, generateHour } from './../../utils/convertTime'
 import getMenuItem from '../../utils/getMenuItem';
@@ -45,6 +45,7 @@ type ActionReducerSort = {type: "recencyDESC" | "recencyASC" };
 
 const Container = styled.div`
   width: 872px;
+  height: 90vh;
 `
 
 const Content = styled.div`
@@ -65,7 +66,7 @@ const Content = styled.div`
   flex-direction: column;
   row-gap: 24px;
   padding: 0 16px 0 0;
-  height: 302.4px;
+  height: 50vh;
   overflow-y: scroll;
 
   &::-webkit-scrollbar {
@@ -116,6 +117,7 @@ const Dropdown=styled.div`
   flex-direction: column;
   row-gap: 8px;
   padding: 16px 0;
+  box-shadow: ${props=> props.theme.shadow};
 
 `
 const DropdownItem = styled.button`
@@ -179,8 +181,9 @@ const NavButton = styled.button<{
 
 const Header = styled.div<{ $ordered?: boolean; $completed?: boolean; }>`
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: 1fr 100px 150px 222px ;
     padding: 16px 24px;
+    column-gap: 24px;
     background-color: ${props=> props.theme.colors.neutral[900]};
     border-radius: ${props => {
     if (props.$ordered) return "0 10px 0 0";   
@@ -338,6 +341,7 @@ width: 150px;
   row-gap: 8px;
   padding: 16px 0;
   z-index: 1;
+  box-shadow: ${props=> props.theme.shadow};
 
 
 `
@@ -355,6 +359,15 @@ const StatusDropdownItem = styled.button`
 
 
 `
+
+const Empty = styled.p`
+    font-size: ${props=> props.theme.typography.fontSize["lg"]};
+    font-weight: ${props=> props.theme.typography.fontWeight["bold"]}; 
+    text-align: center;
+
+`
+
+
 const getFullname = (id: string, users: Array<User> | null): string => {
   if(users){
     const user = users.find((user) => user.userID === id); 
@@ -369,10 +382,11 @@ const getPhoneNumber = (id: string, users: Array<User> | null): string => {
   if(users){
     const user = users.find((user) => user.userID === id); 
     if (user) {
-      return user.phone ? `+ ${user.phone.slice(0,1)} ${user.phone.slice(2)}` : "-"
+      console.log(user.phone)
+      return user.phone ? `${user.phone.slice(0, 3)} ${user.phone.slice(3, 6)} ${user.phone.slice(6)}` : "-"
     }
   } 
-   return "No phone number";
+   return "-";
 }
 
 
@@ -431,14 +445,32 @@ const OrdersManagement = () => {
   useEffect(() => {
   const getOrders = () => {
     try {
+      const today: Date = new Date();
+            
+      const startOfDay: Date = new Date(today); 
+      startOfDay.setHours(0, 0, 0, 0);   
+
+      const endOfDay: Date = new Date(today);  
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const startOfDayTimestamp: Timestamp = Timestamp.fromDate(startOfDay);
+      const endOfDayTimestamp: Timestamp = Timestamp.fromDate(endOfDay);
+
       const collectionRef = collection(db, "orders");
-      let q = query(collectionRef, orderBy("date")); 
+      let q = query(
+      collectionRef,
+      where("date", ">=", startOfDayTimestamp),
+      where("date", "<=", endOfDayTimestamp),
+      orderBy("date")
+    );
       if (stateSort === "recencyASC") {
-        q = query(collectionRef, orderBy("date","desc"));
+        q = query(collectionRef, where("date", ">=", startOfDayTimestamp),
+      where("date", "<=", endOfDayTimestamp),orderBy("date","desc"));
       }
 
       if (stateSort === "recencyDESC") {
-        q = query(collectionRef, orderBy("date"));
+        q = query(collectionRef, where("date", ">=", startOfDayTimestamp),
+      where("date", "<=", endOfDayTimestamp),orderBy("date"));
       }
 
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -548,7 +580,7 @@ const OrdersManagement = () => {
   
   return (
     <Container>
-      <PageContainer title="Orders Management">
+      <PageContainer title="Orders Management" small>
         <Content>
           <div className="options">
         <SortOption>
@@ -572,17 +604,20 @@ const OrdersManagement = () => {
           </Nav>
       <Header $ordered={state === "ordered"} $completed={state === "completed"}>
           <H3>Order ID</H3>
+          <H3>Date</H3> 
+          <H3>Items</H3>
           <H3>Order status</H3>
-          <H3>Date</H3>    
+             
       </Header>
 
       </div>
          
       
       <div className='list-container'>
+        {orders?.filter(order => order.status === state).length ===  0 && <Empty>{`No orders with ${state} status found`}</Empty>}
         {orders?.filter(order => order.status === state).map((order)=>
 
-        <ListItem>
+        <ListItem key={order.orderID}>
           <div className='content'>
             <p className="orderID">{order.orderID}</p>
             <div className="date">
@@ -598,7 +633,7 @@ const OrdersManagement = () => {
                     <div className="item"  key={item.productID}><p>{getMenuItem(item.productID)?.name}</p> <QuantityContainer>{item.quantity}</QuantityContainer></div>)}
                 </div>
                 <div className="order-status">
-            <StatusButton onClick={()=> statusDropdown === null ? setStatusDropdown(order.orderID) : setStatusDropdown(null)} >{order.status} {statusDropdown ? <img src={upIcon} alt=''/> : <img src={downIcon} alt=''/>}</StatusButton>
+            <StatusButton onClick={()=> statusDropdown === null ? setStatusDropdown(order.orderID) : setStatusDropdown(null)} >{order.status} {statusDropdown === order.orderID ? <img src={upIcon} alt=''/> : <img src={downIcon} alt=''/>}</StatusButton>
             {statusDropdown === order.orderID && 
               <StatusDropdown>
                   <StatusDropdownItem onClick={()=> {changeStatus(order.orderID, "ordered");setStatusDropdown(null)}}>ordered</StatusDropdownItem>
@@ -607,7 +642,7 @@ const OrdersManagement = () => {
                   <StatusDropdownItem onClick={()=>{changeStatus(order.orderID, "completed");setStatusDropdown(null)}}>completed</StatusDropdownItem>
               </StatusDropdown>}
           </div>  
-                <button className='details' onClick={() => setDetails(details === order.orderID ? null : order.orderID)}>{details ? <img src={upIcon} alt=''/> : <img src={downIcon} alt=''/>}</button> 
+                <button className='details' onClick={() => setDetails(details === order.orderID ? null : order.orderID)}>{details === order.orderID ? <img src={upIcon} alt=''/> : <img src={downIcon} alt=''/>}</button> 
 
           </div>
       
@@ -623,11 +658,14 @@ const OrdersManagement = () => {
             
           </div>
           }
+
+          {orders?.filter(order => order.status === state).length ===  0 && <Empty>{`No orders with ${state} status found`}</Empty>}
         </ListItem>
         
         
         )}
       </div>
+      
 
         </Content>
         

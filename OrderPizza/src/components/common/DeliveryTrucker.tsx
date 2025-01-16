@@ -5,6 +5,7 @@ import arrowDown from "./../../assets/arrow-down.png"
 import getMenuItem from '../../utils/getMenuItem'
 import scooter from "./../../assets/Scooter.svg"
 import { generateDate, generateHour } from '../../utils/convertTime'
+import { Timestamp } from 'firebase/firestore'
 
 type ShoppingCartItem = {
     productID: number, 
@@ -15,7 +16,6 @@ type Order = {
     products: Array<ShoppingCartItem>,
     customerID: string,
     deliveryAddress: string,
-    phone: string,
     date: Timestamp,
     status: string, 
     orderID: string,

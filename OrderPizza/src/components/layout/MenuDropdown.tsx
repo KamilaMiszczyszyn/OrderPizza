@@ -1,7 +1,7 @@
 
 import styled from 'styled-components'
 import closeIcon from "./../../assets/close.svg"
-import { useContext } from 'react'
+import { useContext, forwardRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 import { signOut } from "firebase/auth"
@@ -58,7 +58,6 @@ position: absolute;
       text-decoration: none;
       display: block;
       padding: 8px 16px;
-      color: 
 
     &:hover {
         background-color: ${props => props.theme.colors.neutral[50]};
@@ -109,20 +108,21 @@ const Logo = styled.h1`
 
  
 
-const MenuDropdown = ({dropdownMenu, setDropdownMenu}: ComponentProps) => {
+const MenuDropdown = forwardRef<HTMLDivElement, ComponentProps>(({ dropdownMenu, setDropdownMenu }: ComponentProps, ref) => {
      const navigate = useNavigate();
      const currentUser = useContext(AuthContext)
 
      const logout = async () => {
     try{
       await signOut(auth);
-      navigate("/login")
+      navigate("/");
+      window.location.reload();
     }catch(error){
       console.log(error)
     }
   }
   return (
-    <Container>
+    <Container ref={ref}>
               <CloseButton onClick={() => setDropdownMenu(!dropdownMenu)}><img src={closeIcon} alt="Close"/></CloseButton>
               <Logo>OrderPizza</Logo>
               <ul className="nav">
@@ -145,6 +145,6 @@ const MenuDropdown = ({dropdownMenu, setDropdownMenu}: ComponentProps) => {
           }
             </Container>
   )
-}
+})
 
 export default MenuDropdown

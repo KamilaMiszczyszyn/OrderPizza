@@ -8,6 +8,12 @@ import styled from 'styled-components';
 import {Input, Button} from "./../index"
 import pizzaImg from "./../../assets/login-pizza.png"
 
+type FormValues = {
+  email: string,
+  password: string,
+
+}
+
 const Container=styled.div`
 display: flex;
 column-gap: 24px;
@@ -50,7 +56,8 @@ const ContainerForm = styled.div`
     form{
       display: flex;
       flex-direction: column;
-      row-gap: 24px;
+      justify-content: space-between;
+      height: 256px;
 
       div{
         width: 100%;
@@ -87,29 +94,30 @@ const H2 = styled.h2`
 const Login = () => {
   const navigate=useNavigate();
 
-  const formik = useFormik({
+  const formik = useFormik<FormValues>({
     initialValues: {
       email: "",
       password: "",
     },
 
-    validationSchema: Yup.object(
+    validationSchema: Yup.object<FormValues>(
       {
         email: Yup.string().email("Invalid Email").required("Required"),
         password: Yup.string().required("Required")
     }),
 
-    onSubmit: async (values) => {
+    onSubmit: async (values: FormValues) => {
         const email = values.email
         const password = values.password
 
          try{
           await signInWithEmailAndPassword(auth, email, password)
           toast.success("Login successful"); 
+          navigate("/")
         }catch(error){
           toast.error("Login failed");
         }
-        navigate("/")
+        
     } 
     }
   )
@@ -121,9 +129,9 @@ const Login = () => {
 
       <form onSubmit={formik.handleSubmit}>
 
-      <Input label="E-mail" id="email" type="text" name="email" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.email} error={formik.errors.email} touched={formik.touched.email}/>
+      <Input label="E-mail" id="email" name="email" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.email} error={formik.errors.email} touched={formik.touched.email}/>
 
-      <Input label="Password "id="password" type="password" name="password" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.password} error={formik.errors.password} touched={formik.touched.password}/>
+      <Input password label="Password" id="password" name="password" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.password} error={formik.errors.password} touched={formik.touched.password}/>
       
       <Button style={{width:"100%"}} buttonType="secondary" type="submit">Log in</Button>        
     </form>

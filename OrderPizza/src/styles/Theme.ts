@@ -3,6 +3,9 @@ const theme ={
     colors:{
         black: "#000000",
         white: "#FFFFFF",
+        success: "#419254",
+        error: "#CC1414",
+        
         primary:  {
             300: "#CC3333",
             500: "#B91C1C",
@@ -23,7 +26,7 @@ const theme ={
         yellow: "#F2A212",
     },
 
-    shadow: "0px 0px 5px 2px rgba(0, 0, 0, 0.2)",
+    shadow: "0px 0px 5px 2px rgba(0, 0, 0, 0.1)",
 
     typography: {
     fontFamily: {

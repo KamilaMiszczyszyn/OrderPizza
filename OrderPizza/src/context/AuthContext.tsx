@@ -21,7 +21,6 @@ const fetchCurrentUserRole = async (uid: string) => {
 
     if (docSnap.exists()) {
       const data = docSnap.data();
-      console.log(data)
         if(data.role){
           return data.role
         }else{

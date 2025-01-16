@@ -7,9 +7,6 @@ import { db } from '../../firebase/firebase'
 import { PromotionCard } from './../index'
 
 
-
-
-
 type Promotion = {
     createdAt: Timestamp,
     startDate: Timestamp,
@@ -26,16 +23,31 @@ const Container=styled.div`
     row-gap: 24px;
     column-gap: 24px;
     grid-template-rows: repeat(3, 1fr);
-  grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-template-areas: 
     "FirstPromotion FirstPromotion FristSquare"
     "SecondSquare  SecondPromotion SecondPromotion"
     "ThirdPromotion ThirdPromotion ThirdSquare";
+
+    @media (min-width: 490px) and (max-width: 864px) {
+    width: 475px;
+  }
+
+  @media (max-width: 864px) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (max-width: 490px) {
+    padding: 24px;
+    margin: 16px;
+    width: 100%;
+  }
+
 `
 
 const FirstPromotion=styled.div`
 grid-area: FirstPromotion;
-
 
 div.img{
   width: 100%;
@@ -46,7 +58,15 @@ div.img{
     background-repeat: no-repeat; 
     border-radius: 10px;
 
+    @media (max-width: 864px) {
+    display: none;
+    height: 0;
+
+  }
+
 }
+
+
     
 `
 
@@ -62,6 +82,11 @@ div.img{
     background-position: center; 
     background-repeat: no-repeat; 
     border-radius: 10px;
+
+    @media (max-width: 864px) {
+    display: none;
+
+  }
 
 
 }
@@ -81,6 +106,11 @@ div.img{
     background-position: bottom; 
     background-repeat: no-repeat; 
     border-radius: 10px;
+
+    @media (max-width: 864px) {
+    display: none;
+
+  }
     
 }
 
@@ -92,6 +122,10 @@ const FirstSquare=styled.div`
 grid-area: FristSquare ;
 background-color: ${props=> props.theme.colors.primary[300]};
 border-radius: 10px;
+
+@media (max-width: 864px) {
+    display: none;
+  }
     
 `
 
@@ -99,6 +133,10 @@ const SecondSquare=styled.div`
 grid-area: SecondSquare;
 background-color: ${props=> props.theme.colors.neutral[700]};
 border-radius: 10px;
+
+@media (max-width: 864px) {
+    display: none;
+  }
 `
 
 const ThirdSquare=styled.div`
@@ -106,7 +144,9 @@ grid-area: ThirdSquare;
 background-color: ${props=> props.theme.colors.neutral[100]};
 border-radius: 10px;
 
-
+@media (max-width: 864px) {
+    display: none;
+  }
 
 `
 

@@ -54,12 +54,13 @@ const Layout = () => {
   const { role } = useContext(AuthContext); 
   const location = useLocation();
 
-  const isAdminPage = location.pathname.startsWith('/orders-management') || location.pathname.startsWith('/orders-history') || location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/customers')
+  const isAdminPage: boolean = location.pathname.startsWith('/orders-management') || location.pathname.startsWith('/orders-history') || location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/customers')
   
-  const isAdmin = role === 'admin';
+  const isAdmin: boolean = role === 'admin';
 
-  console.log(isAdmin)
-  console.log(isAdminPage)
+  const invisibleFooter: boolean = location.pathname.startsWith('/login') || location.pathname.startsWith('/register') || location.pathname.startsWith('/order-summary') || location.pathname.startsWith('/thank-you')
+
+   const invisibleNavbar: boolean = location.pathname.startsWith('/thank-you')
 
   return (
     <>
@@ -74,17 +75,20 @@ const Layout = () => {
       </ContainerAdmin>
     ) : (
       <Container>
+      {!invisibleNavbar &&
         <NavContainer>
-          <Navbar />
-        </NavContainer>
+           <Navbar />
+        </NavContainer>}
 
         <Main>
           <Outlet/>
-        </Main>
+        </Main> 
+
+        {!invisibleFooter && 
 
         <FooterContainer>
-          <Footer />
-        </FooterContainer>
+           <Footer />
+        </FooterContainer>}
       </Container>
     )}
     </>

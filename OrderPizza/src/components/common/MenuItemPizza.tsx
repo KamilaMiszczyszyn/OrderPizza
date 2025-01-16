@@ -4,6 +4,20 @@ import {Button} from "./../index"
 import iconAdd from "./../../assets/icons/add.svg"
 import useAddToCart from "../../hooks/useAddToCart"
 
+type Pizza = {
+    name: string,
+    ingredients: Array<string>,
+    vegan: boolean,
+    price: number,
+    productID: number,
+    img: string,
+}
+
+type ComponentProps = {
+    pizza: Pizza
+    
+}
+
 const Container = styled.div`
     width: 100%;
     padding: 16px;
@@ -73,6 +87,9 @@ const VeganIcon = styled.div`
     padding: 2px 8px;
     background-color: #CAE6CC;
     border-radius: 150px;
+    display: flex;
+    row-gap: 4px;
+    align-items: center;
 
     img{
         width: 12px;
@@ -88,7 +105,7 @@ const VeganIcon = styled.div`
     
 `
 
-const MenuItemPizza = ({pizza}) => {
+const MenuItemPizza = ({pizza}: ComponentProps) => {
     const addToCart = useAddToCart()
 
   return (

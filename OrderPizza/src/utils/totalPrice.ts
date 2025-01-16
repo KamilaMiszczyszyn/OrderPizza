@@ -7,7 +7,7 @@ import menuItems from "./../data/items.json"
     price?: number,
   }
   
-  const totalPrice = (items: Array<Item> | null, promotion: string) =>{
+  const totalPrice = (items: Array<Item> | null, promotion: string | null) =>{
     let total: number = 0
 
     if(items){
@@ -19,22 +19,17 @@ import menuItems from "./../data/items.json"
 
     let shoppingCart: Array<Item> = shoppingCartWithPrices
 
-    console.log(shoppingCartWithPrices)
-
-
         const pizzaCart = shoppingCart.filter((item) =>
         menuItems.pizzas.some((p) => p.productID === item.productID)
       );
 
-      console.log(pizzaCart)
-
       const numberOfPizza = pizzaCart.reduce((acc, item) => acc + item.quantity, 0);
-      console.log(numberOfPizza)
+
 
 
      if(promotion === "B2G1" && numberOfPizza === 3){
             const sortedPizzas = [...pizzaCart].sort((a, b) => (a.price || 0) - (b.price || 0));
-            console.log(sortedPizzas)
+           
 
 
             
@@ -45,7 +40,6 @@ import menuItems from "./../data/items.json"
             }
 
 
-        console.log(sortedPizzas[0])
 
         shoppingCart = [
           ...sortedPizzas,
@@ -55,7 +49,7 @@ import menuItems from "./../data/items.json"
           ),
         ];
 
-        console.log(shoppingCart)
+  
     }
 
      total = shoppingCart.reduce((accumulator, currentValue) => {
@@ -69,7 +63,6 @@ import menuItems from "./../data/items.json"
     },
     0)
 
-    console.log(total)
 
     if(promotion === "PROMO20"){
         return total * 0.8

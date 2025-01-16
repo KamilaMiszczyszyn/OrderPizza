@@ -58,6 +58,14 @@ button{
 a{
     color: ${props=> props.theme.colors.neutral[900]};
 }
+
+input[type="radio"] {
+    width: 20px;   
+    height: 20px;
+    accent-color: ${props=> props.theme.colors.neutral[900]};  
+    margin: 5px;
+    cursor: pointer;
+}
 `
 
 

@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import bigStarIcon from "./../../assets/star-review-big.svg"
-import { collection, onSnapshot, addDoc, Timestamp } from "firebase/firestore";
+import { collection, onSnapshot, addDoc, Timestamp, orderBy, query } from "firebase/firestore";
 import {PageContainer, SectionContainer, Input, Button, Feedback} from "./../index"
 import checkedStar from "./../../assets/star-checked.svg"
 import uncheckedStar from "./../../assets/star-unchecked.svg"
@@ -147,6 +147,7 @@ div.textarea-container {
     border-radius: 10px;
     resize: none;
     max-height: 100px;
+    font-family: ${props=> props.theme.typography.fontFamily["base"]};
 
     &:focus {
     border: 1px solid ${props => props.theme.colors.neutral[900]};
@@ -231,33 +232,30 @@ const divWidth = (reviews: Array<Review> | null, value: number) => {
 }
 
 
-
-
-
-
 const CustomerFeedback = () => {
     const [reviews,setReviews]=useState<Array<Review> | null>(null);
     const [stars,setStars] = useState<number | null>(null)
     const [feedbackFormData, setFeedbackFormData]=useState<FeedbackFormData>({firstName: "", selectedStars: null, feedbackText: ""})
 
-  
+  useEffect(() => {
+  const getReviewsData = () => {
+    const q = query(
+      collection(db, "reviews"),
+      orderBy("date", "desc")  
+    );
 
-  
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const reviewsArr: Array<Review> = [];
+      querySnapshot.forEach((doc) => {
+        reviewsArr.push({ ...doc.data(), id: doc.id } as Review);
+      });
+      setReviews(reviewsArr);
+    });
 
+    return () => unsubscribe();
+  };
 
-    useEffect(() => {
-      const getReviewsData = () => {
-          const q = collection(db, "reviews");
-          const unsubscribe = onSnapshot(q, (querySnapshot) => {
-              const reviewsArr: Array<Review> = [];
-              querySnapshot.forEach((doc) => {
-                  reviewsArr.push({...doc.data(), id: doc.id});
-              });
-              setReviews(reviewsArr);})
-          return () => unsubscribe();
-      };
-
-      getReviewsData();
+  getReviewsData();
 }, []);
 
 
@@ -296,7 +294,7 @@ setFeedbackFormData({firstName: "", selectedStars: null, feedbackText: ""})
             <div className="review-average">
                 <div>
                     <img src={bigStarIcon} alt='' />
-                    <p className="rating">{calculateAverageRating(reviews)}</p>
+                    <p className="rating">{reviews ? calculateAverageRating(reviews) : 0}</p>
                 </div>
                 <p className="reviews">{reviews ? reviews.length : "0"} reviews</p>
             </div>
@@ -386,7 +384,11 @@ setFeedbackFormData({firstName: "", selectedStars: null, feedbackText: ""})
 
         <SectionContainer>
           <FeedbackContainer>
-          {reviews && reviews.map((review) => <Feedback key={review.id} {...review} />)}
+          {reviews && reviews.length > 0 ? (
+                  reviews.map((review, index) => <Feedback key={review.id ?? index} {...review} />)
+                ) : (
+                  <p>No reviews available</p>
+                )}
         </FeedbackContainer>
 
 
