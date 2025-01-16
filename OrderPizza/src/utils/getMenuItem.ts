@@ -1,8 +1,10 @@
-import menuItems from "./../data/items.json"
-
+import menuItems from './../data/items.json';
 
 const getMenuItem = (id: number) => {
-    return menuItems.pizzas.find((item) => item.productID === id) || menuItems.drinks.find((item) => item.productID === id)
-  }
+  return (
+    menuItems.pizzas.find((item) => item.productID === id) ||
+    menuItems.drinks.find((item) => item.productID === id)
+  );
+};
 
-export default getMenuItem
+export default getMenuItem;

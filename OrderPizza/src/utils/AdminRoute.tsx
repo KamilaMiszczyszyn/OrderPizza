@@ -1,20 +1,20 @@
-import { useContext } from "react";
-import { Navigate, useLocation } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { useContext } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 interface ComponentProps {
-    element?: React.ReactNode,
+  element?: React.ReactNode;
 }
 
 const AdminRoute = ({ element }: ComponentProps) => {
-    const location = useLocation();
-     const { role } = useContext(AuthContext);
+  const location = useLocation();
+  const { role } = useContext(AuthContext);
 
-    if ( !role || role !== "admin") {
-        return <Navigate to="/login" state={{ from: location }} replace />;
-    }
+  if (!role || role !== 'admin') {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 
-    return element;
+  return element;
 };
 
-export default AdminRoute
+export default AdminRoute;
