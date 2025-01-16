@@ -15,7 +15,7 @@ type Promotion = {
   createdAt: Timestamp;
   startDate: Timestamp;
   endDate: Timestamp;
-  type: string;
+  type: 'B2G1' | 'PROMO20' | 'PROMO30' | 'PROMO40';
   id: string;
 };
 
