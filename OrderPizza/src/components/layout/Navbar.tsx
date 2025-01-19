@@ -4,7 +4,6 @@ import { doc, getDoc } from 'firebase/firestore';
 import styled from 'styled-components';
 import { AuthContext } from '../../context/AuthContext';
 import { db } from '../../firebase/firebase';
-import cart from './../../assets/shopping-cart.svg';
 import { ShoppingCartDropdown, Button, MenuDropdown } from './../index';
 import { ShoppingCartContext } from '../../context/ShoppingCartContext';
 import userIcon from './../../assets/user-small-white.svg';
@@ -133,6 +132,16 @@ const CartButton = styled.div`
   position: relative;
   display: flex;
   align-items: center;
+  background: url('/assets/shopping-cart-2.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 33px;
+    height: 33px;
+
+    &:hover {
+      border-radius: 50%;
+      background-color: ${(props) => props.theme.colors.neutral[800]};
+    }
 
   div {
     border-radius: 50%;
@@ -152,17 +161,13 @@ const CartButton = styled.div`
     justify-content: center;
     align-items: center;
     background-color: transparent;
-    background-repeat: no-repeat;
-    background-position: center;
+    
     border: none;
     width: 33px;
     height: 33px;
     padding: 0px;
 
-    &:hover {
-      border-radius: 50%;
-      background-color: ${(props) => props.theme.colors.neutral[800]};
-    }
+    
   }
 `;
 
@@ -319,7 +324,7 @@ const Navbar = () => {
                   <div>{countTotalQuantity()}</div>
                   <button
                     onClick={() => setShoppingCart(!shoppingCart)}
-                  ><img src={cart} alt=''/></button>
+                  ></button>
                 </CartButton>
 
                 <Button

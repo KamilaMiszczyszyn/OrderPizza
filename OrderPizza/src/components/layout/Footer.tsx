@@ -139,7 +139,7 @@ const Footer = () => {
             <StyledNavLink to="/menu">Menu</StyledNavLink>
           </li>
           <li>
-            <StyledNavLink to="/promotion">Promotions</StyledNavLink>
+            <StyledNavLink to="/promotions">Promotions</StyledNavLink>
           </li>
           <li>
             <StyledNavLink to="/contact">Contact</StyledNavLink>
