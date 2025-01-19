@@ -148,7 +148,9 @@ const CartButton = styled.div`
   }
 
   button {
-    background-image: url(${cart});
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: transparent;
     background-repeat: no-repeat;
     background-position: center;
@@ -317,7 +319,7 @@ const Navbar = () => {
                   <div>{countTotalQuantity()}</div>
                   <button
                     onClick={() => setShoppingCart(!shoppingCart)}
-                  ></button>
+                  ><img src={cart} alt=''/></button>
                 </CartButton>
 
                 <Button
