@@ -1,7 +1,6 @@
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { toast } from 'react-toastify';
 import { signInWithEmailAndPassword } from '@firebase/auth';
 import { auth } from '../../firebase/firebase';
 import styled from 'styled-components';
@@ -104,10 +103,12 @@ const Login = () => {
 
       try {
         await signInWithEmailAndPassword(auth, email, password);
-        toast.success('Login successful');
         navigate('/');
       } catch (error) {
-        toast.error('Login failed');
+        formik.setFieldError(
+          'password',
+          'Incorrect password'
+        );
       }
     },
   });

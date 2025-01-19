@@ -128,13 +128,17 @@ const TableMobile = styled.div`
   flex-direction: column;
   display: none;
 
+  div.order{
+    padding: 16px;
+  }
+
   @media (max-width: 864px) {
     display: initial;
   }
 
-  div {
-    border-bottom: ${(props) => props.theme.colors.neutral[200]};
-    padding: 24px;
+  div.products{
+    display: flex;
+    column-gap: 4px;
   }
 `;
 
@@ -242,19 +246,23 @@ const Orders = () => {
               orders.map(
                 (order) =>
                   order.status === 'completed' && (
-                    <div key={order.orderID}>
+                    <div className="order" key={order.orderID}>
                       <h4># {order.orderID}</h4>
                       <p>
                         Date:{generateDate(order.date.toDate())}
                         {generateHour(order.date.toDate())}
                       </p>
+                      <div className="products">
                       <p>Products:</p>
+                      <p>
                       {order.products.map((item) => (
-                        <div>
-                          <p>{getMenuItem(item.productID)?.name}</p>{' '}
-                          <div>{item.quantity}</div>
-                        </div>
+                        <span key={item.productID}>
+                          <span>{getMenuItem(item.productID)?.name}</span>
+                          <span> x {item.quantity},</span>
+                        </span>
                       ))}
+                      </p>
+                      </div>
                       <p>
                         Total price: {order.price}
                         {'\u20AC'}{' '}

@@ -22,6 +22,7 @@ const PageContent = styled.div`
 
   @media (max-width: 864px) {
     flex-direction: column;
+    row-gap: 24px;
   }
 
   iframe {

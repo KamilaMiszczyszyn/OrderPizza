@@ -68,7 +68,6 @@ const Footer = styled.div`
   }
 
   div p.price {
-    color: ${(props) => props.theme.colors.primary[700]};
     font-weight: ${(props) => props.theme.typography.fontWeight['bold']};
     line-height: initial;
   }

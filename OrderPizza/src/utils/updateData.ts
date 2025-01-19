@@ -26,7 +26,6 @@ const updateData = async () => {
         };
 
         await updateDoc(docRef, updatedData);
-        console.log(`Dokument ${id} zaktualizowany.`);
       }
     } catch (error) {
       console.error(error);

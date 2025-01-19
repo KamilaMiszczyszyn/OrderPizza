@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import closeIcon from './../../assets/close.svg';
 import { useContext, forwardRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { signOut } from 'firebase/auth';
 import { auth } from './../../firebase/firebase';
@@ -25,6 +25,7 @@ const Container = styled.div`
   border: 1px solid ${(props) => props.theme.colors.neutral[200]};
   background-color: ${(props) => props.theme.colors.white};
   row-gap: 24px;
+  z-index: 1;
 
   @media (max-width: 490px) {
     border-radius: 0;
@@ -37,36 +38,50 @@ const Container = styled.div`
   }
 
   ul {
-    list-style: none;
-    width: 100%;
-    border-bottom: 1px solid ${(props) => props.theme.colors.neutral[200]};
-    padding-bottom: 8px;
-    display: flex;
-    flex-direction: column;
-    row-gap: 8px;
+   list-style: none;
+  width: 100%;
+  border-bottom: 1px solid ${(props) => props.theme.colors.neutral[200]};
+  padding-bottom: 8px;
+  
+  li{
+    margin: 16px 0;
+  }
 
-    li {
+
+    button {
       padding: 8px 0;
-
-      a {
-        text-decoration: none;
-        display: block;
-        padding: 8px 16px;
+      text-decoration: none;
+      display: block;
+      padding: 8px 16px;
+      background: none;
+      width: 100%;
+      text-align: start;
 
         &:hover {
           background-color: ${(props) => props.theme.colors.neutral[50]};
           border-radius: 10px;
         }
-      }
+      
     }
   }
 
   ul.nav {
     display: none;
 
-    @media (max-width: 490px) {
+    @media (max-width: 864px) {
       display: initial;
     }
+  }
+
+  div.login-btn{
+    display: none;
+    
+
+    @media (max-width: 864px) {
+      display: initial;
+      width: 100%;
+    }
+
   }
 `;
 
@@ -93,7 +108,9 @@ const Logo = styled.h1`
 const MenuDropdown = forwardRef<HTMLDivElement, ComponentProps>(
   ({ dropdownMenu, setDropdownMenu }: ComponentProps, ref) => {
     const navigate = useNavigate();
-    const currentUser = useContext(AuthContext);
+    const { uid } = useContext(AuthContext);
+
+    const toggleDropdownMenu = () => setDropdownMenu(!dropdownMenu); 
 
     const logout = async () => {
       try {
@@ -112,25 +129,35 @@ const MenuDropdown = forwardRef<HTMLDivElement, ComponentProps>(
         <Logo>OrderPizza</Logo>
         <ul className="nav">
           <li>
-            <Link to="/menu">Menu</Link>
+            <button onClick={() => { navigate("/menu"), toggleDropdownMenu()}}>
+              Menu
+            </button>
           </li>
           <li>
-            <Link to="/promotions">Promotions</Link>
+            <button onClick={() => { navigate("/promotions"), toggleDropdownMenu()}}>
+              Promotions
+            </button>
           </li>
           <li>
-            <Link to="/contact">Contact</Link>
+            <button onClick={() => { navigate("/contact"), toggleDropdownMenu()}}>
+              Contact
+            </button>
           </li>
         </ul>
-        <ul>
+        {uid && <ul>
           <li>
-            <Link to="/personal-data">Personal data</Link>
+            <button onClick={() => { navigate("/personal-data"), toggleDropdownMenu()}}>
+              Personal data
+            </button>
           </li>
           <li>
-            <Link to="/orders">Orders</Link>
+            <button onClick={() => { navigate("/orders"), toggleDropdownMenu()}}>
+              Orders
+            </button>
           </li>
-        </ul>
+        </ul>}
 
-        {currentUser ? (
+        {uid ? (
           <Button
             style={{ width: '100%' }}
             buttonType="secondary"
@@ -139,15 +166,15 @@ const MenuDropdown = forwardRef<HTMLDivElement, ComponentProps>(
             Log out
           </Button>
         ) : (
-          <div className="logged-out">
-            <Button
+            <div className="login-btn">
+              <Button
               buttonType="primary"
               style={{ width: '100%' }}
-              onClick={() => navigate('./login')}
+              onClick={() => {navigate('./login'), toggleDropdownMenu()}}
             >
               Log in
             </Button>
-          </div>
+            </div>
         )}
       </Container>
     );

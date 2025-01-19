@@ -14,6 +14,10 @@ const H2 = styled.h2<{ $small?: boolean }>`
     props.$small
       ? props.theme.typography.fontSize['xl']
       : props.theme.typography.fontSize['default']};
+
+  @media (max-width: 490px) {
+    padding: 8px 0;
+  }
 `;
 
 const PageHeader = ({ children, small }: ComponentProps) => {

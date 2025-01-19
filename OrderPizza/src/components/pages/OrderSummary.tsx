@@ -178,6 +178,10 @@ const ShoppingCartItemContainer = styled.div`
     align-items: center;
     width: 140px;
 
+    p.price{
+      font-weight: ${(props) => props.theme.typography.fontWeight['bold']};
+    }
+
     @media (max-width: 490px) {
       align-self: flex-end;
     }
@@ -205,6 +209,11 @@ const PriceSummary = styled.div`
   row-gap: 16px;
   align-items: flex-end;
 
+  p.price{
+      font-weight: ${(props) => props.theme.typography.fontWeight['bold']};
+
+    }
+
   div.subtotal-price,
   div.delivery-price,
   div.total-price {
@@ -220,6 +229,10 @@ const PriceSummary = styled.div`
   }
 
   div.total-price {
+    p.price{
+      font-weight: ${(props) => props.theme.typography.fontWeight['bold']};
+
+    }
   }
 `;
 
@@ -252,6 +265,17 @@ const Form = styled.form`
     margin: 0;
   }
 `;
+
+const TotalPrice=styled.div`
+display: flex;
+column-gap: 16px;
+align-self: flex-end;
+
+p.price{
+      font-weight: ${(props) => props.theme.typography.fontWeight['bold']};
+
+    }
+`
 
 const InputRadio = styled.div`
   display: flex;
@@ -422,7 +446,7 @@ const OrderSummary = () => {
               0
             );
 
-            numberOfPizza < 3
+            numberOfPizza !== 3
               ? formikPromotion.setFieldError(
                   'promotion',
                   'You need 3 pizzas in your cart.'
@@ -430,6 +454,8 @@ const OrderSummary = () => {
               : setSuccessMessage(
                   ` "${promotionFind.type}" is already applied.`
                 );
+              
+              setPromotionType(promotionFind.type);
           } else {
             setPromotionType(promotionFind.type);
             setSuccessMessage(` "${promotionFind.type}" is already applied.`);
@@ -585,7 +611,7 @@ const OrderSummary = () => {
                                 }
                               />
                             </div>
-                            <p>
+                            <p className="price">
                               {countPrice(
                                 getMenuItem(item.productID)?.price,
                                 item.quantity
@@ -599,13 +625,13 @@ const OrderSummary = () => {
                     <PriceSummary>
                       <div className="subtotal-price">
                         <p>Subtotal price:</p>
-                        <p>
+                        <p className="price">
                           {subtotalPrice(shoppingCartItems)} {'\u20AC'}
                         </p>
                       </div>
                       <div className="delivery-price">
                         <p>Delivery:</p>
-                        <p>0 {'\u20AC'}</p>
+                        <p className="price">0 {'\u20AC'}</p>
                       </div>
                       <PromotionForm onSubmit={formikPromotion.handleSubmit}>
                         <Input
@@ -627,7 +653,7 @@ const OrderSummary = () => {
                       </PromotionForm>
                       <div className="total-price">
                         <p>Total price:</p>
-                        <p>
+                        <p className="price">
                           {totalPrice(shoppingCartItems, promotionType)}{' '}
                           {'\u20AC'}
                         </p>
@@ -713,6 +739,14 @@ const OrderSummary = () => {
                     </ShoppingCartItemContainer>
                   ))}
                 </ShoppingCartItems>
+                      <TotalPrice>
+                        <p>Total price:</p>
+                        <p className="price">
+                          {totalPrice(shoppingCartItems, promotionType)}{' '}
+                          {'\u20AC'}
+                        </p>
+                        </TotalPrice>
+                
               </SectionContainer>
             </div>
           </StepContainer>

@@ -22,6 +22,7 @@ const Container = styled.footer`
     flex-direction: column;
     align-items: center;
     row-gap: 48px;
+    padding: 60px 60px;
   }
 `;
 
@@ -63,7 +64,7 @@ const H3 = styled.h3`
 `;
 
 const NavSection = styled.section`
-  width: 300px;
+  width: 200px;
 
   @media (max-width: 768px) {
     width: 200px;
@@ -76,12 +77,13 @@ const NavSection = styled.section`
     row-gap: 8px;
 
     li {
-      text-align: center;
+      text-align: left;
       padding: 16px 8px;
       padding: 8px 0;
 
       @media (max-width: 768px) {
         text-align: center;
+        width: auto;
       }
     }
   }

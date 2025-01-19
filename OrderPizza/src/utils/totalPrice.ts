@@ -29,6 +29,7 @@ const totalPrice = (items: Array<Item> | null, promotion: string | null) => {
       0
     );
 
+
     if (promotion === 'B2G1' && numberOfPizza === 3) {
       const sortedPizzas = [...pizzaCart].sort(
         (a, b) => (a.price || 0) - (b.price || 0)
@@ -40,6 +41,8 @@ const totalPrice = (items: Array<Item> | null, promotion: string | null) => {
         sortedPizzas.shift();
       }
 
+      console.log(sortedPizzas)
+
       shoppingCart = [
         ...sortedPizzas,
         ...shoppingCart.filter(
@@ -47,7 +50,10 @@ const totalPrice = (items: Array<Item> | null, promotion: string | null) => {
             !menuItems.pizzas.some((p) => p.productID === item.productID)
         ),
       ];
+
+      console.log(shoppingCart)
     }
+
 
     total = shoppingCart.reduce((accumulator, currentValue) => {
       const quantity = currentValue.quantity;

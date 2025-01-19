@@ -8,8 +8,9 @@ import { ShoppingCartContext } from './../../context/ShoppingCartContext';
 import countPrice from './../../utils/countPrice';
 import getMenuItem from '../../utils/getMenuItem';
 import subtotalPrice from '../../utils/subtotalPrice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import closeIcon from './../../assets/close.svg';
+import { AuthContext } from '../../context/AuthContext';
 
 type ComponentProps = {
   shoppingCart: boolean;
@@ -24,8 +25,9 @@ const Container = styled.div`
   border: 1px solid ${(props) => props.theme.colors.neutral[200]};
   position: absolute;
   top: 60px;
-  right: 192px;
+  right: 100px;
   box-shadow: ${(props) => props.theme.shadow};
+  z-index: 1;
 
   @media (min-width: 490px) and (max-width: 864px) {
     right: 80px;
@@ -111,6 +113,10 @@ const ShoppingCartItem = styled.div`
       width: 80px;
       justify-content: space-between;
     }
+
+    p.price{
+      font-weight: ${(props) => props.theme.typography.fontWeight['bold']};
+    }
   }
 `;
 
@@ -127,6 +133,10 @@ const Footer = styled.div`
     justify-content: flex-end;
     column-gap: 16px;
     padding: 0 16px;
+
+    p.price{
+      font-weight: ${(props) => props.theme.typography.fontWeight['bold']};
+    }
   }
 `;
 
@@ -142,9 +152,37 @@ const Empty = styled.div`
   }
 `;
 
+const LogInAlert = styled.div`
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+
+  p{
+    text-align: center;
+  }
+
+  p.heading{
+    font-weight: ${(props) => props.theme.typography.fontWeight['bold']};
+  }
+
+  button{
+    width: 100%;
+  }
+
+  p.register {
+    font-size: ${(props) => props.theme.typography.fontSize['xs']};
+
+    a{
+      font-weight: ${(props) => props.theme.typography.fontWeight['bold']};
+      text-decoration: none;
+    }
+  }
+`
+
 const ShoppingCartDropdown = forwardRef<HTMLDivElement, ComponentProps>(
   ({ shoppingCart, setShoppingCart }: ComponentProps, ref) => {
     const { shoppingCartItems } = useContext(ShoppingCartContext);
+    const { uid } = useContext(AuthContext);
     const changeQuantity = useShoppingCartQuantity();
     const navigate = useNavigate();
 
@@ -158,7 +196,7 @@ const ShoppingCartDropdown = forwardRef<HTMLDivElement, ComponentProps>(
           {shoppingCartItems.length === 0 ? (
             <Empty>
               <p>Your shopping cart is empty</p>
-              <Button buttonType="secondary" onClick={() => navigate('/menu')}>
+              <Button buttonType="secondary" onClick={() => {navigate('/menu'); setShoppingCart(!shoppingCart)}}>
                 Go to menu
               </Button>
             </Empty>
@@ -207,10 +245,12 @@ const ShoppingCartDropdown = forwardRef<HTMLDivElement, ComponentProps>(
           <Footer>
             <div className="subtotal-price">
               <p>Subtotal price:</p>
-              <p>
+              <p className="price">
                 {subtotalPrice(shoppingCartItems)} {'\u20AC'}
               </p>
             </div>
+
+            {uid ? 
 
             <Button
               buttonType="secondary"
@@ -222,6 +262,29 @@ const ShoppingCartDropdown = forwardRef<HTMLDivElement, ComponentProps>(
             >
               Order summary
             </Button>
+
+
+           
+
+            : 
+             <LogInAlert>
+              <div>
+                <p className="heading">Log in to continue!</p>
+                <p>You need to log in to place your order.</p>
+              </div>
+              <Button
+                  buttonType="primary"
+                  onClick={() => {navigate('./login'); setShoppingCart(!shoppingCart)}}
+                >
+                  Log in
+                </Button>
+                <p className="register">Don't have an account? <Link to='./register'>Create account</Link></p>
+            </LogInAlert>
+
+             
+          }
+
+           
           </Footer>
         )}
       </Container>

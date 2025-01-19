@@ -51,7 +51,7 @@ const Nav = styled.nav`
   }
 
   div.logged-out {
-    & > button {
+    div.login-btn {
       @media (max-width: 490px) {
         display: none;
       }
@@ -336,12 +336,21 @@ const Navbar = () => {
             )}
             {!uid && (
               <div className="logged-out">
-                <Button
+                
+                <div className="login-btn">
+                  <Button
                   buttonType="primary"
                   onClick={() => navigate('./login')}
                 >
                   Log in
                 </Button>
+                </div>   
+                <CartButton>
+                  <div>{countTotalQuantity()}</div>
+                  <button
+                    onClick={() => setShoppingCart(!shoppingCart)}
+                  ></button>
+                </CartButton>
                 <ButtonHamburger onClick={() => setDropdownMenu(!dropdownMenu)}>
                   <img src={hamburgerIcon} alt="" />
                 </ButtonHamburger>

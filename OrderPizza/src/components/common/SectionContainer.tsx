@@ -13,7 +13,7 @@ const Container = styled.section`
   row-gap: 32px;
 
   @media (max-width: 490px) {
-    padding: 0;
+    padding: 8px 0;
   }
 `;
 

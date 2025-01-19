@@ -32,12 +32,12 @@ const HeroSection = styled.div`
   display: flex;
   justify-content: flex-end;
 
-  @media (min-width: 768px) and (orientation: portrait) {
+  @media (min-width: 800px) and (orientation: portrait) {
     aspect-ratio: 1440 / 959;
     height: auto;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 800px) {
     background-image: url(${heroImgVertical});
     background-size: cover;
     justify-content: center;
@@ -50,7 +50,7 @@ const HeroSection = styled.div`
     row-gap: 32px;
     width: 50%;
 
-    @media (max-width: 768px) {
+    @media (max-width: 800px) {
       width: 100%;
     }
 
