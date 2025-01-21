@@ -128,7 +128,7 @@ const TableMobile = styled.div`
   flex-direction: column;
   display: none;
 
-  div.order{
+  div.order {
     padding: 16px;
   }
 
@@ -136,7 +136,7 @@ const TableMobile = styled.div`
     display: initial;
   }
 
-  div.products{
+  div.products {
     display: flex;
     column-gap: 4px;
   }
@@ -253,15 +253,15 @@ const Orders = () => {
                         {generateHour(order.date.toDate())}
                       </p>
                       <div className="products">
-                      <p>Products:</p>
-                      <p>
-                      {order.products.map((item) => (
-                        <span key={item.productID}>
-                          <span>{getMenuItem(item.productID)?.name}</span>
-                          <span> x {item.quantity},</span>
-                        </span>
-                      ))}
-                      </p>
+                        <p>Products:</p>
+                        <p>
+                          {order.products.map((item) => (
+                            <span key={item.productID}>
+                              <span>{getMenuItem(item.productID)?.name}</span>
+                              <span> x {item.quantity},</span>
+                            </span>
+                          ))}
+                        </p>
                       </div>
                       <p>
                         Total price: {order.price}

@@ -14,6 +14,7 @@ import Dashboard from './Dashboard';
 import Customers from './Customers';
 import Promotions from './Promotions';
 import ThankYou from './ThankYou';
+import NotFoundPage from './NotFoundPage';
 
 export {
   Home,
@@ -32,4 +33,5 @@ export {
   Customers,
   Promotions,
   ThankYou,
+  NotFoundPage,
 };

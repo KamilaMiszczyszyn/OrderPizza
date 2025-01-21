@@ -105,10 +105,7 @@ const Login = () => {
         await signInWithEmailAndPassword(auth, email, password);
         navigate('/');
       } catch (error) {
-        formik.setFieldError(
-          'password',
-          'Incorrect password'
-        );
+        formik.setFieldError('password', 'Incorrect password');
       }
     },
   });

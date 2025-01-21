@@ -3,7 +3,6 @@ import starChecked from './../../assets/star-checked.svg';
 import starUnchecked from './../../assets/star-unchecked.svg';
 import { Timestamp } from 'firebase/firestore';
 import userIcon from './../../assets/user-small.svg';
-import decorIcon from './../../assets/review-decor.svg';
 
 interface Review {
   date: Timestamp;
@@ -40,7 +39,7 @@ const ReviewContainer = styled.div`
 `;
 
 const Decor = styled.div`
-  background-image: url(${decorIcon});
+  background: url('/assets/review-decor.svg');
   width: 48px;
   height: 48px;
   position: relative;

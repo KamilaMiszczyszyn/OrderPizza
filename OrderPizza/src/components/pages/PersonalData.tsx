@@ -37,7 +37,6 @@ const FormGeneral = styled.form`
   flex-direction: column;
   row-gap: 32px;
 
-
   @media (max-width: 577px) {
     align-items: center;
   }
@@ -61,10 +60,7 @@ const FormGeneral = styled.form`
     justify-content: space-between;
     align-items: center;
     width: 100%;
-
   }
-
-
 `;
 
 const Success = styled.div`

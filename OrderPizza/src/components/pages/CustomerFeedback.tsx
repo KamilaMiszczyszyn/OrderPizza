@@ -15,8 +15,6 @@ import {
   Button,
   Feedback,
 } from './../index';
-import checkedStar from './../../assets/star-checked.svg';
-import uncheckedStar from './../../assets/star-unchecked.svg';
 import { useState, useEffect } from 'react';
 import { db } from '../../firebase/firebase';
 
@@ -180,12 +178,12 @@ const FeedbackForm = styled.form`
 const Star = styled.div`
   width: 24px;
   height: 24px;
-  background-image: url(${uncheckedStar});
+  background: url('/assets/star-unchecked.svg');
   cursor: pointer;
   transition: background-image 0.3s ease;
 
   &.active {
-    background-image: url(${checkedStar});
+    background: url('/assets/star-checked.svg');
   }
 `;
 
@@ -310,7 +308,7 @@ const CustomerFeedback = () => {
                 .map((e, index) => (
                   <div className="rating" key={index}>
                     <div className="stars">
-                      <img src={checkedStar} alt="" />
+                      <img src="/assets/star-checked.svg" alt="" />
                       <p>{e}</p>
                     </div>
                     <RatingBar $width={divWidth(reviews, e)}></RatingBar>

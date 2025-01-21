@@ -33,7 +33,6 @@ const Container = styled.div`
     'SecondSquare  SecondPromotion SecondPromotion'
     'ThirdPromotion ThirdPromotion ThirdSquare';
 
-
   @media (min-width: 490px) and (max-width: 864px) {
     width: 475px;
   }
@@ -62,7 +61,6 @@ const FirstPromotion = styled.div`
     background-position: top;
     background-repeat: no-repeat;
     border-radius: 10px;
-
   }
 `;
 
@@ -77,7 +75,6 @@ const SecondPromotion = styled.div`
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 10px;
-
   }
 `;
 
@@ -92,7 +89,6 @@ const ThirdPromotion = styled.div`
     background-position: bottom;
     background-repeat: no-repeat;
     border-radius: 10px;
-
   }
 `;
 
@@ -149,7 +145,6 @@ const Promotions = () => {
 
     return () => unsubscribe();
   }, []);
-
 
   return (
     <Container>

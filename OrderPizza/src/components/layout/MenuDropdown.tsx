@@ -38,15 +38,14 @@ const Container = styled.div`
   }
 
   ul {
-   list-style: none;
-  width: 100%;
-  border-bottom: 1px solid ${(props) => props.theme.colors.neutral[200]};
-  padding-bottom: 8px;
-  
-  li{
-    margin: 16px 0;
-  }
+    list-style: none;
+    width: 100%;
+    border-bottom: 1px solid ${(props) => props.theme.colors.neutral[200]};
+    padding-bottom: 8px;
 
+    li {
+      margin: 16px 0;
+    }
 
     button {
       padding: 8px 0;
@@ -57,11 +56,10 @@ const Container = styled.div`
       width: 100%;
       text-align: start;
 
-        &:hover {
-          background-color: ${(props) => props.theme.colors.neutral[50]};
-          border-radius: 10px;
-        }
-      
+      &:hover {
+        background-color: ${(props) => props.theme.colors.neutral[50]};
+        border-radius: 10px;
+      }
     }
   }
 
@@ -73,15 +71,13 @@ const Container = styled.div`
     }
   }
 
-  div.login-btn{
+  div.login-btn {
     display: none;
-    
 
     @media (max-width: 864px) {
       display: initial;
       width: 100%;
     }
-
   }
 `;
 
@@ -110,7 +106,7 @@ const MenuDropdown = forwardRef<HTMLDivElement, ComponentProps>(
     const navigate = useNavigate();
     const { uid } = useContext(AuthContext);
 
-    const toggleDropdownMenu = () => setDropdownMenu(!dropdownMenu); 
+    const toggleDropdownMenu = () => setDropdownMenu(!dropdownMenu);
 
     const logout = async () => {
       try {
@@ -129,33 +125,55 @@ const MenuDropdown = forwardRef<HTMLDivElement, ComponentProps>(
         <Logo>OrderPizza</Logo>
         <ul className="nav">
           <li>
-            <button onClick={() => { navigate("/menu"), toggleDropdownMenu()}}>
+            <button
+              onClick={() => {
+                navigate('/menu'), toggleDropdownMenu();
+              }}
+            >
               Menu
             </button>
           </li>
           <li>
-            <button onClick={() => { navigate("/promotions"), toggleDropdownMenu()}}>
+            <button
+              onClick={() => {
+                navigate('/promotions'), toggleDropdownMenu();
+              }}
+            >
               Promotions
             </button>
           </li>
           <li>
-            <button onClick={() => { navigate("/contact"), toggleDropdownMenu()}}>
+            <button
+              onClick={() => {
+                navigate('/contact'), toggleDropdownMenu();
+              }}
+            >
               Contact
             </button>
           </li>
         </ul>
-        {uid && <ul>
-          <li>
-            <button onClick={() => { navigate("/personal-data"), toggleDropdownMenu()}}>
-              Personal data
-            </button>
-          </li>
-          <li>
-            <button onClick={() => { navigate("/orders"), toggleDropdownMenu()}}>
-              Orders
-            </button>
-          </li>
-        </ul>}
+        {uid && (
+          <ul>
+            <li>
+              <button
+                onClick={() => {
+                  navigate('/personal-data'), toggleDropdownMenu();
+                }}
+              >
+                Personal data
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => {
+                  navigate('/orders'), toggleDropdownMenu();
+                }}
+              >
+                Orders
+              </button>
+            </li>
+          </ul>
+        )}
 
         {uid ? (
           <Button
@@ -166,15 +184,17 @@ const MenuDropdown = forwardRef<HTMLDivElement, ComponentProps>(
             Log out
           </Button>
         ) : (
-            <div className="login-btn">
-              <Button
+          <div className="login-btn">
+            <Button
               buttonType="primary"
               style={{ width: '100%' }}
-              onClick={() => {navigate('./login'), toggleDropdownMenu()}}
+              onClick={() => {
+                navigate('./login'), toggleDropdownMenu();
+              }}
             >
               Log in
             </Button>
-            </div>
+          </div>
         )}
       </Container>
     );

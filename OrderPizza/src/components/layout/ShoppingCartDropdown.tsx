@@ -114,7 +114,7 @@ const ShoppingCartItem = styled.div`
       justify-content: space-between;
     }
 
-    p.price{
+    p.price {
       font-weight: ${(props) => props.theme.typography.fontWeight['bold']};
     }
   }
@@ -134,7 +134,7 @@ const Footer = styled.div`
     column-gap: 16px;
     padding: 0 16px;
 
-    p.price{
+    p.price {
       font-weight: ${(props) => props.theme.typography.fontWeight['bold']};
     }
   }
@@ -157,27 +157,27 @@ const LogInAlert = styled.div`
   flex-direction: column;
   row-gap: 16px;
 
-  p{
+  p {
     text-align: center;
   }
 
-  p.heading{
+  p.heading {
     font-weight: ${(props) => props.theme.typography.fontWeight['bold']};
   }
 
-  button{
+  button {
     width: 100%;
   }
 
   p.register {
     font-size: ${(props) => props.theme.typography.fontSize['xs']};
 
-    a{
+    a {
       font-weight: ${(props) => props.theme.typography.fontWeight['bold']};
       text-decoration: none;
     }
   }
-`
+`;
 
 const ShoppingCartDropdown = forwardRef<HTMLDivElement, ComponentProps>(
   ({ shoppingCart, setShoppingCart }: ComponentProps, ref) => {
@@ -196,7 +196,13 @@ const ShoppingCartDropdown = forwardRef<HTMLDivElement, ComponentProps>(
           {shoppingCartItems.length === 0 ? (
             <Empty>
               <p>Your shopping cart is empty</p>
-              <Button buttonType="secondary" onClick={() => {navigate('/menu'); setShoppingCart(!shoppingCart)}}>
+              <Button
+                buttonType="secondary"
+                onClick={() => {
+                  navigate('/menu');
+                  setShoppingCart(!shoppingCart);
+                }}
+              >
                 Go to menu
               </Button>
             </Empty>
@@ -250,41 +256,38 @@ const ShoppingCartDropdown = forwardRef<HTMLDivElement, ComponentProps>(
               </p>
             </div>
 
-            {uid ? 
-
-            <Button
-              buttonType="secondary"
-              style={{ width: '100%' }}
-              onClick={() => {
-                navigate('/order-summary');
-                setShoppingCart(!setShoppingCart);
-              }}
-            >
-              Order summary
-            </Button>
-
-
-           
-
-            : 
-             <LogInAlert>
-              <div>
-                <p className="heading">Log in to continue!</p>
-                <p>You need to log in to place your order.</p>
-              </div>
+            {uid ? (
               <Button
+                buttonType="secondary"
+                style={{ width: '100%' }}
+                onClick={() => {
+                  navigate('/order-summary');
+                  setShoppingCart(!setShoppingCart);
+                }}
+              >
+                Order summary
+              </Button>
+            ) : (
+              <LogInAlert>
+                <div>
+                  <p className="heading">Log in to continue!</p>
+                  <p>You need to log in to place your order.</p>
+                </div>
+                <Button
                   buttonType="primary"
-                  onClick={() => {navigate('./login'); setShoppingCart(!shoppingCart)}}
+                  onClick={() => {
+                    navigate('./login');
+                    setShoppingCart(!shoppingCart);
+                  }}
                 >
                   Log in
                 </Button>
-                <p className="register">Don't have an account? <Link to='./register'>Create account</Link></p>
-            </LogInAlert>
-
-             
-          }
-
-           
+                <p className="register">
+                  Don't have an account?{' '}
+                  <Link to="./register">Create account</Link>
+                </p>
+              </LogInAlert>
+            )}
           </Footer>
         )}
       </Container>

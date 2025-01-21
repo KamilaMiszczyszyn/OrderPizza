@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import {
   Layout,
   Login,
@@ -17,6 +17,7 @@ import {
   Customers,
   Promotions,
   ThankYou,
+  NotFoundPage,
 } from './components/index.ts';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -53,6 +54,8 @@ function App() {
               <Route path="contact" element={<Contact />} />
               <Route path="customer-feedback" element={<CustomerFeedback />} />
               <Route path="promotions" element={<Promotions />} />
+              <Route path="*" element={<Navigate to="/notfound" replace />} />
+              <Route path="/notfound" element={<NotFoundPage />} />
 
               <Route
                 path="personal-data"

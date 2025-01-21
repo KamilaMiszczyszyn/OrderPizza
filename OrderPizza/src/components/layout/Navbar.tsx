@@ -136,12 +136,12 @@ const CartButton = styled.div`
   background-repeat: no-repeat;
   background-position: center;
   width: 33px;
-    height: 33px;
+  height: 33px;
 
-    &:hover {
-      border-radius: 50%;
-      background-color: ${(props) => props.theme.colors.neutral[800]};
-    }
+  &:hover {
+    border-radius: 50%;
+    background-color: ${(props) => props.theme.colors.neutral[800]};
+  }
 
   div {
     border-radius: 50%;
@@ -161,13 +161,11 @@ const CartButton = styled.div`
     justify-content: center;
     align-items: center;
     background-color: transparent;
-    
+
     border: none;
     width: 33px;
     height: 33px;
     padding: 0px;
-
-    
   }
 `;
 
@@ -343,15 +341,14 @@ const Navbar = () => {
             )}
             {!uid && (
               <div className="logged-out">
-                
                 <div className="login-btn">
                   <Button
-                  buttonType="primary"
-                  onClick={() => navigate('./login')}
-                >
-                  Log in
-                </Button>
-                </div>   
+                    buttonType="primary"
+                    onClick={() => navigate('./login')}
+                  >
+                    Log in
+                  </Button>
+                </div>
                 <CartButton>
                   <div>{countTotalQuantity()}</div>
                   <button

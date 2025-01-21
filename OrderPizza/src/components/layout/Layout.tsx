@@ -26,9 +26,11 @@ const ContainerAdmin = styled.div`
 const NavContainer = styled.div`
   grid-area: nav;
 `;
+
 const NavContainerAdmin = styled.div`
   grid-area: navAdmin;
 `;
+
 const Main = styled.div`
   grid-area: main;
   display: flex;
@@ -63,9 +65,12 @@ const Layout = () => {
     location.pathname.startsWith('/login') ||
     location.pathname.startsWith('/register') ||
     location.pathname.startsWith('/order-summary') ||
-    location.pathname.startsWith('/thank-you');
+    location.pathname.startsWith('/thank-you') ||
+    location.pathname.startsWith('/notfound');
 
-  const invisibleNavbar: boolean = location.pathname.startsWith('/thank-you');
+  const invisibleNavbar: boolean =
+    location.pathname.startsWith('/thank-you') ||
+    location.pathname.startsWith('/notfound');
 
   return (
     <>

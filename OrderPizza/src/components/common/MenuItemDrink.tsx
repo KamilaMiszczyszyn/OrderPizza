@@ -64,8 +64,8 @@ const Footer = styled.div`
     line-height: initial;
     text-align: end;
     @media (max-width: 490px) {
-    text-align: start;
-  }
+      text-align: start;
+    }
   }
 
   div p.size {
@@ -73,8 +73,8 @@ const Footer = styled.div`
     line-height: initial;
     text-align: end;
     @media (max-width: 490px) {
-    text-align: start;
-  }
+      text-align: start;
+    }
   }
 
   button {

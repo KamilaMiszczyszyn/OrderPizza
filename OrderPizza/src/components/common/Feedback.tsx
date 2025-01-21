@@ -2,8 +2,6 @@ import styled from 'styled-components';
 import { generateDate } from '../../utils/convertTime';
 import { Timestamp } from 'firebase/firestore';
 import userSmall from './../../assets/user-small.svg';
-import uncheckedStar from './../../assets/star-unchecked.svg';
-import checkedStar from './../../assets/star-checked.svg';
 
 type ComponentProps = {
   firstName: string;
@@ -44,10 +42,10 @@ const FeedbackText = styled.div`
 const Star = styled.div`
   width: 24px;
   height: 24px;
-  background-image: url(${uncheckedStar});
+  background: url('/assets/star-unchecked.svg');
 
   &.active {
-    background-image: url(${checkedStar});
+    background: url('/assets/star-checked.svg');
   }
 `;
 
