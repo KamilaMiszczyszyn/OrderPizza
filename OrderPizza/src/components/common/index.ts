@@ -13,6 +13,7 @@ import SectionContainer from './SectionContainer';
 import SectionHeader from './SectionHeader';
 import OrderStatusIcon from './OrderStatusIcon';
 import PromotionCard from './PromotionCard';
+import ScrollToTop from './ScrollToTop';
 
 export {
   Button,
@@ -30,4 +31,5 @@ export {
   SectionHeader,
   OrderStatusIcon,
   PromotionCard,
+  ScrollToTop
 };

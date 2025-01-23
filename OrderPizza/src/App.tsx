@@ -18,6 +18,7 @@ import {
   Promotions,
   ThankYou,
   NotFoundPage,
+  ScrollToTop
 } from './components/index.ts';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -44,7 +45,7 @@ function App() {
       ) : (
         <>
           <GlobalStyle />
-
+          <ScrollToTop />
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
